@@ -1,0 +1,60 @@
+version: '3.9'
+
+# Services
+services:
+
+  # Node Service
+  node:
+    image: node:20-alpine
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    container_name: nodejs
+    command: npm start
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql
+
+  # Angular Service
+  angular:
+    container_name: angular
+    build: ./frontend
+    ports:
+      - "4200:4200"
+
+  # MySQL Service
+  mysql:
+    image: mysql:8.1.0
+    restart: unless-stopped
+    environment:
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - mysqldata:/var/lib/mysql
+    container_name: mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=${MYSQL_ROOT_PASSWORD}
+      interval: 5s
+      retries: 10
+
+  # Adminer Service
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    container_name: adminer
+
+volumes:
+  mysqldata:
+
+  adminerdata:
