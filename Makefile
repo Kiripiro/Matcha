@@ -5,6 +5,8 @@ FRONTEND_NODE_MODULES := $(wildcard $(FRONTEND_DIR)/node_modules)
 
 BACKEND_NODE_MODULES := $(wildcard $(BACKEND_DIR)/node_modules)
 
+MIGRATIONS_FILE := $(wildcard $(BACKEND_DIR)/config/database/migrations.lock)
+
 all:	start
 
 start:	check_node_modules 
@@ -16,9 +18,11 @@ clean:
 	docker-compose down --rmi all
 	# rm -rf $(FRONTEND_NODE_MODULES)
 	# rm -rf $(BACKEND_NODE_MODULES)
+	rm -rf $(MIGRATIONS_FILE)
 
 fclean:	clean
 	docker system prune --all --force --volumes
+	docker volume prune --all --force
 
 re: fclean all
 

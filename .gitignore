@@ -1,4 +1,7 @@
 .env
-# ignore the node_modules folder by default from the frontend and backend folders
+
 frontend/node_modules
+
+backend/.env
 backend/node_modules
+backend/config/database/migrations.lock
