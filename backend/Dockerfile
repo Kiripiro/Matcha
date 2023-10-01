@@ -6,8 +6,8 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 COPY package.json /app/package.json
 RUN npm install
-RUN npm install -g @angular/cli
+RUN npm install -g nodemon
 
-ENV NG_FORCE_SUBDOMAIN 1
+COPY . /app
 
-CMD ["ng", "serve", "--host", "0.0.0.0", "--disable-host-check"]
+CMD ["nodemon", "index.js"]

@@ -5,13 +5,12 @@ services:
 
   # Node Service
   node:
-    image: node:20-alpine
+    build: ./backend
     restart: unless-stopped
     working_dir: /app
     volumes:
       - ./backend:/app
     container_name: nodejs
-    command: npm start
     ports:
       - 3000:3000
     depends_on:
@@ -21,8 +20,14 @@ services:
   angular:
     container_name: angular
     build: ./frontend
+    restart: unless-stopped
+    working_dir: /app
     ports:
       - "4200:4200"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - mysql
 
   # MySQL Service
   mysql:
@@ -40,9 +45,11 @@ services:
       - mysqldata:/var/lib/mysql
     container_name: mysql
     healthcheck:
-      test: mysqladmin ping -h 127.0.0.1 -u root --password=${MYSQL_ROOT_PASSWORD}
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
       interval: 5s
-      retries: 10
+      timeout: 5s
+      retries: 55
 
   # Adminer Service
   adminer:
@@ -53,8 +60,9 @@ services:
     depends_on:
       - mysql
     container_name: adminer
+    volumes:
+      - adminerdata:/var/lib/adminer
 
 volumes:
   mysqldata:
-
   adminerdata:
