@@ -1,6 +1,20 @@
 const connection = require('./database');
 const fs = require('fs');
 
+const createTableIfNotExists = (tableName, sql) => {
+    connection.query(`SHOW TABLES LIKE "${tableName}"`, (err, result) => {
+        if (err) throw err;
+        if (result.length === 1) {
+            console.log(`Table "${tableName}" already exists`);
+            return;
+        }
+        connection.query(sql, (err, result) => {
+            if (err) throw err;
+            console.log(`Table "${tableName}" has been created`);
+        });
+    });
+}
+
 const createUsersTable = () => {
     const sql = `CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -9,17 +23,7 @@ const createUsersTable = () => {
         password VARCHAR(255) NOT NULL
     )`;
 
-    connection.query('SHOW TABLES LIKE "users"', (err, result) => {
-        if (err) throw err;
-        if (result.length === 1) {
-            console.log('Table "users" already exists');
-            return;
-        }
-        connection.query(sql, (err, result) => {
-            if (err) throw err;
-            console.log('Table "users" has been created');
-        });
-    });
+    createTableIfNotExists('users', sql);
 }
 
 const createPostsTable = () => {
@@ -31,20 +35,9 @@ const createPostsTable = () => {
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`;
 
-    connection.query('SHOW TABLES LIKE "posts"', (err, result) => {
-        if (err) throw err;
-        if (result.length === 1) {
-            console.log('Table "posts" already exists');
-            return;
-        }
-        connection.query(sql, (err, result) => {
-            if (err) throw err;
-            console.log('Table "posts" has been created');
-        });
-    });
+    createTableIfNotExists('posts', sql);
 }
 
-// Add more migrations here - don't forget to append the migration name to migrations.lock file
 const runMigrations = () => {
     const migrationsLockFile = './config/database/migrations.lock';
     if (!fs.existsSync(migrationsLockFile)) {
@@ -65,4 +58,3 @@ const runMigrations = () => {
 module.exports = {
     runMigrations
 };
-
