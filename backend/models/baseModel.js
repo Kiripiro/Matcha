@@ -49,6 +49,12 @@ class BaseModel {
         return result.insertId;
     }
 
+    async delete(id) {
+        const sql = `DELETE FROM ${this.tableName} WHERE id = ${id}`;
+        const result = await this._query(sql);
+        return result.insertId;
+    }
+
     // Add more common model methods here like update, delete...
 }
 

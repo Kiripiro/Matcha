@@ -6,15 +6,6 @@ class UserController extends BaseController {
         super(UserModel);
     }
 
-    async getAllUsers(req, res) {
-        try {
-            const users = await this.model.findAll();
-            res.json(users);
-        } catch (error) {
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
-
     async createUser(req, res) {
         try {
             const userData = req.body;
@@ -83,47 +74,80 @@ class UserController extends BaseController {
         }
     }
 
-    async _checkUserExist(username, email) {
-        const a = await this.model.findByUsername(username);
+    async deleteUser(req, res) {
+        try {
+            const userData = req.body;
+            const checkReturn = this._checkString(userData.username || '', 'Username', 25, /^[a-zA-Z0-9_-]+$/);
+            if (checkReturn != true) {
+                res.status(400).json({ error: checkReturn });
+                return ;
+            } else if (await this.model.findByUsername(userData.username) == null) {
+                res.status(400).json({ error: "Username doesn't exist" });
+                return ;
+            }
+            const user = await this.model.findByUsername(userData.username);
+            const userIdReturn = await this.model.delete(user.id);
+            res.status(201).json({ message: 'User deleted', userIdReturn });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     }
 
     async _checkSignUpInformations(username, email, password, first_name, last_name, age) {
-        var checkReturn;
-        if ((checkReturn = this._checkString(username, 'Username', 25, /^[a-zA-Z0-9_-]+$/)) != true) {
+        var checkReturn = this._checkString(username, 'Username', 25, /^[a-zA-Z0-9_-]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (checkReturn = this._checkString(email, 'Email', 50, /^[0-9a-zA-Z@._-]+$/) != true) {
+        }
+        checkReturn = this._checkString(email, 'Email', 50, /^[0-9a-zA-Z@._-]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (!email.includes('@')) {
-            return 'Email is incorrect';
-        } else if (checkReturn = this._checkString(password, 'Password', 25, /^[a-zA-Z0-9.$_-]+$/) != true) {
+        }
+        checkReturn = this._checkString(password, 'Password', 25, /^[a-zA-Z0-9.$_-]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (checkReturn = this._checkString(first_name, 'First name', 25, /^[a-zA-Z- ]+$/) != true) {
+        }
+        checkReturn = this._checkString(first_name, 'First name', 25, /^[a-zA-Z- ]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (checkReturn = this._checkString(last_name, 'Last name', 25, /^[a-zA-Z- ]+$/) != true) {
+        }
+        checkReturn = this._checkString(last_name, 'Last name', 25, /^[a-zA-Z- ]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (age <= 0 || age > 150) {
+        }
+        if (age <= 0 || age > 150) {
             return 'Age is incorrect';
-        } else if (age < 18) {
+        }
+        if (age < 18) {
             return 'Age is incorrect: you are too young';
-        } else if (await this.model.findByUsername(username) != null) {
+        }
+        if (await this.model.findByUsername(username) != null) {
             return 'Username already in use';
-        } else if (await this.model.findByEmail(email) != null) {
+        }
+        if (await this.model.findByEmail(email) != null) {
             return 'Email already in use';
         }
         return true;
     }
 
     async _checkCompleteSignUpInformations(username, gender, sexual_preferences, biography, picture_1, picture_2, picture_3, picture_4, picture_5) {
-        var checkReturn;
-        if ((checkReturn = this._checkString(username, 'Username', 25, /^[a-zA-Z0-9_-]+$/)) != true) {
+        var checkReturn = this._checkString(username, 'Username', 25, /^[a-zA-Z0-9_-]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (checkReturn = this._checkString(gender, 'Gender', 10, /^[0-9a-zA-Z+ ]+$/) != true) {
+        }
+        checkReturn = this._checkString(gender, 'Gender', 10, /^[0-9a-zA-Z+ ]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (checkReturn = this._checkString(sexual_preferences, 'Sexual preferences', 10, /^[0-9a-zA-Z+ ]+$/) != true) {
+        }
+        checkReturn = this._checkString(sexual_preferences, 'Sexual preferences', 10, /^[0-9a-zA-Z+ ]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (checkReturn = this._checkString(biography, 'Biography', 250, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/]+$/) != true) {
+        }
+        checkReturn = this._checkString(biography, 'Biography', 400, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/ ]+$/);
+        if (checkReturn != true) {
             return checkReturn;
-        } else if (await this.model.findByUsername(username) == null) {
+        }
+        if (await this.model.findByUsername(username) == null) {
             return "Username doesn't exist";
         }
         return true;

@@ -3,6 +3,8 @@ const fs = require('fs');
 const migrationRunner = require('./config/database/migrationRunner');
 const UserController = require('./controllers/userController');
 
+const userRouter = require('./router/userRouter');
+
 require('dotenv').config();
 
 const app = express();
@@ -16,51 +18,7 @@ if (!fs.existsSync('./config/database/migrations.lock')) {
 app.use(express.json());
 
 // Examples of GET & POST requests to test DB connection - use routes instead
-app.post('/users', async (req, res) => {
-    try {
-        await UserController.createUser(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-app.post('/users/update', async (req, res) => {
-    try {
-        await UserController.updateInfos(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-app.get('/users', async (req, res) => {
-    try {
-        await UserController.getAllUsers(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-app.get('/users/:id', async (req, res) => {
-    res.send('Hello mec!');
-    try {
-        await UserController.getUserById(req, res);
-        res.send('Hello, ww!');
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-app.get('/test/:id', async (req, res) => {
-    console.log(req.params);
-    // console.log(res);
-    // res.send('Hello, Test!');
-    try {
-        await UserController.getById(req, res);
-        // res.send('Hello, ww!');
-    } catch (error) {
-        console.error(error);
-    }
-});
+app.use("/users", userRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello, Express!');
