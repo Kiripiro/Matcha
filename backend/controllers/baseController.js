@@ -26,6 +26,16 @@ class BaseController {
         }
     }
 
+    _checkString(input, name, length_max, regex) {
+        if (input.length <= 0)
+            return name + ' is empty';
+        if (input.length > length_max)
+            return name + ' is too long';
+        if (!regex.test(input))
+            return name + ' contains prohibited characters';
+        return true;
+    }
+
     // Add more common controller methods here
 }
 

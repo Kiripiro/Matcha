@@ -7,34 +7,45 @@ class BaseModel {
         this.pool = mysql.createPool(connection.config);
     }
 
-    async query(sql, values) {
-        const connection = await this.pool.getConnection();
+    async _query(sql, values) {
+        const conn = await this.pool.getConnection();
         try {
-            const [rows] = await connection.query(sql, values);
+            const rows = await conn.query(sql, values);
             return rows;
+        } catch(error) {
+            console.log('error = ' + error);
         } finally {
-            connection.release();
+            conn.release();
         }
     }
 
     async findOne(condition, values) {
         const sql = `SELECT * FROM ${this.tableName} WHERE ${condition} = ?`;
-        const rows = await this.query(sql, values);
-        return rows[0];
+        const rows = await this._query(sql, values);
+        if (rows.find((row) => row).length <= 0) {
+            return null;
+        }
+        return rows[0][0];
     }
 
     async findById(id) {
-        return this.findOne('id', [id]);
+        return await this.findOne('id', [id]);
     }
 
     async findAll() {
         const sql = `SELECT * FROM ${this.tableName}`;
-        return this.query(sql);
+        return this._query(sql);
     }
 
     async create(data) {
         const sql = `INSERT INTO ${this.tableName} SET ?`;
-        const result = await this.query(sql, data);
+        const result = await this._query(sql, data);
+        return result.insertId;
+    }
+
+    async update(id, data) {
+        const sql = `UPDATE ${this.tableName} SET ? WHERE id = ${id}`;
+        const result = await this._query(sql, data);
         return result.insertId;
     }
 

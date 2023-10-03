@@ -6,25 +6,14 @@ class UserModel extends BaseModel {
         this.tableName = 'users';
     }
 
-    // Use the baseModel findAll method
-    async findAll() {
-        const users = await super.findAll();
-        return users;
-    }
-
-    async findById(id) {
-        const user = await super.findById(id);
-        return user;
-    }
-
     async findByUsername(username) {
-        const user = await super.findOne('username', [this.tableName, username]);
+        const user = await super.findOne('username', username);
         return user;
     }
 
-    async create(userData) {
-        const result = await super.create(userData);
-        return result;
+    async findByEmail(email) {
+        const user = await super.findOne('email', email);
+        return user;
     }
 
     // Add more model-specific methods here,like update, delete...
