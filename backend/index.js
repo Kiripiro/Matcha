@@ -4,6 +4,7 @@ const migrationRunner = require('./config/database/migrationRunner');
 const UserController = require('./controllers/userController');
 
 const userRouter = require('./router/userRouter');
+const tagsRouter = require('./router/tagsRouter');
 
 require('dotenv').config();
 
@@ -19,6 +20,8 @@ app.use(express.json());
 
 // Examples of GET & POST requests to test DB connection - use routes instead
 app.use("/users", userRouter);
+
+app.use("/tags", tagsRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello, Express!');

@@ -26,6 +26,15 @@ class BaseController {
         }
     }
 
+    async checkById(id) {
+        const item = await this.model.findById(id);
+        if (!item) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     _checkString(input, name, length_max, regex) {
         if (input.length <= 0)
             return name + ' is empty';
@@ -33,7 +42,19 @@ class BaseController {
             return name + ' is too long';
         if (!regex.test(input))
             return name + ' contains prohibited characters';
+        if (typeof input != "string")
+            return name + ' invalid type';
         return true;
+    }
+
+    _checkPositiveInteger(input) {
+        if (typeof input == "number" && Number.isInteger(input) && input < 2147483648) {
+            return input;
+        } else if (typeof input == "string" && input.match(/^[0-9]+$/) && Number.isInteger(parseInt(input)) && parseInt(input) < 2147483648) {
+            return parseInt(input);
+        } else {
+            return -1;
+        }
     }
 
     // Add more common controller methods here

@@ -28,6 +28,21 @@ class BaseModel {
         return rows[0][0];
     }
 
+    async findMultiple(conditions, values) {
+        if (conditions.length <= 0)
+            return null;
+        var sql = `SELECT * FROM ${this.tableName} WHERE`;
+        for (var i = 0; i < (conditions.length - 1); i++) {
+            sql = sql.concat(` ` + conditions[i] + ` = ? AND`);
+        }
+        sql = sql.concat(` ` + conditions[(conditions.length - 1)] + ` = ?`);
+        const rows = await this._query(sql, values);
+        if (rows.find((row) => row).length <= 0) {
+            return null;
+        }
+        return rows;
+    }
+
     async findById(id) {
         return await this.findOne('id', [id]);
     }

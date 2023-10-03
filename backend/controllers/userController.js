@@ -41,6 +41,11 @@ class UserController extends BaseController {
     async updateInfos(req, res) {
         try {
             const userData = req.body;
+            const userId = this._checkPositiveInteger(userData.id);
+            if (userId < 0) {
+                res.status(400).json({ error: 'User id is incorrect' });
+                return ;
+            }
             const checkReturn = await this._checkCompleteSignUpInformations(
                 userData.username || '',
                 userData.gender || '',
@@ -65,9 +70,12 @@ class UserController extends BaseController {
                 "picture_4": userData.picture_4,
                 "picture_5": userData.picture_5
             };
-            const user = await this.model.findByUsername(userData.username);
-            const userIdReturn = await this.model.update(user.id, data);
-            res.status(201).json({ message: 'User updated', userIdReturn });
+            if (await this.checkById(userId)) {
+                const userIdReturn = await this.model.update(userId, data);
+                res.status(201).json({ message: 'User updated', userIdReturn });
+            } else {
+                res.status(400).json({ error: 'User id is incorrect' });
+            }
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -77,19 +85,54 @@ class UserController extends BaseController {
     async deleteUser(req, res) {
         try {
             const userData = req.body;
-            const checkReturn = this._checkString(userData.username || '', 'Username', 25, /^[a-zA-Z0-9_-]+$/);
-            if (checkReturn != true) {
-                res.status(400).json({ error: checkReturn });
-                return ;
-            } else if (await this.model.findByUsername(userData.username) == null) {
-                res.status(400).json({ error: "Username doesn't exist" });
+            const userId = this._checkPositiveInteger(userData.id || '');
+            if (userId < 0) {
+                res.status(400).json({ error: 'User id is incorrect' });
                 return ;
             }
-            const user = await this.model.findByUsername(userData.username);
-            const userIdReturn = await this.model.delete(user.id);
-            res.status(201).json({ message: 'User deleted', userIdReturn });
+            if (await this.checkById(userId)) {
+                const userIdReturn = await this.model.delete(userId);
+                res.status(201).json({ message: 'User deleted', userIdReturn });
+                return ;
+            } else {
+                res.status(400).json({ error: 'User id is incorrect' });
+                return ;
+            }
         } catch (error) {
             console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getUserById(req, res) {
+        try {
+            const userId = this._checkPositiveInteger(req.params.id || '');
+            if (userId < 0) {
+                res.status(400).json({ error: 'User id is incorrect' });
+                return ;
+            }
+            const user = await this.model.findById(userId);
+            if (!user) {
+                res.status(404).json({ error: 'User not found' })
+                return ;
+            } else {
+                const userReturn = {
+                    "username": user.username || '',
+                    "first_name": user.first_name || '',
+                    "last_name": user.last_name || '',
+                    "age": user.age || '',
+                    "gender": user.gender || '',
+                    "sexual_preferences": user.sexual_preferences || '',
+                    "biography":  user.biography || '',
+                    "picture_1": user.picture_1 || '',
+                    "picture_2": user.picture_2 || '',
+                    "picture_3": user.picture_3 || '',
+                    "picture_4": user.picture_4 || '',
+                    "picture_5": user.picture_5 || ''
+                }
+                res.json(userReturn);
+            }
+        } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -115,6 +158,7 @@ class UserController extends BaseController {
         if (checkReturn != true) {
             return checkReturn;
         }
+        age = this._checkPositiveInteger(age);
         if (age <= 0 || age > 150) {
             return 'Age is incorrect';
         }

@@ -29,7 +29,7 @@ router.post('/delete', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        await UserController.getById(req, res);
+        await UserController.getUserById(req, res);
     } catch (error) {
         console.error(error);
     }
