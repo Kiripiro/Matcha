@@ -1,10 +1,10 @@
 const express = require('express');
-const TagsController = require('../controllers/tagsController');
+const BlocksController = require('../controllers/blocksController');
 const router = express.Router();
 
 router.get('/user/:id', async (req, res) => {
     try {
-        await TagsController.getAllByOwnerId(req, res);
+        await BlocksController.getAllByAuthorId(req, res);
     } catch (error) {
         console.error(error);
     }
@@ -12,7 +12,15 @@ router.get('/user/:id', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        await TagsController.getTagById(req, res);
+        await BlocksController.getBlockById(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.get('/:authorId/:recipientId', async (req, res) => {
+    try {
+        await BlocksController.getCheckBlock(req, res);
     } catch (error) {
         console.error(error);
     }
@@ -20,7 +28,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/create', async (req, res) => {
     try {
-        await TagsController.createTag(req, res);
+        await BlocksController.createBlock(req, res);
     } catch (error) {
         console.error(error);
     }
@@ -28,7 +36,7 @@ router.post('/create', async (req, res) => {
 
 router.post('/delete', async (req, res) => {
     try {
-        await TagsController.deleteTag(req, res);
+        await BlocksController.deleteBlock(req, res);
     } catch (error) {
         console.error(error);
     }

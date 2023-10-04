@@ -1,5 +1,11 @@
 const BaseController = require('./baseController');
 const UserModel = require('../models/userModel');
+const MessagesModel = require('../models/messagesModel');
+const BlocksModel = require('../models/blocksModel');
+const LikesModel = require('../models/likesModel');
+const ReportsModel = require('../models/reportsModel');
+const TagsModel = require('../models/tagsModel');
+const ViewsModel = require('../models/viewsModel');
 
 class UserController extends BaseController {
     constructor() {
@@ -47,7 +53,6 @@ class UserController extends BaseController {
                 return ;
             }
             const checkReturn = await this._checkCompleteSignUpInformations(
-                userData.username || '',
                 userData.gender || '',
                 userData.sexual_preferences || '',
                 userData.biography || '',
@@ -90,14 +95,24 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'User id is incorrect' });
                 return ;
             }
-            if (await this.checkById(userId)) {
-                const userIdReturn = await this.model.delete(userId);
-                res.status(201).json({ message: 'User deleted', userIdReturn });
-                return ;
-            } else {
+            if (!await this.checkById(userId)) {
                 res.status(400).json({ error: 'User id is incorrect' });
                 return ;
+
             }
+            if (await MessagesModel.deleteUserMessages(userId) == null ||
+                await BlocksModel.deleteUserBlocks(userId) == null ||
+                await LikesModel.deleteUserLikes(userId) == null ||
+                await ReportsModel.deleteUserReports(userId) == null ||
+                await ViewsModel.deleteUserViews(userId) == null ||
+                await TagsModel.deleteUserTags(userId) == null) {
+                res.status(500).json({ error: 'Internal Server Error' });
+                return ;
+            }
+            const userIdReturn = await this.model.delete(userId);
+            res.status(201).json({ message: 'User deleted', userIdReturn });
+            return ;
+
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -174,12 +189,8 @@ class UserController extends BaseController {
         return true;
     }
 
-    async _checkCompleteSignUpInformations(username, gender, sexual_preferences, biography, picture_1, picture_2, picture_3, picture_4, picture_5) {
-        var checkReturn = this._checkString(username, 'Username', 25, /^[a-zA-Z0-9_-]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        checkReturn = this._checkString(gender, 'Gender', 10, /^[0-9a-zA-Z+ ]+$/);
+    async _checkCompleteSignUpInformations(gender, sexual_preferences, biography, picture_1, picture_2, picture_3, picture_4, picture_5) {
+        var checkReturn = this._checkString(gender, 'Gender', 10, /^[0-9a-zA-Z+ ]+$/);
         if (checkReturn != true) {
             return checkReturn;
         }
@@ -191,13 +202,8 @@ class UserController extends BaseController {
         if (checkReturn != true) {
             return checkReturn;
         }
-        if (await this.model.findByUsername(username) == null) {
-            return "Username doesn't exist";
-        }
         return true;
     }
-
-    // Add more controller methods here like update, delete...
 }
 
 module.exports = new UserController();

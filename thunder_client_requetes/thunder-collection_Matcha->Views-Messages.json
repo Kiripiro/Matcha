@@ -1,0 +1,212 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Matcha->Views-Messages",
+    "dateExported": "2023-10-04T11:59:41.669Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "3b8f3ff9-5fa0-41f0-bc94-039f0f06f185",
+            "name": "Views",
+            "containerId": "",
+            "created": "2023-10-04T11:50:36.439Z",
+            "sortNum": 5000
+        },
+        {
+            "_id": "c9269fe8-fce3-42d8-9bb2-47b2b1a88716",
+            "name": "Messages",
+            "containerId": "",
+            "created": "2023-10-04T08:15:34.299Z",
+            "sortNum": 10000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "c7074f59-d7be-4589-a1e9-f87f280c740b",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "c9269fe8-fce3-42d8-9bb2-47b2b1a88716",
+            "name": "messages/create",
+            "url": "http://10.13.200.185:3000/messages/create",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-10-04T08:15:34.302Z",
+            "modified": "2023-10-04T11:52:46.211Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"author_id\": \"5\",\n  \"recipient_id\": 6,\n  \"message\": \"Oh sur pepe j'suis pete\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "03b28fce-770f-4806-8d2a-0dea2bdee50c",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "3b8f3ff9-5fa0-41f0-bc94-039f0f06f185",
+            "name": "views/create",
+            "url": "http://10.13.200.185:3000/views/create",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2023-10-04T11:51:29.309Z",
+            "modified": "2023-10-04T11:55:23.913Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"author_id\": \"6\",\n  \"recipient_id\": \"5\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "2c0c19ce-6b67-4309-bd54-47b431c0d4e9",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "c9269fe8-fce3-42d8-9bb2-47b2b1a88716",
+            "name": "messages/delete",
+            "url": "http://10.13.200.185:3000/messages/delete",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-10-04T08:15:34.302Z",
+            "modified": "2023-10-04T10:53:24.011Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"id\": \"1\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "3ab919cd-7722-4495-bcb6-b97d31d42828",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "3b8f3ff9-5fa0-41f0-bc94-039f0f06f185",
+            "name": "views/delete",
+            "url": "http://10.13.200.185:3000/views/delete",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-10-04T11:50:36.441Z",
+            "modified": "2023-10-04T11:51:52.621Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"id\": \"1\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "44d09f8b-97cc-4d4b-a5db-dbe42f98dfd6",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "c9269fe8-fce3-42d8-9bb2-47b2b1a88716",
+            "name": "messages/:id",
+            "url": "http://10.13.200.185:3000/messages/2",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2023-10-04T08:15:34.302Z",
+            "modified": "2023-10-04T10:53:38.872Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "9c7dfd69-5d9f-46a5-b5ac-d8cf81eb421a",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "3b8f3ff9-5fa0-41f0-bc94-039f0f06f185",
+            "name": "views/:id",
+            "url": "http://10.13.200.185:3000/views/22",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2023-10-04T11:50:36.441Z",
+            "modified": "2023-10-04T11:52:03.756Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "3528f8a2-6c2b-48df-b5db-c0eb8e6e7aa2",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "c9269fe8-fce3-42d8-9bb2-47b2b1a88716",
+            "name": "messages/author/:id",
+            "url": "http://10.13.200.185:3000/messages/author/2",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2023-10-04T08:15:34.302Z",
+            "modified": "2023-10-04T10:53:49.396Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "9e18699e-518a-4db6-986d-4927542e697a",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "3b8f3ff9-5fa0-41f0-bc94-039f0f06f185",
+            "name": "views/author/:id",
+            "url": "http://10.13.200.185:3000/views/author/1",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2023-10-04T11:50:36.441Z",
+            "modified": "2023-10-04T11:52:10.982Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "bb4694c2-f7ed-48ea-ac56-a5df201d90f9",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "c9269fe8-fce3-42d8-9bb2-47b2b1a88716",
+            "name": "messages/recipient/:id",
+            "url": "http://10.13.200.185:3000/messages/recipient/3",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-10-04T08:15:34.302Z",
+            "modified": "2023-10-04T10:53:59.517Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "8f2fdfc1-a6ba-4412-a567-5b66ccdfa12d",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "3b8f3ff9-5fa0-41f0-bc94-039f0f06f185",
+            "name": "views/recipient/:id",
+            "url": "http://10.13.200.185:3000/views/recipient/2",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-10-04T11:50:36.441Z",
+            "modified": "2023-10-04T11:52:29.092Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "8555560d-ae51-4f0d-b641-7ba7b4a46b41",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "c9269fe8-fce3-42d8-9bb2-47b2b1a88716",
+            "name": "messages/:authorId/:recipientId",
+            "url": "http://10.13.200.185:3000/messages/2/3",
+            "method": "GET",
+            "sortNum": 60000,
+            "created": "2023-10-04T08:15:34.302Z",
+            "modified": "2023-10-04T10:56:09.062Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "6f042614-bcc3-4f9d-bec6-585ab93b1df4",
+            "colId": "9d47d5b9-8e9f-4923-9191-0b6c01789859",
+            "containerId": "3b8f3ff9-5fa0-41f0-bc94-039f0f06f185",
+            "name": "views/:authorId/:recipientId",
+            "url": "http://10.13.200.185:3000/views/1/2",
+            "method": "GET",
+            "sortNum": 60000,
+            "created": "2023-10-04T11:50:36.441Z",
+            "modified": "2023-10-04T11:52:38.671Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        }
+    ]
+}

@@ -13,5 +13,10 @@ class TagsModel extends BaseModel {
         }
         return false;
     }
+
+    async deleteUserTags(userId) {
+        const count = await this.deleteMultipleOrConditions(["owner_id"], [userId]);
+        return count;
+    }
 }
 module.exports = new TagsModel();

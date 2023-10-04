@@ -43,6 +43,21 @@ class BaseModel {
         return rows;
     }
 
+    async deleteMultipleOrConditions(conditions, values) {
+        if (conditions.length <= 0)
+            return null;
+        var sql = `DELETE FROM ${this.tableName} WHERE`;
+        for (var i = 0; i < (conditions.length - 1); i++) {
+            sql = sql.concat(` ` + conditions[i] + ` = ? OR`);
+        }
+        sql = sql.concat(` ` + conditions[(conditions.length - 1)] + ` = ?`);
+        const rows = await this._query(sql, values);
+        if (!rows || !rows[0] == undefined || rows[0].affectedRows == undefined) {
+            return null;
+        }
+        return rows[0].affectedRows;
+    }
+
     async findById(id) {
         return await this.findOne('id', [id]);
     }

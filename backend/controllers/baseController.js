@@ -57,7 +57,12 @@ class BaseController {
         }
     }
 
-    // Add more common controller methods here
+    _getTimestampString() {
+        const date = new Date();
+        const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        const dateString = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + time;
+        return dateString;
+      }
 }
 
 module.exports = BaseController;

@@ -2,7 +2,6 @@ const express = require('express');
 const UserController = require('../controllers/userController');
 const router = express.Router();
 
-// Example routes for userController - not used in the project yet
 router.post('/register', async (req, res) => {
     try {
         await UserController.createUser(req, res);

@@ -5,6 +5,11 @@ const UserController = require('./controllers/userController');
 
 const userRouter = require('./router/userRouter');
 const tagsRouter = require('./router/tagsRouter');
+const blocksRouter = require('./router/blocksRouter');
+const likesRouter = require('./router/likesRouter');
+const reportsRouter = require('./router/reportsRouter');
+const viewsRouter = require('./router/viewsRouter');
+const messagesRouter = require('./router/messagesRouter');
 
 require('dotenv').config();
 
@@ -20,8 +25,12 @@ app.use(express.json());
 
 // Examples of GET & POST requests to test DB connection - use routes instead
 app.use("/users", userRouter);
-
 app.use("/tags", tagsRouter);
+app.use("/blocks", blocksRouter);
+app.use("/likes", likesRouter);
+app.use("/reports", reportsRouter);
+app.use("/views", viewsRouter);
+app.use("/messages", messagesRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello, Express!');
