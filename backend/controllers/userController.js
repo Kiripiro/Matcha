@@ -6,6 +6,8 @@ const LikesModel = require('../models/likesModel');
 const ReportsModel = require('../models/reportsModel');
 const TagsModel = require('../models/tagsModel');
 const ViewsModel = require('../models/viewsModel');
+const jwt = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
 
 class UserController extends BaseController {
     constructor() {
@@ -24,12 +26,14 @@ class UserController extends BaseController {
                 userData.age || 0);
             if (checkReturn != true) {
                 res.status(400).json({ error: checkReturn });
-                return ;
+                return;
             }
+
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
             const data = {
                 "username": userData.username,
                 "email": userData.email,
-                "password": userData.password,
+                "password": hashedPassword,
                 "first_name": userData.first_name,
                 "last_name": userData.last_name,
                 "age": userData.age,
@@ -37,7 +41,56 @@ class UserController extends BaseController {
                 "location_permission": 0
             };
             const userId = await this.model.create(data);
+            res.cookie('token', this._generateToken(userId), { httpOnly: true, maxAge: 3600000 });
             res.status(201).json({ message: 'User created', userId });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async login(req, res) {
+        try {
+            const { email, password } = req.body;
+            const user = await UserModel.findByEmail(email);
+
+            if (!user) {
+                res.status(401).json({ error: 'Invalid credentials' });
+                return;
+            }
+
+            const passwordMatch = await bcrypt.compare(password, user.password);
+            if (!passwordMatch) {
+                res.status(401).json({ error: 'Invalid credentials' });
+                return;
+            }
+
+            const token = this._generateToken(user.id);
+
+            const data = {
+                "id": user.id,
+                "username": user.username,
+                "fist_name": user.first_name,
+                "last_name": user.last_name,
+                "age": user.age,
+                "token": user.token,
+                "email_checked": user.email_checked,
+                "gender": user.gender,
+                "sexual_preferences": user.sexual_preferences,
+                "biography": user.biography,
+                "picture_1": user.picture_1,
+                "picture_2": user.picture_2,
+                "picture_3": user.picture_3,
+                "picture_4": user.picture_4,
+                "picture_5": user.picture_5,
+                "fame_rating": user.fame_rating,
+                "location_permission": user.location_permission,
+                "last_connection": user.last_connection,
+                "created_at": user.created_at
+            };
+
+            res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
+            res.status(200).json({ message: 'Login successful', user: data });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -50,7 +103,7 @@ class UserController extends BaseController {
             const userId = this._checkPositiveInteger(userData.id);
             if (userId < 0) {
                 res.status(400).json({ error: 'User id is incorrect' });
-                return ;
+                return;
             }
             const checkReturn = await this._checkCompleteSignUpInformations(
                 userData.gender || '',
@@ -63,7 +116,7 @@ class UserController extends BaseController {
                 userData.picture_5 || '');
             if (checkReturn != true) {
                 res.status(400).json({ error: checkReturn });
-                return ;
+                return;
             }
             const data = {
                 "gender": userData.gender,
@@ -77,7 +130,7 @@ class UserController extends BaseController {
             };
             if (await this.checkById(userId)) {
                 const userIdReturn = await this.model.update(userId, data);
-                res.status(201).json({ message: 'User updated', userIdReturn });
+                res.status(200).json({ message: 'User updated', userIdReturn });
             } else {
                 res.status(400).json({ error: 'User id is incorrect' });
             }
@@ -93,11 +146,11 @@ class UserController extends BaseController {
             const userId = this._checkPositiveInteger(userData.id || '');
             if (userId < 0) {
                 res.status(400).json({ error: 'User id is incorrect' });
-                return ;
+                return;
             }
             if (!await this.checkById(userId)) {
                 res.status(400).json({ error: 'User id is incorrect' });
-                return ;
+                return;
 
             }
             if (await MessagesModel.deleteUserMessages(userId) == null ||
@@ -107,11 +160,11 @@ class UserController extends BaseController {
                 await ViewsModel.deleteUserViews(userId) == null ||
                 await TagsModel.deleteUserTags(userId) == null) {
                 res.status(500).json({ error: 'Internal Server Error' });
-                return ;
+                return;
             }
             const userIdReturn = await this.model.delete(userId);
             res.status(201).json({ message: 'User deleted', userIdReturn });
-            return ;
+            return;
 
         } catch (error) {
             console.log('error = ' + error);
@@ -124,12 +177,12 @@ class UserController extends BaseController {
             const userId = this._checkPositiveInteger(req.params.id || '');
             if (userId < 0) {
                 res.status(400).json({ error: 'User id is incorrect' });
-                return ;
+                return;
             }
             const user = await this.model.findById(userId);
             if (!user) {
                 res.status(404).json({ error: 'User not found' })
-                return ;
+                return;
             } else {
                 const userReturn = {
                     "username": user.username || '',
@@ -138,7 +191,7 @@ class UserController extends BaseController {
                     "age": user.age || '',
                     "gender": user.gender || '',
                     "sexual_preferences": user.sexual_preferences || '',
-                    "biography":  user.biography || '',
+                    "biography": user.biography || '',
                     "picture_1": user.picture_1 || '',
                     "picture_2": user.picture_2 || '',
                     "picture_3": user.picture_3 || '',
@@ -150,6 +203,20 @@ class UserController extends BaseController {
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
+
+    _generateToken(userId) {
+        const secretKey = process.env.JWT_SECRET;
+        const expiresIn = '1h';
+
+        const payload = {
+            userId: userId,
+            iat: Date.now()
+        };
+
+        const token = jwt.sign(payload, secretKey, { expiresIn });
+
+        return token;
     }
 
     async _checkSignUpInformations(username, email, password, first_name, last_name, age) {

@@ -62,7 +62,7 @@ class BaseController {
         const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         const dateString = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + time;
         return dateString;
-      }
+    }
 }
 
 module.exports = BaseController;
