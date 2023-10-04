@@ -24,7 +24,9 @@ const createUsersTable = () => {
         first_name VARCHAR(255) NOT NULL, 
         last_name VARCHAR(255) NOT NULL, 
         age INT NOT NULL, 
-        token VARCHAR(255), 
+        token VARCHAR(255),
+        token_creation TIMESTAMP,
+        token_expiration TIMESTAMP,
         email_checked BOOLEAN NOT NULL, 
         gender VARCHAR(255), 
         sexual_preferences VARCHAR(255), 
@@ -132,7 +134,12 @@ const runMigrations = () => {
             createMessagesTable();
 
             fs.appendFileSync(migrationsLockFile, 'createUsersTable\n');
-            fs.appendFileSync(migrationsLockFile, 'createPostsTable\n');
+            fs.appendFileSync(migrationsLockFile, 'createTagsTable\n');
+            fs.appendFileSync(migrationsLockFile, 'createViewsTable\n');
+            fs.appendFileSync(migrationsLockFile, 'createLikesTable\n');
+            fs.appendFileSync(migrationsLockFile, 'createReportsTable\n');
+            fs.appendFileSync(migrationsLockFile, 'createBlocksTable\n');
+            fs.appendFileSync(migrationsLockFile, 'createMessagesTable\n');
         } catch (error) {
             console.error('Error running migrations:', error);
         }

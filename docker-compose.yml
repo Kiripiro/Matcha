@@ -16,6 +16,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    environment:
+      - TZ=Europe/Paris
 
   # Angular Service
   angular:
@@ -29,6 +31,8 @@ services:
       - ./frontend:/app
     depends_on:
       - mysql
+    environment:
+      - TZ=Europe/Paris
 
   # MySQL Service
   mysql:
@@ -40,6 +44,7 @@ services:
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=Europe/Paris
     ports:
       - 3306:3306
     volumes:
@@ -63,6 +68,8 @@ services:
     container_name: adminer
     volumes:
       - adminerdata:/var/lib/adminer
+    environment:
+      - TZ=Europe/Paris
 
 volumes:
   mysqldata:

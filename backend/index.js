@@ -12,6 +12,7 @@ const viewsRouter = require('./router/viewsRouter');
 const messagesRouter = require('./router/messagesRouter');
 
 require('dotenv').config();
+require('./config/checkEnv');
 
 const app = express();
 const port = process.env.NODE_PORT;

@@ -8,6 +8,7 @@ const TagsModel = require('../models/tagsModel');
 const ViewsModel = require('../models/viewsModel');
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid')
 
 class UserController extends BaseController {
     constructor() {
@@ -30,6 +31,7 @@ class UserController extends BaseController {
             }
 
             const hashedPassword = await bcrypt.hash(userData.password, 10);
+            const refreshToken = uuidv4();
             const data = {
                 "username": userData.username,
                 "email": userData.email,
@@ -38,10 +40,14 @@ class UserController extends BaseController {
                 "last_name": userData.last_name,
                 "age": userData.age,
                 "email_checked": 0,
-                "location_permission": 0
+                "location_permission": 0,
+                "token": refreshToken,
+                "token_creation": this._getTimestampString(),
+                "token_expiration": this._getTimestampString(1)
             };
             const userId = await this.model.create(data);
-            res.cookie('token', this._generateToken(userId), { httpOnly: true, maxAge: 3600000 });
+            res.cookie('accessToken', this._generateToken(userId), { httpOnly: true, maxAge: 900000 });
+            res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 86400000 });
             res.status(201).json({ message: 'User created', userId });
         } catch (error) {
             console.log('error = ' + error);
@@ -65,7 +71,7 @@ class UserController extends BaseController {
                 return;
             }
 
-            const token = this._generateToken(user.id);
+            const accessToken = this._generateToken(user.id);
 
             const data = {
                 "id": user.id,
@@ -89,8 +95,40 @@ class UserController extends BaseController {
                 "created_at": user.created_at
             };
 
-            res.cookie('token', token, { httpOnly: true, maxAge: 3600000 });
+            res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 3600000 });
+            res.cookie('refreshToken', user.token, { httpOnly: true, maxAge: 86400000 });
             res.status(200).json({ message: 'Login successful', user: data });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async refreshToken(req, res) {
+        try {
+            //change to req.cookies.refreshToken but unable to run the tests in Thunder Client with cookies yet
+            const refreshToken = req.body.refreshToken;
+            if (!refreshToken) {
+                res.status(401).json({ error: 'Refresh token missing' });
+                return;
+            }
+            const user = await this.model.findByToken(refreshToken);
+
+            if (!user) {
+                res.status(401).json({ error: 'Invalid refresh token' });
+                return;
+            }
+
+            const tokenExpiration = new Date(user.token_expiration);
+            const now = new Date();
+            if (tokenExpiration < now) {
+                res.status(401).json({ error: 'Refresh token expired' });
+                return;
+            }
+
+            const accessToken = this._generateToken(user.id);
+            res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 900000 });
+            res.status(200).json({ message: 'Access token refreshed' });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -99,8 +137,8 @@ class UserController extends BaseController {
 
     async updateInfos(req, res) {
         try {
+            const userId = this._checkPositiveInteger(req.user.userId);
             const userData = req.body;
-            const userId = this._checkPositiveInteger(userData.id);
             if (userId < 0) {
                 res.status(400).json({ error: 'User id is incorrect' });
                 return;
@@ -207,14 +245,24 @@ class UserController extends BaseController {
 
     _generateToken(userId) {
         const secretKey = process.env.JWT_SECRET;
-        const expiresIn = '1h';
+        const expiresInMinutes = Number(process.env.JWT_EXPIRES_IN);
 
+        if (!secretKey || !expiresInMinutes) {
+            throw new Error('JWT configuration error');
+        }
+
+        const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+        const expirationTimeInSeconds = currentTimeInSeconds + expiresInMinutes * 60;
+
+        console.log(userId);
         const payload = {
             userId: userId,
-            iat: Date.now()
+            iat: currentTimeInSeconds,
+            exp: expirationTimeInSeconds
         };
 
-        const token = jwt.sign(payload, secretKey, { expiresIn });
+        console.log(payload);
+        const token = jwt.sign(payload, secretKey);
 
         return token;
     }

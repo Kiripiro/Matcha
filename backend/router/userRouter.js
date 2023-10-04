@@ -19,6 +19,14 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.post('/refreshToken', async (req, res) => {
+    try {
+        await UserController.refreshToken(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 router.post('/updateInfos', auth, async (req, res) => {
     try {
         await UserController.updateInfos(req, res);

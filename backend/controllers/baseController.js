@@ -57,10 +57,13 @@ class BaseController {
         }
     }
 
-    _getTimestampString() {
+    _getTimestampString(nextDays = 0) {
         const date = new Date();
+
+        date.setDate(date.getDate() + nextDays);
         const time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
         const dateString = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + time;
+
         return dateString;
     }
 }

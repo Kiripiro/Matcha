@@ -16,6 +16,11 @@ class UserModel extends BaseModel {
         return user;
     }
 
+    async findByToken(token) {
+        const user = await super.findOne('token', token);
+        return user;
+    }
+
     // Add more model-specific methods here,like update, delete...
 }
 module.exports = new UserModel();
