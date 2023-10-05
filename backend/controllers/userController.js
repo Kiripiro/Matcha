@@ -106,7 +106,7 @@ class UserController extends BaseController {
 
     async refreshToken(req, res) {
         try {
-            //change to req.cookies.refreshToken but unable to run the tests in Thunder Client with cookies yet
+            //change to req.cookies.refreshToken but unable to run the tests in Thunder Client with cookies yet.
             const refreshToken = req.body.refreshToken;
             if (!refreshToken) {
                 res.status(401).json({ error: 'Refresh token missing' });
