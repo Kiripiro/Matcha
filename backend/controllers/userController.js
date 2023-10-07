@@ -18,15 +18,12 @@ class UserController extends BaseController {
     async createUser(req, res) {
         try {
             const userData = req.body;
-            const checkReturn = await this._checkSignUpInformations(
-                userData.username || '',
-                userData.email || '',
-                userData.password || '',
-                userData.first_name || '',
-                userData.last_name || '',
-                userData.age || 0);
-            if (checkReturn != true) {
-                res.status(400).json({ error: checkReturn });
+            if (await this.model.findByUsername(userData.username) != null) {
+                res.status(400).json({ error: 'Username already in use' });
+                return;
+            }
+            if (await this.model.findByEmail(userData.email) != null) {
+                res.status(400).json({ error: 'Email already in use' });
                 return;
             }
 
@@ -55,6 +52,7 @@ class UserController extends BaseController {
         }
     }
 
+    // Don't forget to implement send email verification
     async login(req, res) {
         try {
             const { email, password } = req.body;
@@ -106,14 +104,12 @@ class UserController extends BaseController {
 
     async refreshToken(req, res) {
         try {
-            //change to req.cookies.refreshToken but unable to run the tests in Thunder Client with cookies yet.
-            const refreshToken = req.body.refreshToken;
+            const refreshToken = this._parseCookie(req, 'refreshToken');
             if (!refreshToken) {
                 res.status(401).json({ error: 'Refresh token missing' });
                 return;
             }
             const user = await this.model.findByToken(refreshToken);
-
             if (!user) {
                 res.status(401).json({ error: 'Invalid refresh token' });
                 return;
@@ -137,25 +133,9 @@ class UserController extends BaseController {
 
     async updateInfos(req, res) {
         try {
-            const userId = this._checkPositiveInteger(req.user.userId);
+            const userId = req.user.userId;
+            // const userId = this._checkPositiveInteger(req.body.id);
             const userData = req.body;
-            if (userId < 0) {
-                res.status(400).json({ error: 'User id is incorrect' });
-                return;
-            }
-            const checkReturn = await this._checkCompleteSignUpInformations(
-                userData.gender || '',
-                userData.sexual_preferences || '',
-                userData.biography || '',
-                userData.picture_1 || '',
-                userData.picture_2 || '',
-                userData.picture_3 || '',
-                userData.picture_4 || '',
-                userData.picture_5 || '');
-            if (checkReturn != true) {
-                res.status(400).json({ error: checkReturn });
-                return;
-            }
             const data = {
                 "gender": userData.gender,
                 "sexual_preferences": userData.sexual_preferences,
@@ -212,12 +192,7 @@ class UserController extends BaseController {
 
     async getUserById(req, res) {
         try {
-            const userId = this._checkPositiveInteger(req.params.id || '');
-            if (userId < 0) {
-                res.status(400).json({ error: 'User id is incorrect' });
-                return;
-            }
-            const user = await this.model.findById(userId);
+            const user = await this.model.findById(req.params.id);
             if (!user) {
                 res.status(404).json({ error: 'User not found' })
                 return;
@@ -254,70 +229,29 @@ class UserController extends BaseController {
         const currentTimeInSeconds = Math.floor(Date.now() / 1000);
         const expirationTimeInSeconds = currentTimeInSeconds + expiresInMinutes * 60;
 
-        console.log(userId);
         const payload = {
             userId: userId,
             iat: currentTimeInSeconds,
             exp: expirationTimeInSeconds
         };
 
-        console.log(payload);
         const token = jwt.sign(payload, secretKey);
 
         return token;
     }
 
-    async _checkSignUpInformations(username, email, password, first_name, last_name, age) {
-        var checkReturn = this._checkString(username, 'Username', 25, /^[a-zA-Z0-9_-]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
+    _parseCookie(req, toFind) {
+        const cookies = req.headers.cookie;
+        if (cookies) {
+            const cookieArray = cookies.split(';');
+            for (let i = 0; i < cookieArray.length; i++) {
+                const cookie = cookieArray[i].split('=');
+                if (cookie[0].trim() === toFind) {
+                    return cookie[1];
+                }
+            }
         }
-        checkReturn = this._checkString(email, 'Email', 50, /^[0-9a-zA-Z@._-]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        checkReturn = this._checkString(password, 'Password', 25, /^[a-zA-Z0-9.$_-]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        checkReturn = this._checkString(first_name, 'First name', 25, /^[a-zA-Z- ]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        checkReturn = this._checkString(last_name, 'Last name', 25, /^[a-zA-Z- ]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        age = this._checkPositiveInteger(age);
-        if (age <= 0 || age > 150) {
-            return 'Age is incorrect';
-        }
-        if (age < 18) {
-            return 'Age is incorrect: you are too young';
-        }
-        if (await this.model.findByUsername(username) != null) {
-            return 'Username already in use';
-        }
-        if (await this.model.findByEmail(email) != null) {
-            return 'Email already in use';
-        }
-        return true;
-    }
-
-    async _checkCompleteSignUpInformations(gender, sexual_preferences, biography, picture_1, picture_2, picture_3, picture_4, picture_5) {
-        var checkReturn = this._checkString(gender, 'Gender', 10, /^[0-9a-zA-Z+ ]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        checkReturn = this._checkString(sexual_preferences, 'Sexual preferences', 10, /^[0-9a-zA-Z+ ]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        checkReturn = this._checkString(biography, 'Biography', 400, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/ ]+$/);
-        if (checkReturn != true) {
-            return checkReturn;
-        }
-        return true;
+        return null;
     }
 }
 
