@@ -77,7 +77,6 @@ class UserController extends BaseController {
                 "fist_name": user.first_name,
                 "last_name": user.last_name,
                 "age": user.age,
-                "token": user.token,
                 "email_checked": user.email_checked,
                 "gender": user.gender,
                 "sexual_preferences": user.sexual_preferences,

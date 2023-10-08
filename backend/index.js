@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const migrationRunner = require('./config/database/migrationRunner');
-const UserController = require('./controllers/userController');
+const cors = require('cors');
 
 const userRouter = require('./router/userRouter');
 const tagsRouter = require('./router/tagsRouter');
@@ -22,6 +22,13 @@ if (!fs.existsSync('./config/database/migrations.lock')) {
     migrationRunner.runMigrations();
 }
 
+var corsOptions = {
+    origin: 'http://localhost:4200',
+    credentials: true,
+    optionsSuccessStatus: 200
+}
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Examples of GET & POST requests to test DB connection - use routes instead
