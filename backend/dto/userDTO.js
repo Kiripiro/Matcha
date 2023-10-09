@@ -31,17 +31,16 @@ class UserDTO extends baseValidator {
         return this.isValid();
     }
 
-    login(email, password) {
-        super.fieldIsRequired('email', email);
+    login(username, password) {
+        super.fieldIsRequired('username', username);
         super.fieldIsRequired('password', password);
 
         if (this.isValid()) {
-            super.validateString('email', email, 5, 50, /^[0-9a-zA-Z@._-]+$/);
+            super.validateString('username', username, 3, 25, /^[a-zA-Z0-9_-]+$/);
             super.validateString('password', password, 8, 25);
         }
 
         if (this.isValid()) {
-            super.validateEmail('email', email);
             super.validatePassword('password', password);
         }
 

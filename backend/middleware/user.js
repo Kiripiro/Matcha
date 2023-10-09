@@ -16,9 +16,9 @@ createUserValidation = (req, res, next) => {
 
 loginValidation = (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
         const userDTO = new UserDTO();
-        const isValid = userDTO.login(email, password);
+        const isValid = userDTO.login(username, password);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }

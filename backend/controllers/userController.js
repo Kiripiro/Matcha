@@ -55,8 +55,8 @@ class UserController extends BaseController {
     // Don't forget to implement send email verification
     async login(req, res) {
         try {
-            const { email, password } = req.body;
-            const user = await UserModel.findByEmail(email);
+            const { username, password } = req.body;
+            const user = await UserModel.findByUsername(username);
 
             if (!user) {
                 res.status(401).json({ error: 'Invalid credentials' });

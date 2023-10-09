@@ -1,0 +1,71 @@
+$background: #878FD4;
+// $navbar: white;
+$primary: white;
+$onPrimary: #232528;
+$surface: #3F51B5;
+$onSurface: white;
+$onPrimaryAlt: #626262;
+// $title: #3F51B5;
+
+* {
+    font-family: Montserrat;
+}
+
+p {
+    color: $onPrimary;
+}
+
+.centerDiv {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    font-size: 2.0rem;
+    font-weight: 600;
+    color: $surface;
+    margin-bottom: 2.5rem;
+}
+
+button {
+    background-color: $surface;
+}
+
+.formCard {
+    height: fit-content;
+    width: 350px;
+    background-color: $primary;
+    border-radius: 20px;
+    padding: 2rem;
+
+    @media (max-width:700px){
+        width: 300px;
+    }
+
+    @media (max-width:400px){
+        width: 200px;
+    }
+
+    @media (max-width:300px){
+        width: 150px;
+    }
+
+    .form-field {
+        width: 100%;
+    }
+
+    .withHint {
+        margin-bottom: 0.5rem;
+    }
+
+    .hint {
+        color: $onPrimaryAlt;
+        @media (max-width:300px){
+            font-size: 0.6rem;
+        }
+    }
+}

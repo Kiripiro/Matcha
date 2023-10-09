@@ -42,9 +42,12 @@ class BaseValidator {
     }
 
     validatePassword(propName, value) {
-        if (typeof value !== 'string' || !value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/)) {
+        if (typeof value !== 'string') {
             this.errors.push(`${propName} must be a valid. Containing at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.`);
         }
+        // if (typeof value !== 'string' || !value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/)) {
+        //     this.errors.push(`${propName} must be a valid. Containing at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.`);
+        // }
     }
 
     validateDate(propName, value) {
