@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,6 +14,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
@@ -24,21 +26,8 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     const { username, password } = this.loginForm.value;
-    console.log(username, password);
-    console.log(this.loginForm.valid);
     if (this.loginForm.valid) {
-      this.http.post('http://localhost:3000/users/login', { username, password }, { withCredentials: true })
-        .subscribe({
-          next: (response) => {
-            console.log('Login successful:', response);
-          },
-          error: (error) => {
-            console.error('Login failed:', error);
-          },
-          complete: () => {
-            this.loginForm.reset();
-          }
-        });
+      this.authService.login(username, password);
     }
   }
 }

@@ -28,6 +28,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
     ])
-  ]
+  ],
+  providers: [],
 })
 export class AuthModule { }

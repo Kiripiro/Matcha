@@ -1,4 +1,5 @@
 const BaseController = require('./baseController');
+const InvalidTokensController = require('./invalidTokenController');
 const UserModel = require('../models/userModel');
 const MessagesModel = require('../models/messagesModel');
 const BlocksModel = require('../models/blocksModel');
@@ -45,7 +46,15 @@ class UserController extends BaseController {
             const userId = await this.model.create(data);
             res.cookie('accessToken', this._generateToken(userId), { httpOnly: true, maxAge: 900000 });
             res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 86400000 });
-            res.status(201).json({ message: 'User created', userId });
+            const returnData = {
+                "username": userData.username,
+                "email": userData.email,
+                "first_name": userData.first_name,
+                "last_name": userData.last_name,
+                "age": userData.age,
+                "location_permission": 0
+            };
+            res.status(201).json({ message: 'User created', user: returnData });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -70,9 +79,13 @@ class UserController extends BaseController {
             }
 
             const accessToken = this._generateToken(user.id);
-
+            const refreshToken = uuidv4();
+            const dataToUpdate = {
+                "token": refreshToken
+            };
+            const userIdReturn = await this.model.update(user.id, dataToUpdate);
+            
             const data = {
-                "id": user.id,
                 "username": user.username,
                 "fist_name": user.first_name,
                 "last_name": user.last_name,
@@ -91,10 +104,37 @@ class UserController extends BaseController {
                 "last_connection": user.last_connection,
                 "created_at": user.created_at
             };
-
             res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 3600000 });
-            res.cookie('refreshToken', user.token, { httpOnly: true, maxAge: 86400000 });
+            res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 86400000 });
             res.status(200).json({ message: 'Login successful', user: data });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async logout(req, res) {
+        try {
+            const accessToken = this._parseCookie(req, 'accessToken');
+            if (!accessToken) {
+                res.status(401).json({ error: 'Access token missing' });
+                return;
+            }
+            const refreshToken = this._parseCookie(req, 'refreshToken');
+            if (!refreshToken) {
+                res.status(401).json({ error: 'Refresh token missing' });
+                return;
+            }
+            const invalidToken = await InvalidTokensController.addInvalidToken(accessToken, refreshToken);
+            console.log("invalidToken = " + invalidToken);
+            if (invalidToken) {
+                res.clearCookie('accessToken');
+                res.clearCookie('refreshToken');
+                res.status(200).json({ message: 'Logout successful' });
+            } else {
+                console.log('error = ' + error);
+                res.status(500).json({ error: 'Internal Server Error' });
+            }
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -233,7 +273,6 @@ class UserController extends BaseController {
             iat: currentTimeInSeconds,
             exp: expirationTimeInSeconds
         };
-
         const token = jwt.sign(payload, secretKey);
 
         return token;

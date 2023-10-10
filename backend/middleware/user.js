@@ -28,6 +28,15 @@ loginValidation = (req, res, next) => {
     }
 };
 
+//add last connection
+logoutValidation = (req, res, next) => {
+    try {
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 // Manage pictures if needed here
 updateInfosValidation = (req, res, next) => {
     try {
@@ -62,6 +71,7 @@ getUserByIdValidation = (req, res, next) => {
 module.exports = {
     createUserValidation,
     loginValidation,
+    logoutValidation,
     updateInfosValidation,
     getUserByIdValidation
 };

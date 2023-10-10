@@ -1,22 +1,32 @@
 import { Component, OnInit } from '@angular/core';
-import { CookiesService } from '../../services/cookies.service';
 
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.scss', '../app.component.scss']
+  styleUrls: ['./nav-bar.component.scss', '../app.component.scss'],
 })
 export class NavBarComponent implements OnInit {
 
-  constructor(private cookiesService: CookiesService) {}
-  ngOnInit(): void {
-    console.log("AAAAA");
-    const cookie = this.cookiesService.getCookie("accessToken");
-    console.log(cookie);
-    if (this.cookiesService.getCookie("accessToken") != null) {
-      console.log("TEEEEEEEEEEEEST");
+  isLoggedIn = false;
+
+  constructor(
+    private router: Router,
+    private authService: AuthService
+    ) {
+      this.authService.isLoggedEmitter.subscribe(value => {
+        this.isLoggedIn = value;
+      });
     }
+    
+  ngOnInit(): void {
+
+  }
+
+  logOut() {
+    this.authService.logout();
   }
 
 }

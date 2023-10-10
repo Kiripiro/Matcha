@@ -5,4 +5,27 @@
     width: 100%;
     background-color: $primary;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+
+    button {
+        border-radius: 8px;
+        margin-left: 1.5rem;
+        font-size: 1.3rem;
+        font-weight: 500;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+        padding-left: 1.0rem;
+        padding-right: 1.0rem;
+    }
+
+    .primaryButton {
+        background-color: $surface;
+        color: white;
+    }
+    
+    .secondaryButton {
+        background-color: $onPrimaryAlt;
+        color: white;
+    }
 }

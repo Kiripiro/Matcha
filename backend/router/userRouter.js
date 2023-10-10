@@ -20,6 +20,14 @@ router.post('/login', user.loginValidation, async (req, res) => {
     }
 });
 
+router.post('/logout', auth, user.logoutValidation, async (req, res) => {
+    try {
+        await UserController.logout(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 router.post('/refreshToken', async (req, res) => {
     try {
         await UserController.refreshToken(req, res);

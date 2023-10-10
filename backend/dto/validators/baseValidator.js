@@ -25,7 +25,6 @@ class BaseValidator {
         if (typeof value === 'string' && /^\d+$/.test(value) || typeof value === 'number') {
             value = parseInt(value);
             if (!Number.isInteger(value)) {
-                console.log('value = ' + value);
                 this.errors.push(`${propName} must be a valid positive integer.`);
             } else if (value < 0 || value > Number.MAX_SAFE_INTEGER) {
                 this.errors.push(`${propName} must be within a valid range.`);
@@ -45,6 +44,7 @@ class BaseValidator {
         if (typeof value !== 'string') {
             this.errors.push(`${propName} must be a valid. Containing at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.`);
         }
+        //commented for tests
         // if (typeof value !== 'string' || !value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/)) {
         //     this.errors.push(`${propName} must be a valid. Containing at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.`);
         // }

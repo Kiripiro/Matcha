@@ -1,11 +1,9 @@
 $background: #878FD4;
-// $navbar: white;
 $primary: white;
 $onPrimary: #232528;
 $surface: #3F51B5;
 $onSurface: white;
 $onPrimaryAlt: #626262;
-// $title: #3F51B5;
 
 * {
     font-family: Montserrat;
@@ -33,6 +31,16 @@ p {
 
 button {
     background-color: $surface;
+}
+
+.primaryButton {
+    background-color: $surface;
+    color: white;
+}
+
+.secondaryButton {
+    background-color: $onPrimaryAlt;
+    color: $onPrimary;
 }
 
 .formCard {

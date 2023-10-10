@@ -43,6 +43,21 @@ class BaseModel {
         return rows;
     }
 
+    async findMultipleOr(conditions, values) {
+        if (conditions.length <= 0)
+            return null;
+        var sql = `SELECT * FROM ${this.tableName} WHERE`;
+        for (var i = 0; i < (conditions.length - 1); i++) {
+            sql = sql.concat(` ` + conditions[i] + ` = ? OR`);
+        }
+        sql = sql.concat(` ` + conditions[(conditions.length - 1)] + ` = ?`);
+        const rows = await this._query(sql, values);
+        if (rows.find((row) => row).length <= 0) {
+            return null;
+        }
+        return rows;
+    }
+
     async deleteMultipleOrConditions(conditions, values) {
         if (conditions.length <= 0)
             return null;
@@ -70,7 +85,7 @@ class BaseModel {
     async create(data) {
         const sql = `INSERT INTO ${this.tableName} SET ?`;
         const result = await this._query(sql, data);
-        return result.insertId;
+        return result[0].insertId;
     }
 
     async update(id, data) {
@@ -82,7 +97,7 @@ class BaseModel {
     async delete(id) {
         const sql = `DELETE FROM ${this.tableName} WHERE id = ${id}`;
         const result = await this._query(sql);
-        return result.insertId;
+        return result[0].affectedRows;
     }
 
     // Add more common model methods here like update, delete...

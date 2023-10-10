@@ -119,6 +119,16 @@ const createMessagesTable = () => {
     createTableIfNotExists('messages', sql);
 }
 
+const createInvalidTokenTable = () => {
+    const sql = `CREATE TABLE IF NOT EXISTS invalidTokens (
+        id INT AUTO_INCREMENT PRIMARY KEY, 
+        token VARCHAR(255),
+        refresh_token VARCHAR(255)
+    )`;
+
+    createTableIfNotExists('invalidTokens', sql);
+}
+
 const runMigrations = () => {
     const migrationsLockFile = './config/database/migrations.lock';
     if (!fs.existsSync(migrationsLockFile)) {
@@ -132,6 +142,7 @@ const runMigrations = () => {
             createReportsTable();
             createBlocksTable();
             createMessagesTable();
+            createInvalidTokenTable();
 
             fs.appendFileSync(migrationsLockFile, 'createUsersTable\n');
             fs.appendFileSync(migrationsLockFile, 'createTagsTable\n');
@@ -140,6 +151,7 @@ const runMigrations = () => {
             fs.appendFileSync(migrationsLockFile, 'createReportsTable\n');
             fs.appendFileSync(migrationsLockFile, 'createBlocksTable\n');
             fs.appendFileSync(migrationsLockFile, 'createMessagesTable\n');
+            fs.appendFileSync(migrationsLockFile, 'createInvalidTokensTable\n');
         } catch (error) {
             console.error('Error running migrations:', error);
         }

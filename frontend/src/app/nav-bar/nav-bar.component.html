@@ -1,13 +1,13 @@
 <mat-toolbar id="nav-bar">
-    <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-      <mat-icon>menu</mat-icon>
-    </button> -->
-    <!-- <span>Nav Bar</span> -->
-    <!-- <span class="example-spacer"></span>
-    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-      <mat-icon>favorite</mat-icon>
-    </button>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-      <mat-icon>share</mat-icon>
-    </button> -->
+    <button mat-button class="primaryButton" [routerLink]="['']">Home</button>
+    <div id="navBar_logPart">
+      <div *ngIf="!isLoggedIn">
+        <button mat-button class="primaryButton" [routerLink]="['auth/register']">Sign up</button>
+        <button mat-button class="secondaryButton" [routerLink]="['auth/login']">Log in</button>
+      </div>
+      <div *ngIf="isLoggedIn">
+        <button mat-button class="primaryButton" [routerLink]="['']">Profil</button>
+        <button mat-button class="secondaryButton" (click)="logOut()">Log out</button>
+      </div>
+    </div>
 </mat-toolbar>
