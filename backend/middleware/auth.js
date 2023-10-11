@@ -12,7 +12,13 @@ module.exports = (req, res, next) => {
         });
 
         const accessToken = cookies.get("accessToken");
-        if (!accessToken) return res.status(403).send("Access denied.");
+        if (!accessToken) {
+            const refreshToken = cookies.get("refreshToken");
+            if (!refreshToken) {
+                return res.status(401).send("Missing refreshToken");
+            }
+            return res.status(401).send("Missing accessToken");
+        }
 
         if (!InvalidTokensController.checkInvalidAccessToken(accessToken)) {
             return res.status(403).send("Invalid token blacklisted.");

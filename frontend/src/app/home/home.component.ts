@@ -24,5 +24,8 @@ export class HomeComponent implements OnInit {
     this.username = this.localStorageService.getItem(localStorageName.username);
   }
 
+  getInfosBack() {
+    this.authService._getUserInfosBack();
+  }
 
 }

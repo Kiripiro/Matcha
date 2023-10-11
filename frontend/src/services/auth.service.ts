@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { LocalStorageService, localStorageName } from './local-storage.service';
+import { DialogService } from './dialog.service';
 
 interface RegisterResponseData {
     message: string;
@@ -43,7 +44,8 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private dialogService: DialogService
   ) {}
 
   private isLogged = new Subject<boolean>();
@@ -59,6 +61,12 @@ export class AuthService {
       username: this.localStorageService.getItem("username") || null
     }
     return data;
+  }
+
+  checkLog() {
+    if (!this.localStorageService.getItem("username"))
+      return false;
+    return true;
   }
 
   register(username: string, first_name: string, last_name: string, age: number, email: string, password: string): any {
@@ -120,10 +128,39 @@ export class AuthService {
             console.error('Registration failed:', error);
           },
           complete: () => {
-            this.localStorageService.removeAllUserItem();
-            this.router.navigate(['']);
-            this.logEmitChange(false);
+            this._frontLogOut(false);
           }
         });
+  }
+
+  _getUserInfosBack() {
+    this.http.get('http://localhost:3000/users/1', { withCredentials: true })
+        .subscribe({
+          next: (response) => {
+            console.log('get successful:', response);
+          },
+          error: (error) => {
+            console.error('get failed:', error);
+          },
+          complete: () => {
+          }
+        });
+  }
+
+  _frontLogOut(errorHasOccured: boolean) {
+    this.localStorageService.removeAllUserItem();
+    this.router.navigate(['']);
+    this.logEmitChange(false);
+    if (errorHasOccured) {
+      const dialogData = {
+        title: 'Server error',
+        text: 'An authentication error has occured, please log in again.'
+      };
+      this.dialogService.openDialog(dialogData);
+    }
+  }
+
+  refreshToken(): Observable<any> {
+    return this.http.post('http://localhost:3000/users/refreshToken', {}, { withCredentials: true });
   }
 }

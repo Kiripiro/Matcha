@@ -10,12 +10,13 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavBarComponent implements OnInit {
 
-  isLoggedIn = false;
+  isLoggedIn: boolean | undefined;
 
   constructor(
     private router: Router,
     private authService: AuthService
     ) {
+      this.isLoggedIn = this.authService.checkLog();
       this.authService.isLoggedEmitter.subscribe(value => {
         this.isLoggedIn = value;
       });

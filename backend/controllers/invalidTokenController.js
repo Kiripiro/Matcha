@@ -30,6 +30,17 @@ class InvalidTokensController extends BaseController {
         }
     }
 
+    async checkInvalidRefreshToken(refreshToken) {
+        try {
+            const item = await this.findOne("refresh_token", refreshToken);
+            if (item == null)
+                return false;
+            return true;
+            } catch (error) {
+            return false;
+        }
+    }
+
 }
 
 module.exports = new InvalidTokensController();

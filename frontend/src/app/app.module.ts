@@ -21,6 +21,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { DialogComponent } from './utils/dialog/dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogService } from 'src/services/dialog.service';
 
 
 @NgModule({
@@ -28,7 +31,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     AppComponent,
     NotFoundComponent,
     HomeComponent,
-    NavBarComponent
+    NavBarComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule,
@@ -42,15 +46,18 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     MatInputModule,
     MatFormFieldModule,
     MatToolbarModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpRequestInterceptor,
       multi: true,
+      deps: [AuthService]
     },
-    AuthService
+    AuthService,
+    DialogService
   ],
   bootstrap: [AppComponent]
 })

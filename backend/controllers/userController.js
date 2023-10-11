@@ -81,7 +81,9 @@ class UserController extends BaseController {
             const accessToken = this._generateToken(user.id);
             const refreshToken = uuidv4();
             const dataToUpdate = {
-                "token": refreshToken
+                "token": refreshToken,
+                "token_creation": this._getTimestampString(),
+                "token_expiration": this._getTimestampString(1)
             };
             const userIdReturn = await this.model.update(user.id, dataToUpdate);
             
@@ -126,7 +128,6 @@ class UserController extends BaseController {
                 return;
             }
             const invalidToken = await InvalidTokensController.addInvalidToken(accessToken, refreshToken);
-            console.log("invalidToken = " + invalidToken);
             if (invalidToken) {
                 res.clearCookie('accessToken');
                 res.clearCookie('refreshToken');
@@ -143,16 +144,21 @@ class UserController extends BaseController {
 
     async refreshToken(req, res) {
         try {
+            console.log("refresh");
             const refreshToken = this._parseCookie(req, 'refreshToken');
             if (!refreshToken) {
                 res.status(401).json({ error: 'Refresh token missing' });
                 return;
+            }
+            if (!InvalidTokensController.checkInvalidRefreshToken(refreshToken)) {
+                return res.status(403).send("Invalid token blacklisted.");
             }
             const user = await this.model.findByToken(refreshToken);
             if (!user) {
                 res.status(401).json({ error: 'Invalid refresh token' });
                 return;
             }
+            console.log("refresh 2");
 
             const tokenExpiration = new Date(user.token_expiration);
             const now = new Date();

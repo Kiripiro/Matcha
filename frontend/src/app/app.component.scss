@@ -1,4 +1,10 @@
-$background: #878FD4;
+// $background: #878FD4;
+// $primary: white;
+// $onPrimary: #232528;
+// $surface: #3F51B5;
+// $onSurface: white;
+// $onPrimaryAlt: #626262;
+$background: #FAFAFA;
 $primary: white;
 $onPrimary: #232528;
 $surface: #3F51B5;
@@ -49,6 +55,7 @@ button {
     background-color: $primary;
     border-radius: 20px;
     padding: 2rem;
+    box-shadow: 5px 5px 5px rgba(70,70,70,0.12);
 
     @media (max-width:700px){
         width: 300px;
