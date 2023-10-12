@@ -48,10 +48,11 @@ class UserDTO extends baseValidator {
     }
 
     // Manage pictures if needed here
-    updateInfos(id, gender, sexual_preferences, biography) {
+    updateInfos(id, gender, sexual_preferences, biography, files) {
         super.fieldIsRequired('id', id);
         super.validatePositiveInteger('id', id);
-
+        console.log("updateinfos");
+        console.log(files.length);
         if (gender === undefined && sexual_preferences === undefined && biography === undefined) {
             this.errors.push('No values to update');
         }
@@ -68,8 +69,17 @@ class UserDTO extends baseValidator {
             if (biography !== undefined) {
                 super.validateString('biography', biography, 0, 400, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/ ]+$/);
             }
-        }
 
+            if (files.length < 0 || files.length > 5) {
+                this.errors.push(`Incorrect image number`);
+            }
+
+            for (var i = 0; i < files.length; i++) {
+                super.validateImageFile(files[i]);
+            }
+        }
+        console.log("this.isValid()")
+        console.log(this.isValid())
         return this.isValid();
     }
 

@@ -37,13 +37,13 @@ logoutValidation = (req, res, next) => {
     }
 };
 
-// Manage pictures if needed here
 updateInfosValidation = (req, res, next) => {
     try {
         const id = req.user.userId;
-        const { gender, sexual_preferences, biography } = req.body;
+        console.log("id = " + id);
+        const { gender, sexual_preferences, biography, files } = req.body;
         const userDTO = new UserDTO();
-        const isValid = userDTO.updateInfos(id, gender, sexual_preferences, biography);
+        const isValid = userDTO.updateInfos(id, gender, sexual_preferences, biography, files);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }

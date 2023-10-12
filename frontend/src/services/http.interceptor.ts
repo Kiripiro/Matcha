@@ -26,7 +26,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
-          if (error.error == "Missing refreshToken") {
+          console.log("test = " + error.error)
+          if (error.error == "Missing refreshToken" || error.error == "Invalid refreshToken") {
+          console.log("test 2 = " + error.error)
+
             this.authService._frontLogOut(true);
             return throwError(() => error);
           } else if (error.error == "Missing accessToken") {

@@ -34,6 +34,12 @@ class BaseValidator {
         }
     }
 
+    validateImageFile(file) {
+        if (file.substring(0, 23) != 'data:image\/jpeg;base64,' && file.substring(0, 22) != 'data:image\/jpg;base64,' && file.substring(0, 22) != 'data:image\/png;base64,') {
+            this.errors.push(`Invalid image`);
+        }
+    }
+
     validateEmail(propName, value) {
         if (typeof value !== 'string' || !value.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/)) {
             this.errors.push(`${propName} must be a valid email address.`);

@@ -15,6 +15,10 @@ require('dotenv').config();
 require('./config/checkEnv');
 
 const app = express();
+
+app.use(express.json({ limit: '10mb' })); // Exemple : augmenter la limite à 10 Mo
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
 const port = process.env.NODE_PORT;
 
 // Run migrations if migrations.lock file doesn't exist yet
@@ -39,6 +43,7 @@ app.use("/likes", likesRouter);
 app.use("/reports", reportsRouter);
 app.use("/views", viewsRouter);
 app.use("/messages", messagesRouter);
+
 
 app.get('/', (req, res) => {
     res.send('Hello, Express!');
