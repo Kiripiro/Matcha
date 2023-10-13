@@ -147,7 +147,6 @@ class UserController extends BaseController {
 
     async refreshToken(req, res) {
         try {
-            console.log("refresh");
             const refreshToken = this._parseCookie(req, 'refreshToken');
             if (!refreshToken) {
                 res.status(401).json({ error: 'Refresh token missing' });
@@ -161,7 +160,6 @@ class UserController extends BaseController {
                 res.status(401).json('Invalid refreshToken');
                 return;
             }
-            console.log("refresh 2");
 
             const tokenExpiration = new Date(user.token_expiration);
             const now = new Date();
@@ -182,57 +180,25 @@ class UserController extends BaseController {
     async updateInfos(req, res) {
         try {
             const userId = req.user.userId;
-            // const userId = this._checkPositiveInteger(req.body.id);
             const userData = req.body;
-            // console.log(__dirname);
-            // console.log("userData");
-            // console.log(userData.files.length);
-            const file = userData.files[0];
-            file = file.replace("data:image/png;base64,", "")
-            // console.log(file1);
-            const imageBuffer = Buffer.from(file1, 'base64');
-            var img = "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAApgAAAKYB3X3/OAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAANCSURBVEiJtZZPbBtFFMZ/M7ubXdtdb1xSFyeilBapySVU8h8OoFaooFSqiihIVIpQBKci6KEg9Q6H9kovIHoCIVQJJCKE1ENFjnAgcaSGC6rEnxBwA04Tx43t2FnvDAfjkNibxgHxnWb2e/u992bee7tCa00YFsffekFY+nUzFtjW0LrvjRXrCDIAaPLlW0nHL0SsZtVoaF98mLrx3pdhOqLtYPHChahZcYYO7KvPFxvRl5XPp1sN3adWiD1ZAqD6XYK1b/dvE5IWryTt2udLFedwc1+9kLp+vbbpoDh+6TklxBeAi9TL0taeWpdmZzQDry0AcO+jQ12RyohqqoYoo8RDwJrU+qXkjWtfi8Xxt58BdQuwQs9qC/afLwCw8tnQbqYAPsgxE1S6F3EAIXux2oQFKm0ihMsOF71dHYx+f3NND68ghCu1YIoePPQN1pGRABkJ6Bus96CutRZMydTl+TvuiRW1m3n0eDl0vRPcEysqdXn+jsQPsrHMquGeXEaY4Yk4wxWcY5V/9scqOMOVUFthatyTy8QyqwZ+kDURKoMWxNKr2EeqVKcTNOajqKoBgOE28U4tdQl5p5bwCw7BWquaZSzAPlwjlithJtp3pTImSqQRrb2Z8PHGigD4RZuNX6JYj6wj7O4TFLbCO/Mn/m8R+h6rYSUb3ekokRY6f/YukArN979jcW+V/S8g0eT/N3VN3kTqWbQ428m9/8k0P/1aIhF36PccEl6EhOcAUCrXKZXXWS3XKd2vc/TRBG9O5ELC17MmWubD2nKhUKZa26Ba2+D3P+4/MNCFwg59oWVeYhkzgN/JDR8deKBoD7Y+ljEjGZ0sosXVTvbc6RHirr2reNy1OXd6pJsQ+gqjk8VWFYmHrwBzW/n+uMPFiRwHB2I7ih8ciHFxIkd/3Omk5tCDV1t+2nNu5sxxpDFNx+huNhVT3/zMDz8usXC3ddaHBj1GHj/As08fwTS7Kt1HBTmyN29vdwAw+/wbwLVOJ3uAD1wi/dUH7Qei66PfyuRj4Ik9is+hglfbkbfR3cnZm7chlUWLdwmprtCohX4HUtlOcQjLYCu+fzGJH2QRKvP3UNz8bWk1qMxjGTOMThZ3kvgLI5AzFfo379UAAAAASUVORK5CYII=";
-            // console.log(img);
-            console.log(file2);
-            fs.access('image.png', fs.constants.W_OK, (err) => {
-                if (err) {
-                  console.error(`Impossible d'écrire dans le fichier.`);
-                } else {
-                  console.log(`Écriture dans le fichier est autorisée.`);
-                }
-              });
-            try {
-                await decode(file2, {fname: "www", ext: "png"});
-                console.log('Image enregistrée avec succès');
-              } catch (error) {
-                console.error('Erreur lors de l\'enregistrement de l\'image :', error);
-              }
-            // var data1 = img.replace(/^data:image\/\w+;base64,/, "");
-            // var buf = Buffer.from(img, 'base64');
-            // await fs.writeFileSync('/app/imagesSaved/imagee.png', buf, function (err) {
-            //     console.log(err);
-            //   })
-            // try {
-            //     fs.writeFileSync('/app/imagesSaved/d.png', imageBuffer);
-            //     console.log('Image enregistrée avec succès');
-            //   } catch (error) {
-            //     console.error('Erreur lors de l\'enregistrement de l\'image :', error);
-            //   }
-
-            // console.log(userData);
+            var pictures = await this._savePictures(userData.files, userId);
+            if (pictures == null) {
+                res.status(400).json({ error: 'Invalid pictures files' });
+                return ;
+            }
             const data = {
                 "gender": userData.gender,
                 "sexual_preferences": userData.sexual_preferences,
                 "biography": userData.biography,
-                "picture_1": userData.picture_1,
-                "picture_2": userData.picture_2,
-                "picture_3": userData.picture_3,
-                "picture_4": userData.picture_4,
-                "picture_5": userData.picture_5
+                "picture_1": pictures[0],
+                "picture_2": pictures[1],
+                "picture_3": pictures[2],
+                "picture_4": pictures[3],
+                "picture_5": pictures[4]
             };
             if (await this.checkById(userId)) {
                 const userIdReturn = await this.model.update(userId, data);
-                res.status(200).json({ message: 'User updated', userIdReturn });
+                res.status(200).json({ message: 'User updated', user: data });
             } else {
                 res.status(400).json({ error: 'User id is incorrect' });
             }
@@ -264,6 +230,11 @@ class UserController extends BaseController {
                 res.status(500).json({ error: 'Internal Server Error' });
                 return;
             }
+            this._removePicture("picture_1_" + userId);
+            this._removePicture("picture_2_" + userId);
+            this._removePicture("picture_3_" + userId);
+            this._removePicture("picture_4_" + userId);
+            this._removePicture("picture_5_" + userId);
             const userIdReturn = await this.model.delete(userId);
             res.status(201).json({ message: 'User deleted', userIdReturn });
             return;
@@ -335,6 +306,97 @@ class UserController extends BaseController {
             }
         }
         return null;
+    }
+
+    async _savePictures(files, userId) {
+        var picturesPath = [];
+        const maxFiles = (files.length < 5) ? files.length : 5;
+        for (var i = 0; i < 5; i++) {
+            if (i < files.length) {
+                var file = files[i];
+                var type = "";
+                if (file.substring(0, 22) == 'data:image/png;base64,') {
+                    file = file.replace("data:image/png;base64,", "");
+                    type = "png";
+                } else if (file.substring(0, 23) == 'data:image/jpeg;base64,') {
+                    file = file.replace("data:image/jpeg;base64,", "");
+                    type = "jpeg";
+                } else if (file.substring(0, 22) == 'data:image/jpg;base64,') {
+                    file = file.replace("data:image/jpg;base64,", "");
+                    type = "jpg";
+                } else {
+                    return null;
+                }
+                const path = "/app/imagesSaved/picture_" + (i + 1) + "_" + userId;
+                try {
+                    decode(file, {fname: path, ext: type});
+                    if (type != "png") {
+                        fs.unlink(path + ".png", (error) => {
+                            if (error) {
+                                console.error('Unlink error :', error);
+                                return null;
+                            } else {
+                                console.log(path + ".png" + ' removed');
+                                return true;
+                            }
+                        });
+                    }
+                    if (type != "jpeg") {
+                        fs.unlink(path + ".jpeg", (error) => {
+                            if (error) {
+                                console.error('Unlink error :', error);
+                                return null;
+                            } else {
+                                console.log(path + ".jpeg" + ' removed');
+                                return true;
+                            }
+                        });
+                    }
+                    if (type != "jpg") {
+                        fs.unlink(path + ".jpg", (error) => {
+                            if (error) {
+                                console.error('Unlink error :', error);
+                                return null;
+                            } else {
+                                console.log(path + ".jpg" + ' removed');
+                                return true;
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Decode error :', error);
+                    return null;
+                }
+                picturesPath.push((path + "." + type));
+            } else {
+                this._removePicture("picture_" + (i + 1) + "_" + userId);
+            }
+        }
+        return picturesPath;
+    }
+
+    async _removePicture(filename) {
+        fs.readdir("/app/imagesSaved/", (error, files) => {
+            if (error) {
+                console.error('Readdir error :', error);
+                return null;
+            }
+            const fileToRemove = files.find((file) =>
+                    file.startsWith(filename)
+            );
+            if (fileToRemove) {
+                const pathToRemove = "/app/imagesSaved/" + fileToRemove;
+                fs.unlink(pathToRemove, (error) => {
+                    if (error) {
+                        console.error('Unlink error :', error);
+                        return null;
+                    } else {
+                        console.log(pathToRemove + ' removed');
+                        return true;
+                    }
+                });
+            }
+        });
     }
 }
 

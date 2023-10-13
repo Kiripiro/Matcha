@@ -47,9 +47,6 @@ export class CompleteRegisterComponent implements OnInit {
           img.src = window.URL.createObjectURL(file);
           img.onload = () => {
             const res = (reader.result || '') as string;
-            const blob = new Blob([res], { type: file.type });
-            console.log("blob = ");
-            console.log(blob);
             this.files.push(res);
           };
           img.onerror = () => {

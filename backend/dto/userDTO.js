@@ -51,8 +51,6 @@ class UserDTO extends baseValidator {
     updateInfos(id, gender, sexual_preferences, biography, files) {
         super.fieldIsRequired('id', id);
         super.validatePositiveInteger('id', id);
-        console.log("updateinfos");
-        console.log(files.length);
         if (gender === undefined && sexual_preferences === undefined && biography === undefined) {
             this.errors.push('No values to update');
         }
@@ -78,8 +76,6 @@ class UserDTO extends baseValidator {
                 super.validateImageFile(files[i]);
             }
         }
-        console.log("this.isValid()")
-        console.log(this.isValid())
         return this.isValid();
     }
 
