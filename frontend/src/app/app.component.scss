@@ -1,20 +1,13 @@
-// $background: #878FD4;
-// $primary: white;
-// $onPrimary: #232528;
-// $surface: #3F51B5;
-// $onSurface: white;
-// $onPrimaryAlt: #626262;
 $background: #FAFAFA;
-$primary: white;
-$onPrimary: #232528;
-$surface: #3F51B5;
+$primary: #FDBABA;
+$surface: #3E2266;
+$surfaceAlt: #6DB1BF;
+$onPrimary: #3E2266;
 $onSurface: white;
-$onPrimaryAlt: #626262;
-$surfaceAlt: #ff4d6d;
-$surfaceAlt2: #7784CF;
+$onPrimaryAlt: #6DB1BF;
 
 * {
-    font-family: Montserrat;
+    font-family: Poppins;
 }
 
 p {
@@ -33,12 +26,12 @@ p {
 .title {
     font-size: 2.0rem;
     font-weight: 600;
-    color: $surface;
+    color: $onPrimary;
     margin-bottom: 2.5rem;
 }
 
 button {
-    background-color: $surface;
+    background-color: $surfaceAlt;
 }
 
 .primaryButton {
@@ -69,6 +62,11 @@ button {
 
     @media (max-width:300px){
         width: 150px;
+    }
+
+    button {
+        background-color: $surface;
+        color: white;
     }
 
     .form-field {
@@ -103,6 +101,7 @@ button {
         }
     }
 
+    
     .checkBoxDiv {
         display: flex;
         flex-direction: column;
@@ -134,7 +133,7 @@ button {
         margin-bottom: 1rem;
         font-size: 1.1rem;
         font-weight: 500;
-        color: $primary;
+        color: $onSurface;
 
         label {
             width: 100%;
