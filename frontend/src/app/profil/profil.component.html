@@ -1,0 +1,12 @@
+<div class="centerDiv">
+    <div class="profilCard" *ngIf="!loading && !error">
+        <p>Test </p>
+    </div>
+    <div class="errorCard" *ngIf="error">
+        <p>User not found</p>
+    </div>
+    <div class="loadingCard" *ngIf="loading && !error">
+        <p>Loading</p>
+        <mat-progress-bar mode="query"></mat-progress-bar>
+    </div>
+</div>

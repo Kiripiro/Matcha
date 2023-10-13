@@ -37,6 +37,25 @@ interface LoginResponseData {
         };
 }
 
+interface GetUserResponseData {
+  message: string;
+  user: { username: string,
+          fist_name: string,
+          last_name: string,
+          age: number,
+          complete_register: boolean,
+          gender: string,
+          sexual_preferences: string,
+          biography: string,
+          picture_1: string,
+          picture_2: string,
+          picture_3: string,
+          picture_4: string,
+          picture_5: string,
+          location_permission: boolean
+        };
+}
+
 interface CompleteRegisterResponseData {
   message: string;
   user: { gender: string,
@@ -68,13 +87,20 @@ export class AuthService {
       this.isLogged.next(usr);
   }
 
-  getUserInfos() {
-    if (!this.localStorageService.getItem("username"))
-      return null;
-    const data = {
-      username: this.localStorageService.getItem("username") || null
-    }
-    return data;
+  getUserInfos(username: string): Observable<GetUserResponseData> {
+    return this.http.get<GetUserResponseData>('http://localhost:3000/users/username/' + username, { withCredentials: true });
+    //   .subscribe({
+    //     next: (response) => {
+    //       console.log('get successful:', response);
+    //       return response;
+    //     },
+    //     error: (error) => {
+    //       console.error('get failed:', error);
+    //       return null;
+    //     },
+    //     complete: () => {
+    //     }
+    // });
   }
 
   checkLog() {

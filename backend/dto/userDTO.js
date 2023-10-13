@@ -85,6 +85,13 @@ class UserDTO extends baseValidator {
 
         return this.isValid();
     }
+
+    getUserByUsername(username) {
+        super.fieldIsRequired('username', username);
+        super.validateString('username', username, 3, 25, /^[a-zA-Z0-9_-]+$/);
+
+        return this.isValid();
+    }
 }
 
 module.exports = UserDTO;

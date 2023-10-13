@@ -26,10 +26,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
-          if (error.error.error == "Missing refreshToken") {
+          if (error.error.error == "Missing refreshToken" || error.error.error == "refreshToken expired") {
             this.authService._frontLogOut('An authentication error has occured, please log in again.');
             return throwError(() => error.error);
-          } else if (error.error.error == "Missing accessToken") {
+          } else if (error.error.error == "Missing accessToken" || error.error.error == "Token expired") {
             return this.authService.refreshToken().pipe(
               switchMap(() => {
                 return next.handle(request);

@@ -165,7 +165,7 @@ class UserController extends BaseController {
             const tokenExpiration = new Date(user.token_expiration);
             const now = new Date();
             if (tokenExpiration < now) {
-                res.status(401).json({ error: 'Refresh token expired' });
+                res.status(401).json({ error: 'refreshToken expired' });
                 return;
             }
 
@@ -271,6 +271,37 @@ class UserController extends BaseController {
                     "picture_3": user.picture_3 || '',
                     "picture_4": user.picture_4 || '',
                     "picture_5": user.picture_5 || ''
+                }
+                res.json(userReturn);
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getUserByUsername(req, res) {
+        try {
+            const user = await this.model.findByUsername(req.params.username);
+            if (!user) {
+                res.status(404).json({ error: 'User not found' })
+                return;
+            } else {
+                console.log("user.picture_1 = " + user.picture_1);
+                const a = await this._getPictureDataFromPath(user.picture_1);
+                // console.log("a = " + a);
+                const userReturn = {
+                    "username": user.username || '',
+                    "first_name": user.first_name || '',
+                    "last_name": user.last_name || '',
+                    "age": user.age || '',
+                    "gender": user.gender || '',
+                    "sexual_preferences": user.sexual_preferences || '',
+                    "biography": user.biography || '',
+                    "picture_1": this._getPictureDataFromPath(user.picture_1),
+                    "picture_2": this._getPictureDataFromPath(user.picture_2),
+                    "picture_3": this._getPictureDataFromPath(user.picture_3),
+                    "picture_4": this._getPictureDataFromPath(user.picture_4),
+                    "picture_5": this._getPictureDataFromPath(user.picture_5)
                 }
                 res.json(userReturn);
             }
@@ -403,6 +434,24 @@ class UserController extends BaseController {
                 });
             }
         });
+    }
+
+    async _getPictureDataFromPath(path) {
+        if (!path || path.length <= 0) {
+            return "";
+        }
+        return new Promise((resolve, reject) => {
+            fs.readFile(path, (error, data) => {
+                if (error) {
+                  console.error(error);
+                  reject(error);
+                } else {
+                    const imageString = data.toString('base64');
+                    console.log("imageString");
+                    resolve(imageString);
+                }
+            });
+          });
     }
 }
 

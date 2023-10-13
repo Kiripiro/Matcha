@@ -23,8 +23,11 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { DialogService } from 'src/services/dialog.service';
 import { initializeApp } from 'src/services/app-initializer';
+import { CarouselComponent } from './utils/carousel/carousel.component';
+import { ProfilComponent } from './profil/profil.component';
 
 
 @NgModule({
@@ -33,7 +36,9 @@ import { initializeApp } from 'src/services/app-initializer';
     NotFoundComponent,
     HomeComponent,
     NavBarComponent,
-    DialogComponent
+    DialogComponent,
+    CarouselComponent,
+    ProfilComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +53,8 @@ import { initializeApp } from 'src/services/app-initializer';
     MatFormFieldModule,
     MatToolbarModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressBarModule
   ],
   providers: [
     {

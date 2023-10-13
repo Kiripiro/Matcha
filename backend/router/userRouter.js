@@ -60,6 +60,14 @@ router.get('/:id', auth, user.getUserByIdValidation, async (req, res) => {
     }
 });
 
+router.get('/username/:username', auth, user.getUserByUsernameValidation, async (req, res) => {
+    try {
+        await UserController.getUserByUsername(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 // app.get('/users', async (req, res) => {
 //     try {
 //         await UserController.getAllUsers(req, res);
