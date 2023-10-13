@@ -22,7 +22,11 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.checkLog()) {
-      this.router.navigate(['']);
+      if (this.authService.checkCompleteRegister()) {
+        this.router.navigate(['']);
+      } else {
+        this.router.navigate(['auth/completeRegister']);
+      }
     }
     this.registerForm = this.fb.group({
       username: ['cgangaro', Validators.required],

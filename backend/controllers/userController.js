@@ -96,6 +96,7 @@ class UserController extends BaseController {
                 "last_name": user.last_name,
                 "age": user.age,
                 "email_checked": user.email_checked,
+                "complete_register": user.complete_register,
                 "gender": user.gender,
                 "sexual_preferences": user.sexual_preferences,
                 "biography": user.biography,
@@ -186,7 +187,12 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'Invalid pictures files' });
                 return ;
             }
+            if (pictures.length <= 0) {
+                res.status(400).json({ error: 'Picture missing' });
+                return ;
+            }
             const data = {
+                "complete_register": true,
                 "gender": userData.gender,
                 "sexual_preferences": userData.sexual_preferences,
                 "biography": userData.biography,

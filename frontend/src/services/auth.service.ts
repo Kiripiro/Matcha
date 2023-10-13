@@ -23,6 +23,7 @@ interface LoginResponseData {
           fist_name: string,
           last_name: string,
           age: number,
+          complete_register: boolean,
           gender: string,
           sexual_preferences: string,
           biography: string,
@@ -77,8 +78,15 @@ export class AuthService {
   }
 
   checkLog() {
-    if (!this.localStorageService.getItem("username"))
+    if (!this.localStorageService.getItem(localStorageName.username))
       return false;
+    return true;
+  }
+
+  checkCompleteRegister() {
+    if (!this.localStorageService.getItem(localStorageName.completeRegister)) {
+      return false;
+    }
     return true;
   }
 
@@ -93,7 +101,7 @@ export class AuthService {
               { key: localStorageName.age, value: response.user.age || -1 },
               { key: localStorageName.locationPermission, value: response.user.location_permission || false }
             );
-            this.router.navigate(['']);
+            this.router.navigate(['auth/completeRegister']);
             this.logEmitChange(true);
           },
           error: (error) => {
@@ -112,6 +120,7 @@ export class AuthService {
               { key: localStorageName.firstName, value: response.user.fist_name || "" },
               { key: localStorageName.lastName, value: response.user.last_name || "" },
               { key: localStorageName.age, value: response.user.age || -1 },
+              { key: localStorageName.completeRegister, value: response.user.complete_register || false },
               { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
               { key: localStorageName.biography, value: response.user.biography || "" },
               { key: localStorageName.picture1, value: response.user.picture_1 || "" },
@@ -122,7 +131,11 @@ export class AuthService {
               { key: localStorageName.locationPermission, value: response.user.location_permission || false },
               { key: localStorageName.createdAt, value: response.user.created_at || "" },
             );
-            this.router.navigate(['']);
+            if (this.checkCompleteRegister()) {
+              this.router.navigate(['']);
+            } else {
+              this.router.navigate(['auth/completeRegister']);
+            }
             this.logEmitChange(true);
           },
           error: (error) => {
@@ -152,6 +165,7 @@ export class AuthService {
           next: (response) => {
             console.log('CompleteRegister success:', response);
             this.localStorageService.setMultipleItems(
+              { key: localStorageName.completeRegister, value: true },
               { key: localStorageName.gender, value: response.user.gender || "" },
               { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
               { key: localStorageName.biography, value: response.user.biography || "" },
