@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -24,6 +24,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogService } from 'src/services/dialog.service';
+import { initializeApp } from 'src/services/app-initializer';
 
 
 @NgModule({
@@ -55,6 +56,11 @@ import { DialogService } from 'src/services/dialog.service';
       useClass: HttpRequestInterceptor,
       multi: true,
       deps: [AuthService]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => initializeApp,
+      multi: true,
     },
     AuthService,
     DialogService

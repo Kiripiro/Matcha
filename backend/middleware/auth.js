@@ -15,13 +15,13 @@ module.exports = (req, res, next) => {
         if (!accessToken) {
             const refreshToken = cookies.get("refreshToken");
             if (!refreshToken) {
-                return res.status(401).send("Missing refreshToken");
+                return res.status(401).send({ error: 'Missing refreshToken' });
             }
-            return res.status(401).send("Missing accessToken");
+            return res.status(401).send({ error: 'Missing accessToken' });
         }
 
         if (!InvalidTokensController.checkInvalidAccessToken(accessToken)) {
-            return res.status(403).send("Invalid token blacklisted.");
+            return res.status(403).send({ error: 'Invalid accessToken blacklisted' });
         }
         const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
         req.user = decoded;
@@ -29,7 +29,7 @@ module.exports = (req, res, next) => {
     } catch (error) {
         console.log("error = " + error);
         if (error.name === "TokenExpiredError")
-            return res.status(401).send("Token expired");
-        res.status(400).send("Invalid token");
+            return res.status(401).send({ error: "Token expired" });
+        res.status(400).send({ error: "Invalid token" });
     }
 };

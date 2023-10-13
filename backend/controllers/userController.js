@@ -149,15 +149,15 @@ class UserController extends BaseController {
         try {
             const refreshToken = this._parseCookie(req, 'refreshToken');
             if (!refreshToken) {
-                res.status(401).json({ error: 'Refresh token missing' });
+                res.status(401).json({ error: 'Missing refreshToken' });
                 return;
             }
             if (!InvalidTokensController.checkInvalidRefreshToken(refreshToken)) {
-                return res.status(403).send("Invalid token blacklisted.");
+                return res.status(403).send({ error: 'Invalid token blacklisted' });
             }
             const user = await this.model.findByToken(refreshToken);
             if (!user) {
-                res.status(401).json('Invalid refreshToken');
+                res.status(403).send({ error: 'Invalid refreshToken' });
                 return;
             }
 

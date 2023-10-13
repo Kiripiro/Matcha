@@ -141,7 +141,7 @@ export class AuthService {
             console.error('Registration failed:', error);
           },
           complete: () => {
-            this._frontLogOut(false);
+            this._frontLogOut('');
           }
         });
   }
@@ -183,14 +183,14 @@ export class AuthService {
         });
   }
 
-  _frontLogOut(errorHasOccured: boolean) {
+  _frontLogOut(error: string) {
     this.localStorageService.removeAllUserItem();
     this.router.navigate(['']);
     this.logEmitChange(false);
-    if (errorHasOccured) {
+    if (error.length > 0) {
       const dialogData = {
         title: 'Server error',
-        text: 'An authentication error has occured, please log in again.'
+        text: error
       };
       this.dialogService.openDialog(dialogData);
     }
