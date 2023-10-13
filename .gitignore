@@ -5,3 +5,6 @@ frontend/node_modules
 backend/.env
 backend/node_modules
 backend/config/database/migrations.lock
+backend/imagesSaved/*.png
+backend/imagesSaved/*.jpeg
+backend/imagesSaved/*.jpg
