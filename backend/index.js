@@ -16,8 +16,8 @@ require('./config/checkEnv');
 
 const app = express();
 
-app.use(express.json({ limit: '10mb' })); // Exemple : augmenter la limite à 10 Mo
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 const port = process.env.NODE_PORT;
 

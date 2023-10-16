@@ -69,7 +69,7 @@ getUserByIdValidation = (req, res, next) => {
 
 getUserByUsernameValidation = (req, res, next) => {
     try {
-        const username = req.params.username;
+        const username = req.body.username;
         const userDTO = new UserDTO();
         const isValid = userDTO.getUserByUsername(username);
         if (!isValid) {

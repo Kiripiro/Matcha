@@ -44,6 +44,15 @@ router.post('/updateInfos', auth, user.updateInfosValidation, async (req, res) =
     }
 });
 
+router.post('/username', auth, user.getUserByUsernameValidation, async (req, res) => {
+    try {
+        console.log("post")
+        await UserController.getUserByUsername(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 router.post('/delete', auth, async (req, res) => {
     try {
         await UserController.deleteUser(req, res);
@@ -55,14 +64,6 @@ router.post('/delete', auth, async (req, res) => {
 router.get('/:id', auth, user.getUserByIdValidation, async (req, res) => {
     try {
         await UserController.getUserById(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-router.get('/username/:username', auth, user.getUserByUsernameValidation, async (req, res) => {
-    try {
-        await UserController.getUserByUsername(req, res);
     } catch (error) {
         console.error(error);
     }

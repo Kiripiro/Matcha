@@ -89,7 +89,7 @@ class UserController extends BaseController {
                 "token_expiration": this._getTimestampString(1)
             };
             const userIdReturn = await this.model.update(user.id, dataToUpdate);
-            
+
             const data = {
                 "username": user.username,
                 "fist_name": user.first_name,
@@ -185,11 +185,11 @@ class UserController extends BaseController {
             var pictures = await this._savePictures(userData.files, userId);
             if (pictures == null) {
                 res.status(400).json({ error: 'Invalid pictures files' });
-                return ;
+                return;
             }
             if (pictures.length <= 0) {
                 res.status(400).json({ error: 'Picture missing' });
-                return ;
+                return;
             }
             const data = {
                 "complete_register": true,
@@ -281,7 +281,8 @@ class UserController extends BaseController {
 
     async getUserByUsername(req, res) {
         try {
-            const user = await this.model.findByUsername(req.params.username);
+            console.log("getUserByUsername");
+            const user = await this.model.findByUsername(req.body.username);
             if (!user) {
                 res.status(404).json({ error: 'User not found' })
                 return;
@@ -296,12 +297,13 @@ class UserController extends BaseController {
                     "age": user.age || '',
                     "gender": user.gender || '',
                     "sexual_preferences": user.sexual_preferences || '',
+                    "complete_register": user.complete_register || false,
                     "biography": user.biography || '',
-                    "picture_1": this._getPictureDataFromPath(user.picture_1),
-                    "picture_2": this._getPictureDataFromPath(user.picture_2),
-                    "picture_3": this._getPictureDataFromPath(user.picture_3),
-                    "picture_4": this._getPictureDataFromPath(user.picture_4),
-                    "picture_5": this._getPictureDataFromPath(user.picture_5)
+                    "picture_1": await this._getPictureDataFromPath(user.picture_1),
+                    "picture_2": await this._getPictureDataFromPath(user.picture_2),
+                    "picture_3": await this._getPictureDataFromPath(user.picture_3),
+                    "picture_4": await this._getPictureDataFromPath(user.picture_4),
+                    "picture_5": await this._getPictureDataFromPath(user.picture_5)
                 }
                 res.json(userReturn);
             }
@@ -366,7 +368,7 @@ class UserController extends BaseController {
                 }
                 const path = "/app/imagesSaved/picture_" + (i + 1) + "_" + userId;
                 try {
-                    decode(file, {fname: path, ext: type});
+                    decode(file, { fname: path, ext: type });
                     if (type != "png") {
                         fs.unlink(path + ".png", (error) => {
                             if (error) {
@@ -419,9 +421,10 @@ class UserController extends BaseController {
                 return null;
             }
             const fileToRemove = files.find((file) =>
-                    file.startsWith(filename)
+                file.startsWith(filename)
             );
-            if (fileToRemove) {
+            console.log("filetoremove = " + fileToRemove);
+            if (fileToRemove && fileToRemove.length > 0) {
                 const pathToRemove = "/app/imagesSaved/" + fileToRemove;
                 fs.unlink(pathToRemove, (error) => {
                     if (error) {
@@ -443,15 +446,15 @@ class UserController extends BaseController {
         return new Promise((resolve, reject) => {
             fs.readFile(path, (error, data) => {
                 if (error) {
-                  console.error(error);
-                  reject(error);
+                    console.error(error);
+                    reject(error);
                 } else {
                     const imageString = data.toString('base64');
                     console.log("imageString");
                     resolve(imageString);
                 }
             });
-          });
+        });
     }
 }
 

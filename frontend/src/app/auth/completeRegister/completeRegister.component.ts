@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule} from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../../../services/auth.service';
 
@@ -40,7 +40,7 @@ export class CompleteRegisterComponent implements OnInit {
           event.target.value = '';
           return;
         }
-  
+
         const reader = new FileReader();
         reader.onload = () => {
           const img = new Image();
@@ -54,7 +54,7 @@ export class CompleteRegisterComponent implements OnInit {
             event.target.value = '';
           };
         };
-  
+
         reader.readAsDataURL(file);
       }
       this.completeRegisterForm.get('fileStatus')?.setValue(true);
@@ -86,7 +86,7 @@ export class CompleteRegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.completeRegisterForm.valid) {
-      const { gender, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference} = this.completeRegisterForm.value;
+      const { gender, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference } = this.completeRegisterForm.value;
       var sexualPreference = "";
       if (maleSexualPreference)
         sexualPreference = "Male";
@@ -95,7 +95,7 @@ export class CompleteRegisterComponent implements OnInit {
       else
         sexualPreference = "Other";
       console.log(gender, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference);
-      this.authService.completeRegister(gender, biography, sexualPreference, this.files);
+      this.authService.completeRegister(gender, sexualPreference, biography, this.files);
     }
   }
 }
