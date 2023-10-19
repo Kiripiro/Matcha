@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
-
 import { HttpRequestInterceptor } from '../services/http.interceptor';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,18 +10,27 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { HomeComponent } from './home/home.component';
 import { AuthModule } from './auth/auth.module';
+
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule} from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { FormsModule } from '@angular/forms';
+
+
 import { NavBarComponent } from './nav-bar/nav-bar.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogService } from 'src/services/dialog.service';
+import { ChatComponent } from './chat/chat.component';
+import { ChatService } from 'src/services/chat.service';
 
 
 @NgModule({
@@ -32,7 +39,8 @@ import { DialogService } from 'src/services/dialog.service';
     NotFoundComponent,
     HomeComponent,
     NavBarComponent,
-    DialogComponent
+    DialogComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -46,8 +54,12 @@ import { DialogService } from 'src/services/dialog.service';
     MatInputModule,
     MatFormFieldModule,
     MatToolbarModule,
+    MatListModule,
+    MatSidenavModule,
+    MatCardModule,
+    MatTabsModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   providers: [
     {
@@ -57,7 +69,8 @@ import { DialogService } from 'src/services/dialog.service';
       deps: [AuthService]
     },
     AuthService,
-    DialogService
+    DialogService,
+    ChatService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,0 +1,53 @@
+<mat-sidenav-container class="chat-container">
+    <mat-sidenav class="chat-list-matches-left" mode="side" opened>
+        <mat-card>
+            <mat-tab-group>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <mat-icon matListIcon>forum</mat-icon>
+                    </ng-template>
+                    <mat-list>
+                        <div class="chat-list-matches-item" *ngFor="let user of users" (click)="selectUser(user)">
+                            <div class=" chat-list-match-icon">
+                                <mat-icon mat-list-icon>person</mat-icon>
+                            </div>
+                            <div class="chat-list-match-infos">
+                                {{ user.first_name }} {{ user.last_name }} - {{ user.username }}
+                            </div>
+                        </div>
+                    </mat-list>
+                </mat-tab>
+            </mat-tab-group>
+        </mat-card>
+    </mat-sidenav>
+    <mat-sidenav-content class="right">
+        <div class="chat-center-container">
+            <div class="chat-messages" #chatMessagesContainer>
+                <ng-container *ngIf="!selectedConversation">
+                    <div class="empty-view">
+                        Please select a conversation from the left side.
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="selectedConversation">
+                    <div *ngFor="let message of selectedConversationMessages" class="chat-message"
+                        [ngClass]="{ 'own-user': message.author_id !== selectedConversation.id, 'other-user': message.author_id === selectedConversation.id }">
+                        <div class="message-content">
+                            {{ message.message }}
+                        </div>
+                        <div class="message-date">
+                            {{ message.date | date: 'dd/MM/yyyy - HH:mm' }}
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="chat-input-container" *ngIf="selectedConversation" #inputContainer>
+                <mat-form-field class="chat-input">
+                    <input matInput placeholder="Type your message" [(ngModel)]="message">
+                </mat-form-field>
+                <button mat-icon-button (click)="sendMessage(selectedConversation.id)">
+                    <mat-icon>send</mat-icon>
+                </button>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

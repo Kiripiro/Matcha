@@ -47,6 +47,7 @@ class UserController extends BaseController {
             res.cookie('accessToken', this._generateToken(userId), { httpOnly: true, maxAge: 900000 });
             res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 86400000 });
             const returnData = {
+                "id": userId,
                 "username": userData.username,
                 "email": userData.email,
                 "first_name": userData.first_name,
@@ -86,8 +87,9 @@ class UserController extends BaseController {
                 "token_expiration": this._getTimestampString(1)
             };
             const userIdReturn = await this.model.update(user.id, dataToUpdate);
-            
+
             const data = {
+                "id": user.id,
                 "username": user.username,
                 "fist_name": user.first_name,
                 "last_name": user.last_name,
