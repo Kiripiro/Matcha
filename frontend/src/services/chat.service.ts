@@ -37,6 +37,10 @@ export class ChatService {
         this.id = this.localStorageService.getItem('id');
     }
 
+    public initSocket(): void {
+        this.socket.emit('init', this.id);
+    }
+
     public getMatches(): User[] {
         const matches = this.http.get(this.url + '/likes/matches/' + this.id, { withCredentials: true });
         matches.subscribe((res: any) => {
@@ -56,12 +60,13 @@ export class ChatService {
     }
 
     public sendMessage(message: string, recipient_id: number): Observable<any> {
+        this.socket.emit('new-message', { message: message, author_id: this.id, recipient_id: recipient_id, date: new Date() });
         return this.http.post(this.url + '/messages/create', { message: message, author_id: this.id, recipient_id: recipient_id }, { withCredentials: true });
     }
 
     public getMessages = () => {
         return new Observable((observer) => {
-            this.socket.on('new-message', (message) => {
+            this.socket.on('refresh', (message) => {
                 observer.next(message);
             });
         });

@@ -42,7 +42,8 @@
             </div>
             <div class="chat-input-container" *ngIf="selectedConversation" #inputContainer>
                 <mat-form-field class="chat-input">
-                    <input matInput placeholder="Type your message" [(ngModel)]="message">
+                    <input matInput placeholder="Type your message" [(ngModel)]="message"
+                        (keyup.enter)="sendMessage(selectedConversation.id)">
                 </mat-form-field>
                 <button mat-icon-button (click)="sendMessage(selectedConversation.id)">
                     <mat-icon>send</mat-icon>

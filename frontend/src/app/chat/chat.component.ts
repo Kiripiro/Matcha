@@ -34,32 +34,32 @@ export class ChatComponent {
 
 
   ngOnInit() {
+    this.chatService.initSocket();
     this.chatService
       .getMessages()
       .subscribe((message: unknown) => {
-        this.messages.push(message as string);
+        console.log(message);
+        this.selectedConversationMessages.push(message as Message);
       });
-
     this.getMatches();
   }
 
-  // @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
-  // @ViewChild('inputContainer') private inputContainer!: ElementRef;
-  // scrollToBottom(): void {
-  //   try {
-  //     const container = this.myScrollContainer.nativeElement;
-  //     const lastMessage = container.lastElementChild as HTMLElement;
-  //     const inputContainer = this.inputContainer.nativeElement as HTMLElement;
+  @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
+  @ViewChild('inputContainer') private inputContainer!: ElementRef;
+  scrollToBottom(): void {
+    try {
+      const container = this.myScrollContainer.nativeElement;
+      const lastMessage = container.lastElementChild as HTMLElement;
+      const inputContainer = this.inputContainer.nativeElement as HTMLElement;
 
-  //     if (lastMessage) {
-  //       // Calculate the position to scroll to, considering the input container's height
-  //       const scrollPosition = lastMessage.offsetTop - container.clientHeight + lastMessage.clientHeight + inputContainer.clientHeight;
-  //       container.scrollTop = scrollPosition;
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
+      if (lastMessage) {
+        const scrollPosition = lastMessage.offsetTop - container.clientHeight + lastMessage.clientHeight + inputContainer.clientHeight;
+        container.scrollTop = scrollPosition;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   getMatches() {
     const matches = this.chatService.getMatches();
@@ -85,12 +85,12 @@ export class ChatComponent {
           message: res.data.message,
           date: new Date(res.data.date)
         });
+        this.scrollToBottom();
       },
       error: (err: any) => {
         console.log(err);
       }
     });
-    // this.scrollToBottom();
     this.message = '';
   }
 
@@ -107,8 +107,8 @@ export class ChatComponent {
           const date2 = new Date(message2.date).getTime();
           return date1 - date2;
         });
-        // this.scrollToBottom();
         this.selectedConversationMessages = messages;
+        this.scrollToBottom();
       },
       error: (err: any) => {
         if (err.status === 404) {
@@ -119,6 +119,5 @@ export class ChatComponent {
         }
       }
     });
-    console.log(this.selectedConversation.id);
   }
 }

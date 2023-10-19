@@ -170,7 +170,7 @@ class MessagesController extends BaseController {
                 "date": this._getTimestampString()
             };
             const messageId = await this.model.create(data);
-            res.status(201).json({ message: 'Message created', messageId });
+            res.status(201).json({ message: 'Message created', messageId, data });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
