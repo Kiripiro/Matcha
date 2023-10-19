@@ -26,10 +26,10 @@ export class HttpRequestInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
-          if (error.error == "Missing refreshToken") {
-            this.authService._frontLogOut(true);
-            return throwError(() => error);
-          } else if (error.error == "Missing accessToken") {
+          if (error.error.error == "Missing refreshToken" || error.error.error == "refreshToken expired") {
+            this.authService._frontLogOut('An authentication error has occured, please log in again.');
+            return throwError(() => error.error);
+          } else if (error.error.error == "Missing accessToken" || error.error.error == "Token expired") {
             return this.authService.refreshToken().pipe(
               switchMap(() => {
                 return next.handle(request);
@@ -39,10 +39,13 @@ export class HttpRequestInterceptor implements HttpInterceptor {
               })
             );
           } else {
-            return throwError(() => error);
+            return throwError(() => error.error);
           }
+        } else if (error instanceof HttpErrorResponse && error.status === 403) {
+          this.authService._frontLogOut('An authentication error has occured, please log in again' + (error.error.error ? (' (' + error.error.error + ')') : '') + '.');
+          return throwError(() => error.error);
         }
-        return throwError(() => error);
+        return throwError(() => error.error);
       })
     );
   }

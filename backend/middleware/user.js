@@ -37,13 +37,12 @@ logoutValidation = (req, res, next) => {
     }
 };
 
-// Manage pictures if needed here
 updateInfosValidation = (req, res, next) => {
     try {
         const id = req.user.userId;
-        const { gender, sexual_preferences, biography } = req.body;
+        const { gender, sexual_preferences, biography, files } = req.body;
         const userDTO = new UserDTO();
-        const isValid = userDTO.updateInfos(id, gender, sexual_preferences, biography);
+        const isValid = userDTO.updateInfos(id, gender, sexual_preferences, biography, files);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }
@@ -68,10 +67,25 @@ getUserByIdValidation = (req, res, next) => {
     }
 };
 
+getUserByUsernameValidation = (req, res, next) => {
+    try {
+        const username = req.body.username;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.getUserByUsername(username);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 module.exports = {
     createUserValidation,
     loginValidation,
     logoutValidation,
     updateInfosValidation,
-    getUserByIdValidation
+    getUserByIdValidation,
+    getUserByUsernameValidation
 };

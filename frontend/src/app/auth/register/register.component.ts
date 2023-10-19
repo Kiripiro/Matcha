@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule} from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../../services/auth.service';
 
@@ -17,13 +14,20 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
 
   }
 
   ngOnInit(): void {
-
+    if (this.authService.checkLog()) {
+      if (this.authService.checkCompleteRegister()) {
+        this.router.navigate(['']);
+      } else {
+        this.router.navigate(['auth/completeRegister']);
+      }
+    }
     this.registerForm = this.fb.group({
       username: ['cgangaro', Validators.required],
       first_name: ['Camille', Validators.required],

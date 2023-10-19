@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalStorageService, localStorageName } from '../../services/local-storage.service';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private localStorageService: LocalStorageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
     ) {
         this.authService.isLoggedEmitter.subscribe(value => {
           this.username = this.localStorageService.getItem(localStorageName.username);
@@ -21,6 +23,9 @@ export class HomeComponent implements OnInit {
       }
 
   ngOnInit(): void {
+    if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
+      this.router.navigate(['auth/completeRegister']);
+    }
     this.username = this.localStorageService.getItem(localStorageName.username);
   }
 

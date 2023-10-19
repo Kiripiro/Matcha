@@ -49,6 +49,7 @@ export const localStorageName = {
   firstName: "fist_name",
   lastName: "last_name",
   age: "age",
+  completeRegister: "complete_register",
   gender: "gender",
   sexualPreferences: "sexual_preferences",
   biography: "biography",

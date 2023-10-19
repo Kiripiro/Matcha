@@ -11,9 +11,13 @@ import {FormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { CompleteRegisterComponent } from './completeRegister/completeRegister.component';
+import { SingleFileUploadComponent } from '../utils/single-file-upload/single-file-upload.component';
 
 @NgModule({
-  declarations: [RegisterComponent, LoginComponent],
+  declarations: [RegisterComponent, LoginComponent, CompleteRegisterComponent, SingleFileUploadComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -23,10 +27,13 @@ import {MatToolbarModule} from '@angular/material/toolbar';
     MatButtonModule,
     MatIconModule,
     MatToolbarModule,
+    MatRadioModule,
+    MatCheckboxModule,
     HttpClientModule,
     RouterModule.forChild([
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
+      { path: 'completeRegister', component: CompleteRegisterComponent },
     ])
   ],
   providers: [],

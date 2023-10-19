@@ -28,6 +28,7 @@ interface LoginResponseData {
     last_name: string,
     age: number,
     gender: string,
+    complete_register: boolean,
     sexual_preferences: string,
     biography: string,
     picture_1: string,
@@ -37,6 +38,40 @@ interface LoginResponseData {
     picture_5: string,
     location_permission: boolean,
     created_at: string
+  };
+}
+
+interface GetUserResponseData {
+  message: string;
+  user: {
+    username: string,
+    fist_name: string,
+    last_name: string,
+    age: number,
+    complete_register: boolean,
+    gender: string,
+    sexual_preferences: string,
+    biography: string,
+    picture_1: string,
+    picture_2: string,
+    picture_3: string,
+    picture_4: string,
+    picture_5: string,
+    location_permission: boolean
+  };
+}
+
+interface CompleteRegisterResponseData {
+  message: string;
+  user: {
+    gender: string,
+    sexual_preferences: string,
+    biography: string,
+    picture_1: string,
+    picture_2: string,
+    picture_3: string,
+    picture_4: string,
+    picture_5: string,
   };
 }
 
@@ -58,18 +93,45 @@ export class AuthService {
     this.isLogged.next(usr);
   }
 
-  getUserInfos() {
-    if (!this.localStorageService.getItem("username"))
-      return null;
-    const data = {
-      username: this.localStorageService.getItem("username") || null
-    }
-    return data;
+  getUserInfos(username: string): Observable<GetUserResponseData> {
+    console.log("getUserInfos")
+    return this.http.post<GetUserResponseData>('http://localhost:3000/users/username', { username }, { withCredentials: true });
+    //   .subscribe({
+    //     next: (response) => {
+    //       console.log('get successful:', response);
+    //       return response;
+    //     },
+    //     error: (error) => {
+    //       console.error('get failed:', error);
+    //       return null;
+    //     },
+    //     complete: () => {
+    //     }
+    // });
+  }
+
+  test(username: string): any {
+    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/username', { username }, { withCredentials: true })
+      .subscribe({
+        next: (response) => {
+          console.log('CompleteRegister success:', response);
+        },
+        error: (error) => {
+          console.error('CompleteRegister failed:', error);
+        }
+      });
   }
 
   checkLog() {
-    if (!this.localStorageService.getItem("username"))
+    if (!this.localStorageService.getItem(localStorageName.username))
       return false;
+    return true;
+  }
+
+  checkCompleteRegister() {
+    if (!this.localStorageService.getItem(localStorageName.completeRegister)) {
+      return false;
+    }
     return true;
   }
 
@@ -78,7 +140,6 @@ export class AuthService {
       .subscribe({
         next: (response) => {
           this.localStorageService.setMultipleItems(
-            { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
             { key: localStorageName.firstName, value: response.user.fist_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
@@ -100,7 +161,6 @@ export class AuthService {
         next: (response) => {
           console.log('Login successful:', response);
           this.localStorageService.setMultipleItems(
-            { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
             { key: localStorageName.firstName, value: response.user.fist_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
@@ -140,7 +200,7 @@ export class AuthService {
   }
 
   _getUserInfosBack() {
-    this.http.get('http://localhost:3000/users/' + this.localStorageService.getItem('id'), { withCredentials: true })
+    this.http.get('http://localhost:3000/users/1', { withCredentials: true })
       .subscribe({
         next: (response) => {
           console.log('get successful:', response);
@@ -153,14 +213,14 @@ export class AuthService {
       });
   }
 
-  _frontLogOut(errorHasOccured: boolean) {
+  _frontLogOut(error: string) {
     this.localStorageService.removeAllUserItem();
     this.router.navigate(['']);
     this.logEmitChange(false);
-    if (errorHasOccured) {
+    if (error.length > 0) {
       const dialogData = {
         title: 'Server error',
-        text: 'An authentication error has occured, please log in again.'
+        text: error
       };
       this.dialogService.openDialog(dialogData);
     }

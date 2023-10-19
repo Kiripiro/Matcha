@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
@@ -28,7 +28,11 @@ import { FormsModule } from '@angular/forms';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DialogService } from 'src/services/dialog.service';
+import { initializeApp } from 'src/services/app-initializer';
+import { CarouselComponent } from './utils/carousel/carousel.component';
+import { ProfilComponent } from './profil/profil.component';
 import { ChatComponent } from './chat/chat.component';
 import { ChatService } from 'src/services/chat.service';
 
@@ -40,6 +44,8 @@ import { ChatService } from 'src/services/chat.service';
     HomeComponent,
     NavBarComponent,
     DialogComponent,
+    CarouselComponent,
+    ProfilComponent,
     ChatComponent
   ],
   imports: [
@@ -60,6 +66,7 @@ import { ChatService } from 'src/services/chat.service';
     MatTabsModule,
     FormsModule,
     MatDialogModule,
+    MatProgressBarModule,
   ],
   providers: [
     {
@@ -67,6 +74,11 @@ import { ChatService } from 'src/services/chat.service';
       useClass: HttpRequestInterceptor,
       multi: true,
       deps: [AuthService]
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => initializeApp,
+      multi: true,
     },
     AuthService,
     DialogService,

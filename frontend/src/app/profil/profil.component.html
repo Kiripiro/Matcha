@@ -1,0 +1,20 @@
+<div class="centerDiv">
+    <div class="profilCard" *ngIf="!loading && !error">
+        <div class="carouselDiv">
+            <app-carousel [images]="img" [title]="userInfos.username"></app-carousel>
+        </div>
+        <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
+        <p id="biography">{{userInfos.biography}}</p>
+        <div id="detailsDiv">
+            <p>Sexual preference: {{userInfos.sexual_preference}}</p>
+            <p>Location: Perpette les bains</p>
+        </div>
+    </div>
+    <div class="errorCard" *ngIf="error">
+        <p>User not found</p>
+    </div>
+    <div class="loadingCard" *ngIf="loading && !error">
+        <p>Loading</p>
+        <mat-progress-bar mode="query"></mat-progress-bar>
+    </div>
+</div>
