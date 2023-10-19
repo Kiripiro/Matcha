@@ -140,6 +140,7 @@ export class AuthService {
       .subscribe({
         next: (response) => {
           this.localStorageService.setMultipleItems(
+            { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
             { key: localStorageName.firstName, value: response.user.fist_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
@@ -161,6 +162,7 @@ export class AuthService {
         next: (response) => {
           console.log('Login successful:', response);
           this.localStorageService.setMultipleItems(
+            { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
             { key: localStorageName.firstName, value: response.user.fist_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
@@ -194,7 +196,31 @@ export class AuthService {
           console.error('Registration failed:', error);
         },
         complete: () => {
-          this._frontLogOut(false);
+          this._frontLogOut('');
+        }
+      });
+  }
+
+  completeRegister(gender: string, sexualPreference: string, biography: string, files: string[]): any {
+    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexualPreference, biography, files }, { withCredentials: true })
+      .subscribe({
+        next: (response) => {
+          console.log('CompleteRegister success:', response);
+          this.localStorageService.setMultipleItems(
+            { key: localStorageName.completeRegister, value: true },
+            { key: localStorageName.gender, value: response.user.gender || "" },
+            { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
+            { key: localStorageName.biography, value: response.user.biography || "" },
+            { key: localStorageName.picture1, value: response.user.picture_1 || "" },
+            { key: localStorageName.picture2, value: response.user.picture_2 || "" },
+            { key: localStorageName.picture3, value: response.user.picture_3 || "" },
+            { key: localStorageName.picture4, value: response.user.picture_4 || "" },
+            { key: localStorageName.picture5, value: response.user.picture_5 || "" },
+          );
+          this.router.navigate(['']);
+        },
+        error: (error) => {
+          console.error('CompleteRegister failed:', error);
         }
       });
   }

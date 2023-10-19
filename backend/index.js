@@ -19,6 +19,9 @@ require('./config/checkEnv');
 const app = express();
 const server = http.createServer(app);
 
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ extended: true, limit: '100mb' }));
+
 const port = process.env.NODE_PORT;
 
 var corsOptions = {
@@ -42,6 +45,7 @@ app.use("/likes", likesRouter);
 app.use("/reports", reportsRouter);
 app.use("/views", viewsRouter);
 app.use("/messages", messagesRouter);
+
 
 app.get('/', (req, res) => {
     res.send('Hello, Express!');
