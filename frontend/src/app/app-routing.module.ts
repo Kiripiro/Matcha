@@ -4,11 +4,11 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { HomeComponent } from './home/home.component';
 import { AuthModule } from './auth/auth.module';
 import { ChatComponent } from './chat/chat.component';
-import { ProfilComponent } from './profil/profil.component';
+import { ProfileComponent } from './profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'profil/:username', component: ProfilComponent },
+  { path: 'profile/:username', component: ProfileComponent },
   { path: 'auth', loadChildren: () => AuthModule },
   { path: 'chat', component: ChatComponent },
   { path: 'notFound', component: NotFoundComponent },

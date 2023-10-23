@@ -268,11 +268,11 @@ class UserController extends BaseController {
                     "gender": user.gender || '',
                     "sexual_preferences": user.sexual_preferences || '',
                     "biography": user.biography || '',
-                    "picture_1": user.picture_1 || '',
-                    "picture_2": user.picture_2 || '',
-                    "picture_3": user.picture_3 || '',
-                    "picture_4": user.picture_4 || '',
-                    "picture_5": user.picture_5 || ''
+                    "picture_1": await this._getPictureDataFromPath(user.picture_1),
+                    "picture_2": await this._getPictureDataFromPath(user.picture_2),
+                    "picture_3": await this._getPictureDataFromPath(user.picture_3),
+                    "picture_4": await this._getPictureDataFromPath(user.picture_4),
+                    "picture_5": await this._getPictureDataFromPath(user.picture_5)
                 }
                 res.json(userReturn);
             }
@@ -289,9 +289,6 @@ class UserController extends BaseController {
                 res.status(404).json({ error: 'User not found' })
                 return;
             } else {
-                console.log("user.picture_1 = " + user.picture_1);
-                const a = await this._getPictureDataFromPath(user.picture_1);
-                // console.log("a = " + a);
                 const userReturn = {
                     "username": user.username || '',
                     "first_name": user.first_name || '',
@@ -452,7 +449,6 @@ class UserController extends BaseController {
                     reject(error);
                 } else {
                     const imageString = data.toString('base64');
-                    console.log("imageString");
                     resolve(imageString);
                 }
             });

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../../../services/auth.service';
+import { SocketioService } from 'src/services/socketio.service';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private socketService: SocketioService
   ) {
 
   }

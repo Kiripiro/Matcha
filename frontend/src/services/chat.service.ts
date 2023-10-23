@@ -3,13 +3,15 @@ import { io, Socket } from 'socket.io-client';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
-
+import { SocketioService } from './socketio.service';
 
 interface User {
     id: number;
     username: string;
     first_name: string;
     last_name: string;
+    picture_1: string;
+    status?: string;
 }
 
 interface Message {
@@ -25,20 +27,19 @@ interface Message {
 })
 export class ChatService {
     private url = 'http://localhost:3000';
-    private socket: Socket;
     private id: number;
     private matchesInfos: User[] = [];
 
     constructor(
         private http: HttpClient,
         private localStorageService: LocalStorageService,
+        private socketService: SocketioService
     ) {
-        this.socket = io(this.url);
         this.id = this.localStorageService.getItem('id');
     }
 
     public initSocket(): void {
-        this.socket.emit('init', this.id);
+        this.socketService.initSocket();
     }
 
     public getMatches(): User[] {
@@ -50,8 +51,12 @@ export class ChatService {
                         id: match,
                         username: user.username,
                         first_name: user.first_name,
-                        last_name: user.last_name
+                        last_name: user.last_name,
+                        picture_1: 'data:image/jpeg;base64,' + user.picture_1,
+                        status: user.status
                     };
+                    if (this.matchesInfos.find((user) => user.id === retUser.id))
+                        return;
                     this.matchesInfos.push(retUser);
                 });
             });
@@ -60,19 +65,23 @@ export class ChatService {
     }
 
     public sendMessage(message: string, recipient_id: number): Observable<any> {
-        this.socket.emit('new-message', { message: message, author_id: this.id, recipient_id: recipient_id, date: new Date() });
+        this.socketService.sendMessage(message, recipient_id);
         return this.http.post(this.url + '/messages/create', { message: message, author_id: this.id, recipient_id: recipient_id }, { withCredentials: true });
     }
 
-    public getMessages = () => {
-        return new Observable((observer) => {
-            this.socket.on('refresh', (message) => {
-                observer.next(message);
-            });
-        });
+    public getMessages(): Observable<any> {
+        return this.socketService.getMessages();
     }
 
     public getMessagesFromUser(recipient: User): Observable<Message[]> {
         return this.http.get<Message[]>(this.url + '/messages/' + this.id + "/" + recipient.id, { withCredentials: true });
     }
-}
+
+    public getStatus(recipient: User): Observable<any> {
+        return this.socketService.getStatus(recipient);
+    }
+
+    public handleDisconnect(): Observable<any> {
+        return this.socketService.handleDisconnect();
+    }
+} 

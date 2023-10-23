@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
+import { SocketioService } from './socketio.service';
 
 interface RegisterResponseData {
   message: string;
@@ -79,13 +80,15 @@ interface CompleteRegisterResponseData {
   providedIn: 'root'
 })
 export class AuthService {
-
   constructor(
     private http: HttpClient,
     private router: Router,
     private localStorageService: LocalStorageService,
-    private dialogService: DialogService
-  ) { }
+    private dialogService: DialogService,
+    private socketService: SocketioService
+  ) {
+    this.socketService.initSocket();
+  }
 
   private isLogged = new Subject<boolean>();
   public isLoggedEmitter = this.isLogged.asObservable();
@@ -125,6 +128,8 @@ export class AuthService {
   checkLog() {
     if (!this.localStorageService.getItem(localStorageName.username))
       return false;
+    console.log('initsocket auth')
+    // this.socketService.updateStatus(true);
     return true;
   }
 
@@ -178,6 +183,7 @@ export class AuthService {
             { key: localStorageName.createdAt, value: response.user.created_at || "" },
           );
           this.router.navigate(['']);
+          // this.socketService.updateStatus(true);
           this.logEmitChange(true);
         },
         error: (error) => {
@@ -187,6 +193,8 @@ export class AuthService {
   }
 
   logout() {
+    // this.socketService.updateStatus(false);
+    this.socketService.disconnect();
     this.http.post('http://localhost:3000/users/logout', {}, { withCredentials: true })
       .subscribe({
         next: (response) => {
@@ -218,6 +226,7 @@ export class AuthService {
             { key: localStorageName.picture5, value: response.user.picture_5 || "" },
           );
           this.router.navigate(['']);
+
         },
         error: (error) => {
           console.error('CompleteRegister failed:', error);
@@ -240,9 +249,10 @@ export class AuthService {
   }
 
   _frontLogOut(error: string) {
+    this.logEmitChange(false);
+    // this.socketService.updateStatus(false);
     this.localStorageService.removeAllUserItem();
     this.router.navigate(['']);
-    this.logEmitChange(false);
     if (error.length > 0) {
       const dialogData = {
         title: 'Server error',

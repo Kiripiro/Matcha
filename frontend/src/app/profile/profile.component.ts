@@ -5,11 +5,11 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-profil',
-  templateUrl: './profil.component.html',
-  styleUrls: ['./profil.component.scss', '../app.component.scss']
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss', '../app.component.scss']
 })
-export class ProfilComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
   username = "";
   userInfos: any;

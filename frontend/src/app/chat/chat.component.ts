@@ -1,4 +1,5 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { ChatService } from 'src/services/chat.service';
 
 interface User {
@@ -6,6 +7,8 @@ interface User {
   username: string;
   first_name: string;
   last_name: string;
+  picture_1: string;
+  status?: string;
 }
 
 interface Message {
@@ -23,13 +26,14 @@ interface Message {
 })
 export class ChatComponent {
   message!: string;
-  messages: string[] = [];
   users: User[] = [];
   selectedConversation: User | null = null;
   selectedConversationMessages: Message[] = [];
 
   constructor(
-    private chatService: ChatService
+    private chatService: ChatService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private router: Router
   ) { }
 
 
@@ -38,21 +42,46 @@ export class ChatComponent {
     this.chatService
       .getMessages()
       .subscribe((message: unknown) => {
-        console.log(message);
         this.selectedConversationMessages.push(message as Message);
+        this.scrollToBottom();
       });
     this.getMatches();
+    this.users.forEach(users => {
+      this.chatService.getStatus(users).subscribe({
+        next: (status: string) => {
+          console.log(status);
+          users.status = status;
+        },
+        error: (err: any) => {
+          console.log(err);
+        }
+      });
+    });
+    this.chatService.handleDisconnect().subscribe({
+      next: (id: number) => {
+        this.users.forEach(user => {
+          console.log(user);
+          if (user.id === id) {
+            user.status = 'offline';
+          }
+        });
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
   }
 
   @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
   @ViewChild('inputContainer') private inputContainer!: ElementRef;
   scrollToBottom(): void {
     try {
-      const container = this.myScrollContainer.nativeElement;
+      this.changeDetectorRef.detectChanges();
+      const container = this.myScrollContainer.nativeElement as HTMLElement;
       const lastMessage = container.lastElementChild as HTMLElement;
       const inputContainer = this.inputContainer.nativeElement as HTMLElement;
 
-      if (lastMessage) {
+      if (lastMessage && container && inputContainer) {
         const scrollPosition = lastMessage.offsetTop - container.clientHeight + lastMessage.clientHeight + inputContainer.clientHeight;
         container.scrollTop = scrollPosition;
       }
@@ -67,7 +96,9 @@ export class ChatComponent {
       id: match.id,
       username: match.username,
       first_name: match.first_name,
-      last_name: match.last_name
+      last_name: match.last_name,
+      picture_1: 'data:image/jpeg;base64,' + match.picture_1,
+      status: match.status
     }));
     this.users = matches;
   }
@@ -96,6 +127,17 @@ export class ChatComponent {
 
   selectUser(user: User) {
     this.selectedConversation = user;
+
+    this.chatService.getStatus(user).subscribe({
+      next: (status: string) => {
+        console.log(status);
+        user.status = status;
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+
     this.chatService.getMessagesFromUser(user).subscribe({
       next: (messages: Message[]) => {
         messages.forEach((message) => {
@@ -119,5 +161,9 @@ export class ChatComponent {
         }
       }
     });
+  }
+
+  viewProfile(user: User) {
+    this.router.navigate(['/profile/' + user.username]);
   }
 }

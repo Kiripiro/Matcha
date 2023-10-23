@@ -32,10 +32,10 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DialogService } from 'src/services/dialog.service';
 import { initializeApp } from 'src/services/app-initializer';
 import { CarouselComponent } from './utils/carousel/carousel.component';
-import { ProfilComponent } from './profil/profil.component';
+import { ProfileComponent } from './profile/profile.component';
 import { ChatComponent } from './chat/chat.component';
 import { ChatService } from 'src/services/chat.service';
-
+import { SocketioService } from 'src/services/socketio.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,7 @@ import { ChatService } from 'src/services/chat.service';
     NavBarComponent,
     DialogComponent,
     CarouselComponent,
-    ProfilComponent,
+    ProfileComponent,
     ChatComponent
   ],
   imports: [
@@ -82,7 +82,8 @@ import { ChatService } from 'src/services/chat.service';
     },
     AuthService,
     DialogService,
-    ChatService
+    ChatService,
+    SocketioService
   ],
   bootstrap: [AppComponent]
 })
