@@ -202,8 +202,9 @@ export class AuthService {
       });
   }
 
-  completeRegister(gender: string, sexualPreference: string, biography: string, files: string[]): any {
-    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexualPreference, biography, files }, { withCredentials: true })
+  completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[]): any {
+    console.log("sexual preference = " + sexual_preferences)
+    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexual_preferences, biography, files }, { withCredentials: true })
       .subscribe({
         next: (response) => {
           console.log('CompleteRegister success:', response);

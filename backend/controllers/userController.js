@@ -182,6 +182,8 @@ class UserController extends BaseController {
         try {
             const userId = req.user.userId;
             const userData = req.body;
+            console.log("userData = ");
+            console.log(userData);
             var pictures = await this._savePictures(userData.files, userId);
             if (pictures == null) {
                 res.status(400).json({ error: 'Invalid pictures files' });
@@ -191,6 +193,7 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'Picture missing' });
                 return;
             }
+            console.log("user.sexual_preferences = " + userData.sexual_preferences);
             const data = {
                 "complete_register": true,
                 "gender": userData.gender,

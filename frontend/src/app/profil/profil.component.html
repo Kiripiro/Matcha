@@ -3,10 +3,16 @@
         <div class="carouselDiv">
             <app-carousel [images]="img" [title]="userInfos.username"></app-carousel>
         </div>
-        <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
+        <div id="mainDiv">
+            <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
+                <mat-icon>home</mat-icon>
+            </button>
+            <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
+        </div>
         <p id="biography">{{userInfos.biography}}</p>
         <div id="detailsDiv">
-            <p>Sexual preference: {{userInfos.sexual_preference}}</p>
+            <p>Gender: {{userInfos.gender}}</p>
+            <p>Sexual preference: {{userInfos.sexual_preferences}}</p>
             <p>Location: Perpette les bains</p>
         </div>
     </div>

@@ -24,25 +24,33 @@ app-profil {
     align-items: center;
     background-color: $primary;
     margin-top: 1rem;
+    margin-bottom: 1rem;
 
     .carouselDiv {
         height: 700px;
         width: 700px;
     }
 
-    #nameAge {
-        font-size: 1.5rem;
-        font-weight: 600;
-        margin-top: 1rem;
-        padding-top: 1rem;
-        padding-bottom: 1rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        border-radius: 15px;
-        width: auto;
-        background-color: $surface;
-        color: $onSurface;
-        text-align: center;
+    #mainDiv {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        #nameAge {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            border-radius: 15px;
+            width: auto;
+            background-color: $surface;
+            color: $onSurface;
+            text-align: center;
+        }
     }
 
     #biography {
@@ -53,6 +61,28 @@ app-profil {
         margin-top: 0.5rem;
         // padding-left: 1rem;
         // padding-right: 1rem;
+    }
+
+    #detailsDiv {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 650px;
+
+        p {
+            font-size: 1.0rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            border-radius: 15px;
+            width: auto;
+            background-color: $surfaceAlt;
+            color: $onSurface;
+            text-align: center;
+        }
     }
 }
 

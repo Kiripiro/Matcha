@@ -3,6 +3,7 @@ import { LocalStorageService, localStorageName } from '../../services/local-stor
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-profil',

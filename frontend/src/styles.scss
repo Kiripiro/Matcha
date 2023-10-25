@@ -1,6 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
+html,
+body {
+    height: 100%;
+}
+
 body {
     margin: 0;
     font-family: Poppins, Roboto, "Helvetica Neue", sans-serif;
@@ -23,4 +27,8 @@ app-root {
 
 .ng-star-inserted {
     flex-grow: 1;
+}
+
+.material-icons {
+    font-family: 'Material Icons' !important;
 }
