@@ -1,7 +1,7 @@
 @import '../app.component.scss';
 
 #nav-bar {
-    height: 90px;
+    height: 8.5vh;
     width: 100%;
     background-color: $primary;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -28,7 +28,7 @@
         background-color: $onPrimaryAlt;
         color: white;
     }
-    
+
     .secondaryButton {
         background-color: $onPrimary;
         color: white;

@@ -1,6 +1,7 @@
 const express = require('express');
 const MessagesController = require('../controllers/messagesController');
 const router = express.Router();
+const auth = require('../middleware/auth');
 
 router.get('/author/:id', async (req, res) => {
     try {

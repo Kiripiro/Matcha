@@ -5,10 +5,12 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
+import { SocketioService } from './socketio.service';
 
 interface RegisterResponseData {
   message: string;
   user: {
+    id: number,
     username: string,
     email: string,
     fist_name: string,
@@ -21,12 +23,13 @@ interface RegisterResponseData {
 interface LoginResponseData {
   message: string;
   user: {
+    id: number,
     username: string,
     fist_name: string,
     last_name: string,
     age: number,
-    complete_register: boolean,
     gender: string,
+    complete_register: boolean,
     sexual_preferences: string,
     biography: string,
     picture_1: string,
@@ -77,13 +80,15 @@ interface CompleteRegisterResponseData {
   providedIn: 'root'
 })
 export class AuthService {
-
   constructor(
     private http: HttpClient,
     private router: Router,
     private localStorageService: LocalStorageService,
-    private dialogService: DialogService
-  ) { }
+    private dialogService: DialogService,
+    private socketService: SocketioService
+  ) {
+    this.socketService.initSocket();
+  }
 
   private isLogged = new Subject<boolean>();
   public isLoggedEmitter = this.isLogged.asObservable();
@@ -123,6 +128,8 @@ export class AuthService {
   checkLog() {
     if (!this.localStorageService.getItem(localStorageName.username))
       return false;
+    console.log('initsocket auth')
+    // this.socketService.updateStatus(true);
     return true;
   }
 
@@ -138,13 +145,14 @@ export class AuthService {
       .subscribe({
         next: (response) => {
           this.localStorageService.setMultipleItems(
+            { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
             { key: localStorageName.firstName, value: response.user.fist_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
             { key: localStorageName.locationPermission, value: response.user.location_permission || false }
           );
-          this.router.navigate(['auth/completeRegister']);
+          this.router.navigate(['']);
           this.logEmitChange(true);
         },
         error: (error) => {
@@ -159,11 +167,11 @@ export class AuthService {
         next: (response) => {
           console.log('Login successful:', response);
           this.localStorageService.setMultipleItems(
+            { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
             { key: localStorageName.firstName, value: response.user.fist_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
-            { key: localStorageName.completeRegister, value: response.user.complete_register || false },
             { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
             { key: localStorageName.biography, value: response.user.biography || "" },
             { key: localStorageName.picture1, value: response.user.picture_1 || "" },
@@ -174,11 +182,8 @@ export class AuthService {
             { key: localStorageName.locationPermission, value: response.user.location_permission || false },
             { key: localStorageName.createdAt, value: response.user.created_at || "" },
           );
-          if (this.checkCompleteRegister()) {
-            this.router.navigate(['']);
-          } else {
-            this.router.navigate(['auth/completeRegister']);
-          }
+          this.router.navigate(['']);
+          // this.socketService.updateStatus(true);
           this.logEmitChange(true);
         },
         error: (error) => {
@@ -188,6 +193,8 @@ export class AuthService {
   }
 
   logout() {
+    // this.socketService.updateStatus(false);
+    this.socketService.disconnect();
     this.http.post('http://localhost:3000/users/logout', {}, { withCredentials: true })
       .subscribe({
         next: (response) => {
@@ -220,6 +227,7 @@ export class AuthService {
             { key: localStorageName.picture5, value: response.user.picture_5 || "" },
           );
           this.router.navigate(['']);
+
         },
         error: (error) => {
           console.error('CompleteRegister failed:', error);
@@ -242,9 +250,10 @@ export class AuthService {
   }
 
   _frontLogOut(error: string) {
+    this.logEmitChange(false);
+    // this.socketService.updateStatus(false);
     this.localStorageService.removeAllUserItem();
     this.router.navigate(['']);
-    this.logEmitChange(false);
     if (error.length > 0) {
       const dialogData = {
         title: 'Server error',

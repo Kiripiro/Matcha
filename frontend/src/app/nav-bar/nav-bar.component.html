@@ -7,6 +7,7 @@
     </div>
     <div *ngIf="isLoggedIn">
       <button mat-button class="primaryButton" [routerLink]="['profil/' + username]">Profil</button>
+      <button mat-button class="primaryButton" [routerLink]="['chat']">Chat</button>
       <button mat-button class="secondaryButton" (click)="logOut()">Log out</button>
     </div>
   </div>

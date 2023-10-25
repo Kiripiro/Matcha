@@ -1,9 +1,7 @@
-import { NgModule,APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
-
 import { HttpRequestInterceptor } from '../services/http.interceptor';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -12,23 +10,32 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { HomeComponent } from './home/home.component';
 import { AuthModule } from './auth/auth.module';
+
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatIconModule} from '@angular/material/icon';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormsModule} from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { FormsModule } from '@angular/forms';
+
+
 import { NavBarComponent } from './nav-bar/nav-bar.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DialogService } from 'src/services/dialog.service';
 import { initializeApp } from 'src/services/app-initializer';
 import { CarouselComponent } from './utils/carousel/carousel.component';
-import { ProfilComponent } from './profil/profil.component';
-
+import { ProfileComponent } from './profile/profile.component';
+import { ChatComponent } from './chat/chat.component';
+import { ChatService } from 'src/services/chat.service';
+import { SocketioService } from 'src/services/socketio.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +45,8 @@ import { ProfilComponent } from './profil/profil.component';
     NavBarComponent,
     DialogComponent,
     CarouselComponent,
-    ProfilComponent
+    ProfileComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
@@ -52,9 +60,13 @@ import { ProfilComponent } from './profil/profil.component';
     MatInputModule,
     MatFormFieldModule,
     MatToolbarModule,
+    MatListModule,
+    MatSidenavModule,
+    MatCardModule,
+    MatTabsModule,
     FormsModule,
     MatDialogModule,
-    MatProgressBarModule
+    MatProgressBarModule,
   ],
   providers: [
     {
@@ -69,7 +81,9 @@ import { ProfilComponent } from './profil/profil.component';
       multi: true,
     },
     AuthService,
-    DialogService
+    DialogService,
+    ChatService,
+    SocketioService
   ],
   bootstrap: [AppComponent]
 })
