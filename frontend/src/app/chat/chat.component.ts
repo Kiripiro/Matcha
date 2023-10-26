@@ -19,6 +19,11 @@ interface Message {
   date: Date;
 }
 
+interface StatusData {
+  userId: number;
+  status: string;
+}
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -38,6 +43,14 @@ export class ChatComponent {
 
   ngOnInit() {
     this.chatService.initSocket();
+    this.chatService
+      .getAllUserStatusEvents()
+      .subscribe((statusData: StatusData) => {
+        console.log("user status update, userId = " + statusData.userId + ", status = " + statusData.status)
+        if (this.selectedConversation?.id == statusData.userId) {
+          this.selectedConversation.status = statusData.status;
+        }
+      });
     this.chatService
       .getMessages()
       .subscribe((message: unknown) => {
@@ -104,11 +117,11 @@ export class ChatComponent {
     this.selectedConversation = user;
 
     this.chatService.getStatus(user).subscribe({
-      next: (status: string) => {
-        console.log(status);
-        user.status = status;
-        if (this.selectedConversation)
-          this.selectedConversation.status = status;
+      next: (statusData: StatusData) => {
+        console.log(statusData);
+        user.status = statusData.status;
+        if (this.selectedConversation && this.selectedConversation.id == statusData.userId)
+          this.selectedConversation.status = statusData.status;
       },
       error: (err: any) => {
         console.log(err);

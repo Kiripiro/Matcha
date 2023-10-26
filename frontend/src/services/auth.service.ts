@@ -155,6 +155,7 @@ export class AuthService {
             this.socketService.initSocket();
           }
           this.router.navigate(['']);
+          location.reload();
           this.logEmitChange(true);
         },
         error: (error) => {
@@ -187,7 +188,9 @@ export class AuthService {
           if (!this.socketService.socketExists()) {
             this.socketService.initSocket();
           }
+          this.socketService.userConnect(response.user.id || -1);
           this.router.navigate(['']);
+          location.reload();
           this.logEmitChange(true);
         },
         error: (error) => {

@@ -4,10 +4,13 @@
             <app-carousel [images]="img" [title]="userInfos.username"></app-carousel>
         </div>
         <div id="mainDiv">
-            <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
-                <mat-icon>home</mat-icon>
+            <button mat-fab color="primary" aria-label="Like">
+                <mat-icon>favorite</mat-icon>
             </button>
             <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
+            <button mat-fab color="primary" aria-label="Chat">
+                <mat-icon>chat</mat-icon>
+            </button>
         </div>
         <p id="biography">{{userInfos.biography}}</p>
         <div id="detailsDiv">

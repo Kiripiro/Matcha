@@ -72,6 +72,10 @@ export class ChatService {
         return this.socketService.getMessages();
     }
 
+    public getAllUserStatusEvents(): Observable<any> {
+        return this.socketService.getAllUserStatusEvents();
+    }
+
     public getMessagesFromUser(recipient: User): Observable<Message[]> {
         return this.http.get<Message[]>(this.url + '/messages/' + this.id + "/" + recipient.id, { withCredentials: true });
     }

@@ -11,6 +11,12 @@ interface User {
     picture_1: string;
     status?: string;
 }
+
+interface StatusData {
+    userId: number;
+    status: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -45,8 +51,13 @@ export class SocketioService {
 
     public disconnect(): void {
         console.log("disconnect");
-        this.sendUserStatus('Offline');
+        this.sendUserStatus('Offline'); //voir si utile
         this.socket.disconnect();
+    }
+
+    public userConnect(userId: number): void {
+        console.log("userConnected"); //"connect" is a reserved event name
+        this.socket.emit('userConnected', userId);
     }
 
     public sendMessage(message: string, recipient_id: number): void {
@@ -62,6 +73,14 @@ export class SocketioService {
         });
     }
 
+    public getAllUserStatusEvents(): Observable<any> {
+        return new Observable((observer) => {
+            this.socket.on('all-users-status-events', (status: StatusData) => {
+                observer.next(status);
+            });
+        });
+    }
+
     private sendUserStatus(status: string): void {
         console.log("sendUserStatus", status)
         this.socket.emit('user-status', { userId: this.id, status });
@@ -70,9 +89,9 @@ export class SocketioService {
     public getStatus(recipient: User): Observable<any> {
         return new Observable((observer) => {
             this.socket.emit('check-status', { senderId: this.id, recipientId: recipient.id })
-            this.socket.on('status', (status) => {
-                console.log("status", status);
-                observer.next(status);
+            this.socket.on('status', (statusData: StatusData) => {
+                console.log("status", statusData);
+                observer.next(statusData);
             });
         });
     }

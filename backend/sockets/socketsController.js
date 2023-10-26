@@ -2,24 +2,42 @@ module.exports = (io) => {
     const users = {};
 
     io.on('connection', (socket) => {
-        console.log('a user connected', socket.id);
-        console.log('users', users);
+        console.log('CONNECTION a user connected', socket.id);
+        console.log('CONNECTION users', users);
+
+        socket.on('userConnected', (userId) => { //"connect" is a reserved event name
+            users[userId] = { socketId: socket.id, status: 'Online' };
+            console.log("USERCONNECTED users = ", users)
+            const status = 'Online';
+            io.emit('all-users-status-events', { userId: userId, status: status }, {
+                broadcast: true,
+            });
+        });
 
         socket.on('disconnect', () => {
             const userId = Object.keys(users).find(key => users[key].socketId === socket.id);
-            console.log('disconnect', userId);
+            console.log('DISCONNECT userId = ', userId);
             if (userId) {
-                console.log('user disconnected', userId);
                 users[userId].status = 'Offline';
-                io.emit('user-disconnected', userId);
+                io.emit('user-disconnected', userId); //voir si utile
                 console.log(users);
+
+                const status = 'Offline';
+                io.emit('all-users-status-events', { userId: userId, status: status }, {
+                    broadcast: true,
+                });
             }
         });
 
         socket.on('init', (userId) => {
             users[userId] = { socketId: socket.id, status: 'Online' };
-            io.emit('user-connected', userId);
-            console.log('user connected', users);
+            const status = 'Online';
+            io.emit('all-users-status-events', { userId, status }, {
+                broadcast: true,
+            });
+
+            io.emit('user-connected', userId); //voir si utile
+            console.log('INIT user connected', users);
         });
 
         socket.on('new-message', (msg) => {
@@ -37,7 +55,9 @@ module.exports = (io) => {
             const senderSocketId = users[usersIds.senderId]?.socketId;
             if (recipientSocketId && userId) {
                 console.log('check-status', userId, recipientId, users[recipientId].status);
-                io.to(senderSocketId).emit('status', users[recipientId].status);
+                // io.to(senderSocketId).emit('status', users[recipientId].status);
+                const status = users[recipientId].status;
+                io.to(senderSocketId).emit('status', { userId: recipientId, status: status });
             }
         });
 
