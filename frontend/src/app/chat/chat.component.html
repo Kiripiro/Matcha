@@ -38,10 +38,10 @@
                             <p>@{{ selectedConversation.username }}</p>
                             <div class="user-status">
                                 <div class="dot"
-                                    [ngClass]="{'online': selectedConversation.status, 'offline': !selectedConversation.status}">
+                                    [ngClass]="{'online': selectedConversation.status === 'Online', 'offline': selectedConversation.status === 'Offline'}">
                                 </div>
                                 <div class="status-text">
-                                    {{ selectedConversation.status ? 'Online' : 'Offline' }}
+                                    {{ selectedConversation.status }}
                                 </div>
                             </div>
                         </div>

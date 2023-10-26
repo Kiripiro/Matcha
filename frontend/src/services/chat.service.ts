@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import { io, Socket } from 'socket.io-client';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
@@ -11,7 +10,7 @@ interface User {
     first_name: string;
     last_name: string;
     picture_1: string;
-    status?: string;
+    status: string;
 }
 
 interface Message {
@@ -53,7 +52,7 @@ export class ChatService {
                         first_name: user.first_name,
                         last_name: user.last_name,
                         picture_1: 'data:image/jpeg;base64,' + user.picture_1,
-                        status: user.status
+                        status: "Offline"
                     };
                     if (this.matchesInfos.find((user) => user.id === retUser.id))
                         return;

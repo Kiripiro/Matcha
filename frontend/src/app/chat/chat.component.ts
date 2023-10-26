@@ -8,7 +8,7 @@ interface User {
   first_name: string;
   last_name: string;
   picture_1: string;
-  status?: string;
+  status: string;
 }
 
 interface Message {
@@ -36,7 +36,6 @@ export class ChatComponent {
     private router: Router
   ) { }
 
-
   ngOnInit() {
     this.chatService.initSocket();
     this.chatService
@@ -46,30 +45,6 @@ export class ChatComponent {
         this.scrollToBottom();
       });
     this.getMatches();
-    this.users.forEach(users => {
-      this.chatService.getStatus(users).subscribe({
-        next: (status: string) => {
-          console.log(status);
-          users.status = status;
-        },
-        error: (err: any) => {
-          console.log(err);
-        }
-      });
-    });
-    this.chatService.handleDisconnect().subscribe({
-      next: (id: number) => {
-        this.users.forEach(user => {
-          console.log(user);
-          if (user.id === id) {
-            user.status = 'offline';
-          }
-        });
-      },
-      error: (err: any) => {
-        console.log(err);
-      }
-    });
   }
 
   @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
@@ -132,6 +107,8 @@ export class ChatComponent {
       next: (status: string) => {
         console.log(status);
         user.status = status;
+        if (this.selectedConversation)
+          this.selectedConversation.status = status;
       },
       error: (err: any) => {
         console.log(err);

@@ -25,6 +25,9 @@ export class SocketioService {
         this.id = this.localStorageService.getItem('id');
         this.socket = io(this.url, {
             query: { userId: this.id },
+            reconnection: true,
+            reconnectionAttempts: 3,
+            timeout: 10000
         });
     }
 
@@ -34,20 +37,16 @@ export class SocketioService {
 
     public initSocket(): void {
         if (this.id !== null && this.socketExists()) {
+            console.log("initSocket");
             this.socket.emit('init', this.id);
-            this.sendUserStatus('online');
+            this.sendUserStatus('Online');
         }
-    }
-
-    private sendUserStatus(status: string): void {
-        this.socket.emit('user-status', { userId: this.id, status });
     }
 
     public disconnect(): void {
-        if (this.socket) {
-            this.sendUserStatus('offline');
-            this.socket.disconnect();
-        }
+        console.log("disconnect");
+        this.sendUserStatus('Offline');
+        this.socket.disconnect();
     }
 
     public sendMessage(message: string, recipient_id: number): void {
@@ -63,20 +62,17 @@ export class SocketioService {
         });
     }
 
+    private sendUserStatus(status: string): void {
+        console.log("sendUserStatus", status)
+        this.socket.emit('user-status', { userId: this.id, status });
+    }
+
     public getStatus(recipient: User): Observable<any> {
         return new Observable((observer) => {
             this.socket.emit('check-status', { senderId: this.id, recipientId: recipient.id })
             this.socket.on('status', (status) => {
                 console.log("status", status);
                 observer.next(status);
-            });
-        });
-    }
-
-    public userDisconnected(): Observable<any> {
-        return new Observable((observer) => {
-            this.socket.on('user-disconnected', (userId) => {
-                observer.next(userId);
             });
         });
     }

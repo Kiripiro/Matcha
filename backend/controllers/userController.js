@@ -184,8 +184,8 @@ class UserController extends BaseController {
         try {
             const userId = req.user.userId;
             const userData = req.body;
-            console.log("userData = ");
-            console.log(userData);
+            // console.log("userData = ");
+            // console.log(userData);
             var pictures = await this._savePictures(userData.files, userId);
             if (pictures == null) {
                 res.status(400).json({ error: 'Invalid pictures files' });

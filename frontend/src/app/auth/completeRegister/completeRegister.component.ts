@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 
 import { AuthService } from '../../../services/auth.service';
+import { SocketioService } from 'src/services/socketio.service';
 
 @Component({
   selector: 'app-completeRegister',
@@ -20,7 +21,8 @@ export class CompleteRegisterComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private socketService: SocketioService
   ) {
 
   }

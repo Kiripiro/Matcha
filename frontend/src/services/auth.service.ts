@@ -129,7 +129,6 @@ export class AuthService {
     if (!this.localStorageService.getItem(localStorageName.username))
       return false;
     console.log('initsocket auth')
-    // this.socketService.updateStatus(true);
     return true;
   }
 
@@ -152,6 +151,9 @@ export class AuthService {
             { key: localStorageName.age, value: response.user.age || -1 },
             { key: localStorageName.locationPermission, value: response.user.location_permission || false }
           );
+          if (!this.socketService.socketExists()) {
+            this.socketService.initSocket();
+          }
           this.router.navigate(['']);
           this.logEmitChange(true);
         },
@@ -182,8 +184,10 @@ export class AuthService {
             { key: localStorageName.locationPermission, value: response.user.location_permission || false },
             { key: localStorageName.createdAt, value: response.user.created_at || "" },
           );
+          if (!this.socketService.socketExists()) {
+            this.socketService.initSocket();
+          }
           this.router.navigate(['']);
-          // this.socketService.updateStatus(true);
           this.logEmitChange(true);
         },
         error: (error) => {
@@ -193,7 +197,6 @@ export class AuthService {
   }
 
   logout() {
-    // this.socketService.updateStatus(false);
     this.socketService.disconnect();
     this.http.post('http://localhost:3000/users/logout', {}, { withCredentials: true })
       .subscribe({
@@ -251,9 +254,8 @@ export class AuthService {
 
   _frontLogOut(error: string) {
     this.logEmitChange(false);
-    // this.socketService.updateStatus(false);
     this.localStorageService.removeAllUserItem();
-    this.router.navigate(['']);
+    this.router.navigate(['auth/login']);
     if (error.length > 0) {
       const dialogData = {
         title: 'Server error',
