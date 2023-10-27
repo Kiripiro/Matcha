@@ -1,33 +1,9 @@
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
 import { SocketioService } from './socketio.service';
-
-interface Block {
-    id: number;
-    author_id: number;
-    blocked_user_id: number;
-    isBlocked: boolean;
-}
-
-interface User {
-    id: number;
-    username: string;
-    first_name: string;
-    last_name: string;
-    picture_1: string;
-    status: string;
-    block: Block;
-}
-
-interface Message {
-    id: number;
-    author_id: number;
-    recipient_id: number;
-    message: string;
-    date: Date;
-}
+import { User, Message } from '../models/models';
 
 @Injectable({
     providedIn: 'root'
@@ -49,32 +25,36 @@ export class ChatService {
         this.socketService.initSocket();
     }
 
-    public getMatches(): User[] {
-        const matches = this.http.get(this.url + '/likes/matches/' + this.id, { withCredentials: true });
-        matches.subscribe((res: any) => {
-            res.forEach((match: any) => {
-                this.http.get(this.url + '/users/' + match, { withCredentials: true }).subscribe((user: any) => {
-                    const retUser: User = {
-                        id: match,
-                        username: user.username,
-                        first_name: user.first_name,
-                        last_name: user.last_name,
-                        picture_1: 'data:image/jpeg;base64,' + user.picture_1,
-                        status: "Offline",
-                        block: {
-                            id: 0,
-                            author_id: 0,
-                            blocked_user_id: 0,
-                            isBlocked: false
-                        }
-                    };
-                    if (this.matchesInfos.find((user) => user.id === retUser.id))
-                        return;
-                    this.matchesInfos.push(retUser);
-                });
-            });
-        });
-        return this.matchesInfos;
+    getMatches(): Observable<User[]> {
+        return this.http.get<any[]>(this.url + '/likes/matches/' + this.id, { withCredentials: true }).pipe(
+          switchMap(matches => {
+            const userObservables: Observable<User | null>[] = [];
+
+            for (const match of matches) {
+              const userObservable = this.http.get<any>(this.url + '/users/' + match, { withCredentials: true }).pipe(
+                map(user => ({
+                  id: match,
+                  username: user.username,
+                  first_name: user.first_name,
+                  last_name: user.last_name,
+                  picture_1: 'data:image/jpeg;base64,' + user.picture_1,
+                  status: "Offline",
+                  block: {
+                    id: 0,
+                    author_id: 0,
+                    blocked_user_id: 0,
+                    isBlocked: false
+                  }
+                } as User)),
+                catchError(error => of(null))
+              );
+              userObservables.push(userObservable);
+            }
+            return forkJoin(userObservables).pipe(
+              map(users => users.filter(user => user !== null) as User[])
+            );
+          })
+        );
     }
 
     public sendMessage(message: string, recipient_id: number): Observable<any> {
@@ -116,7 +96,6 @@ export class ChatService {
     }
 
     public emitUnblock(blockId: number, recipient: User) {
-        console.log('emit unblock', blockId, recipient);
         this.socketService.unblockUser(blockId, recipient);
     }
 

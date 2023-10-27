@@ -31,7 +31,7 @@
                 <div class="user-banner">
                     <div class="user-banner-left" (click)="viewProfile(selectedConversation)">
                         <div class="user-avatar">
-                            <img src="{{ selectedConversation.picture_1 }}" alt="User Avatar">
+                            <img [src] = "selectedConversation.picture_1" alt="User Avatar">
                         </div>
                         <div class="user-info">
                             <h3>{{ selectedConversation.first_name }} {{ selectedConversation.last_name }}</h3>
@@ -61,8 +61,8 @@
                             <button mat-menu-item
                                 *ngIf="selectedConversation.block.author_id !== selectedConversation.id && selectedConversation.block.isBlocked"
                                 (click)="unblockUser(selectedConversation)">
-                              <mat-icon>panorama_fish_eye</mat-icon>
-                              <span>Unblock user</span>
+                                <mat-icon>panorama_fish_eye</mat-icon>
+                                <span>Unblock user</span>
                             </button>
                             <button mat-menu-item>
                                 <mat-icon>shield</mat-icon>
