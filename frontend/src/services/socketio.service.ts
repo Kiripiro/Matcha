@@ -109,13 +109,11 @@ export class SocketioService {
 
     public unblockUser(blockId: number, user: User) {
         this.socket.emit('unblock-user', {blockId: blockId, author_id: this.id, recipient_id: user.id});
-
     }
 
     public handleBlock(): Observable<any> {
         return new Observable((observer) => {
             this.socket.on('user-blocked', (userIds) => {
-                console.log(userIds);
                 observer.next(userIds);
             })
         })
@@ -124,7 +122,6 @@ export class SocketioService {
     public handleUnblock(): Observable<any> {
         return new Observable((observer) => {
             this.socket.on('user-unblocked', (userIds) => {
-                console.log(userIds);
                 observer.next(userIds);
             })
         })

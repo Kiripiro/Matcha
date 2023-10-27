@@ -40,9 +40,9 @@ export class ChatService {
                   picture_1: 'data:image/jpeg;base64,' + user.picture_1,
                   status: "Offline",
                   block: {
-                    id: 0,
-                    author_id: 0,
-                    blocked_user_id: 0,
+                    id: -1,
+                    author_id: -1,
+                    blocked_user_id: -1,
                     isBlocked: false
                   }
                 } as User)),
@@ -91,7 +91,6 @@ export class ChatService {
     }
 
     public emitBlock(blockId: number, recipient: User) {
-        console.log('emit block', blockId, recipient);
         this.socketService.blockUser(blockId, recipient);
     }
 
@@ -100,7 +99,6 @@ export class ChatService {
     }
 
     public unblockUser(user: User): Observable<any> {
-        console.log(user.block.id);
         return this.http.post(this.url + '/blocks/delete/',  {id: user.block.id}, { withCredentials: true });
     }
 

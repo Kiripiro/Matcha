@@ -84,9 +84,9 @@ export class ChatComponent {
   updateBlockStatus(isBlocked: boolean) {
     if (this.selectedConversation) {
       this.selectedConversation.block = {
-        id: isBlocked ? this.selectedConversation.block.id : 0,
-        author_id: this.selectedConversation.id,
-        blocked_user_id: isBlocked ? this.selectedConversation.block.blocked_user_id : 0,
+        id: isBlocked ? this.selectedConversation.block.id : -1,
+        author_id: isBlocked ? this.selectedConversation.id : -1,
+        blocked_user_id: isBlocked ? this.selectedConversation.block.blocked_user_id : -1,
         isBlocked: isBlocked
       };
     }
@@ -243,13 +243,14 @@ export class ChatComponent {
           }
           if (this.selectedConversation) {
             this.selectedConversation.block = {
-              id: 0,
-              author_id: 0,
-              blocked_user_id: 0,
+              id: -1,
+              author_id: -1,
+              blocked_user_id: -1,
               isBlocked: false
             };
           }
-          console.log(this.selectedConversation?.block);
+          console.log(this.selectedConversation);
+          console.log(this.selectedConversation?.id, this.selectedConversation?.block.author_id);
           this.updateInputState(false);
         }
       },

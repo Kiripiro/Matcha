@@ -1,8 +1,9 @@
 const express = require('express');
 const BlocksController = require('../controllers/blocksController');
 const router = express.Router();
+const auth = require('../middleware/auth');
 
-router.get('/user/:id', async (req, res) => {
+router.get('/user/:id', auth, async (req, res) => {
     try {
         await BlocksController.getAllByAuthorId(req, res);
     } catch (error) {
@@ -10,7 +11,7 @@ router.get('/user/:id', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     try {
         await BlocksController.getBlockById(req, res);
     } catch (error) {
@@ -18,7 +19,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/:authorId/:recipientId', async (req, res) => {
+router.get('/:authorId/:recipientId', auth, async (req, res) => {
     try {
         await BlocksController.getCheckBlock(req, res);
     } catch (error) {
@@ -26,7 +27,7 @@ router.get('/:authorId/:recipientId', async (req, res) => {
     }
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
     try {
         await BlocksController.createBlock(req, res);
     } catch (error) {
@@ -34,7 +35,7 @@ router.post('/create', async (req, res) => {
     }
 });
 
-router.post('/delete', async (req, res) => {
+router.post('/delete', auth, async (req, res) => {
     try {
         await BlocksController.deleteBlock(req, res);
     } catch (error) {
