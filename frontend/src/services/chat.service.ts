@@ -4,6 +4,13 @@ import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
 import { SocketioService } from './socketio.service';
 
+interface Block {
+    id: number;
+    author_id: number;
+    blocked_user_id: number;
+    isBlocked: boolean;
+}
+
 interface User {
     id: number;
     username: string;
@@ -11,6 +18,7 @@ interface User {
     last_name: string;
     picture_1: string;
     status: string;
+    block: Block;
 }
 
 interface Message {
@@ -52,7 +60,13 @@ export class ChatService {
                         first_name: user.first_name,
                         last_name: user.last_name,
                         picture_1: 'data:image/jpeg;base64,' + user.picture_1,
-                        status: "Offline"
+                        status: "Offline",
+                        block: {
+                            id: 0,
+                            author_id: 0,
+                            blocked_user_id: 0,
+                            isBlocked: false
+                        }
                     };
                     if (this.matchesInfos.find((user) => user.id === retUser.id))
                         return;
@@ -93,6 +107,10 @@ export class ChatService {
     }
 
     public blockUser(user: User): Observable<any> {
-        return this.http.post(this.url + '/blocks/create', { author_id: this.id, recipient_id: user.id }, { withCredentials: true });
+        return this.http.post(this.url + '/blocks/create/', { author_id: this.id, recipient_id: user.id }, { withCredentials: true });
+    }
+
+    public unblockUser(user: User): Observable<any> {
+        return this.http.post(this.url + '/blocks/delete/' + this.id + "/" + user.id, { withCredentials: true });
     }
 } 

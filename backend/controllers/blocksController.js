@@ -12,12 +12,12 @@ class BlocksController extends BaseController {
             const authorId = this._checkPositiveInteger(req.params.id || '');
             if (authorId < 0) {
                 res.status(400).json({ error: "Author id is incorrect" });
-                return ;
+                return;
             }
             const blocks = await this.model.findMultiple(["author_id"], [authorId])
             if (!blocks) {
                 res.status(404).json({ error: 'Block not found' })
-                return ;
+                return;
             } else {
                 var blocksReturn = [];
                 blocks.find((row) => row).forEach(element => {
@@ -35,16 +35,16 @@ class BlocksController extends BaseController {
             const blockId = this._checkPositiveInteger(req.params.id || '');
             if (blockId < 0) {
                 res.status(400).json({ error: 'Block id is incorrect' });
-                return ;
+                return;
             }
             const block = await this.model.findById(blockId);
             if (!block) {
                 res.status(404).json({ error: 'Block not found' })
-                return ;
+                return;
             } else {
                 res.json(block);
             }
-            return ;
+            return;
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
@@ -55,22 +55,22 @@ class BlocksController extends BaseController {
             const authorId = this._checkPositiveInteger(req.params.authorId || '');
             if (authorId < 0) {
                 res.status(400).json({ error: 'Author id is incorrect' });
-                return ;
+                return;
             }
             const recipientId = this._checkPositiveInteger(req.params.recipientId || '');
             if (recipientId < 0) {
                 res.status(400).json({ error: 'Recipient id is incorrect' });
-                return ;
+                return;
             }
             if (await this.model.check([authorId, recipientId])) {
                 res.status(200).json({ exist: true });
-                return ;
+                return;
             } else if (await this.model.check([recipientId, authorId])) {
                 res.status(200).json({ exist: true });
-                return ;
+                return;
             } else {
                 res.status(200).json({ exist: false });
-                return ;
+                return;
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
@@ -83,35 +83,36 @@ class BlocksController extends BaseController {
             const authorId = this._checkPositiveInteger(blockData.author_id || '');
             if (authorId < 0) {
                 res.status(400).json({ error: "Author id is incorrect" });
-                return ;
+                return;
             }
             const recipientId = this._checkPositiveInteger(blockData.recipient_id || '');
             if (recipientId < 0) {
                 res.status(400).json({ error: "Recipient id is incorrect" });
-                return ;
+                return;
             }
             if (authorId == recipientId) {
                 res.status(400).json({ error: "Author id  and recipient id is equal" });
-                return ;
+                return;
             }
             if (!await UserController.checkById(authorId)) {
                 res.status(400).json({ error: "Author id doesn't exists" });
-                return ;
+                return;
             }
             if (!await UserController.checkById(recipientId)) {
                 res.status(400).json({ error: "Recipient id doesn't exists" });
-                return ;
+                return;
             }
             if (await this.model.check([authorId, recipientId])) {
                 res.status(400).json({ error: "Block already exists" });
-                return ;
+                return;
             }
             const data = {
                 "author_id": authorId,
                 "recipient_id": recipientId
             };
             const blockId = await this.model.create(data);
-            res.status(201).json({ message: 'Block created', blockId });
+            console.log('blockId = ' + blockId);
+            res.status(201).json({ message: 'Block created', blockId, data });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -124,14 +125,14 @@ class BlocksController extends BaseController {
             const blockId = this._checkPositiveInteger(blockData.id || '');
             if (blockId < 0) {
                 res.status(400).json({ error: "Block id is incorrect" });
-                return ;
+                return;
             }
             if (!await this.checkById(blockId)) {
                 res.status(400).json({ error: "Block doesn't exists" });
-                return ;
+                return;
             }
             const blockIdReturn = await this.model.delete(blockId);
-            res.status(201).json({ message: 'block deleted', blockIdReturn });
+            res.status(201).json({ message: 'Block deleted', blockIdReturn });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });

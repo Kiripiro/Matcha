@@ -3,6 +3,13 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { ChatService } from 'src/services/chat.service';
 
+interface Block {
+  id: number;
+  author_id: number;
+  blocked_user_id: number;
+  isBlocked: boolean;
+}
+
 interface User {
   id: number;
   username: string;
@@ -10,6 +17,7 @@ interface User {
   last_name: string;
   picture_1: string;
   status: string;
+  block: Block;
 }
 
 interface Message {
@@ -94,7 +102,8 @@ export class ChatComponent {
       first_name: match.first_name,
       last_name: match.last_name,
       picture_1: 'data:image/jpeg;base64,' + match.picture_1,
-      status: match.status
+      status: match.status,
+      block: match.block
     }));
     this.users = matches;
   }
@@ -124,13 +133,19 @@ export class ChatComponent {
   selectUser(user: User) {
     this.selectedConversation = user;
 
-    const isBlocked = this.chatService.isUserBlocked(user).subscribe({
+    this.chatService.isUserBlocked(user).subscribe({
       next: (res: any) => {
-        if (res.exist) {
-          //disable this.input and add a placeholder "You have blocked this user"
-          console.log(this.input.nativeElement);
-          this.input.nativeElement.disabled = true;
-          this.input.nativeElement.placeholder = "The relationship is blocked with this user";
+        if (res && res.exist) {
+          this.selectedConversation!.block = {
+            id: res.data.id,
+            author_id: res.data.author_id,
+            blocked_user_id: res.data.recipient_id,
+            isBlocked: true
+          }
+          if (this.input) {
+            this.input.nativeElement.disabled = true;
+            this.input.nativeElement.placeholder = "The relationship is blocked with this user";
+          }
         }
       },
       error: (err: any) => {
@@ -182,9 +197,42 @@ export class ChatComponent {
   blockUser(user: User) {
     this.chatService.blockUser(user).subscribe({
       next: (res: any) => {
-        this.users = this.users.filter(u => u.id !== user.id);
-        this.selectedConversation = null;
-        this.selectedConversationMessages = [];
+        console.log(res);
+        if (res && res.message == "Block created") {
+          this.selectedConversation!.block = {
+            id: res.data.id,
+            author_id: res.data.author_id,
+            blocked_user_id: res.data.recipient_id,
+            isBlocked: true
+          }
+          if (this.input) {
+            this.input.nativeElement.disabled = true;
+            this.input.nativeElement.placeholder = "The relationship is blocked with this user";
+          }
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+  }
+
+  unblockUser(user: User) {
+    this.chatService.unblockUser(user).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        if (res && res.message == "Block deleted") {
+          this.selectedConversation!.block = {
+            id: 0,
+            author_id: 0,
+            blocked_user_id: 0,
+            isBlocked: false
+          };
+          if (this.input) {
+            this.input.nativeElement.disabled = false;
+            this.input.nativeElement.placeholder = "Type a message...";
+          }
+        }
       },
       error: (err: any) => {
         console.log(err);
