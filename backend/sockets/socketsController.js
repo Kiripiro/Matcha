@@ -69,5 +69,28 @@ module.exports = (io) => {
             users[userId].status = status;
             io.emit('status', { userId, status });
         });
+
+        socket.on('block-user', (data) => {
+            const blockId = data.blockId;
+            const author_id = data.author_id;
+            const recipient_id = data.recipient_id;
+            const recipientSocketId = users[recipient_id]?.socketId;
+
+            if (author_id && recipientSocketId && blockId) {
+                io.to(recipientSocketId).emit('user-blocked', {blockId: blockId, author_id: author_id, recipient_id: recipient_id});
+            }
+        });
+
+        socket.on('unblock-user', (data) => {
+            console.log('unblock', data);
+            const blockId = data.blockId;
+            const author_id = data.author_id;
+            const recipient_id = data.recipient_id;
+            const recipientSocketId = users[recipient_id]?.socketId;
+
+            if (author_id && recipientSocketId && blockId) {
+                io.to(recipientSocketId).emit('user-unblocked', {blockId: blockId, author_id: author_id, recipient_id: recipient_id});
+            }
+        })
     });
 }

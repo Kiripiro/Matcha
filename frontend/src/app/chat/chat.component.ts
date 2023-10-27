@@ -50,8 +50,14 @@ export class ChatComponent {
     private router: Router
   ) { }
 
+  @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
+  @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
+  @ViewChild('inputContainer') private inputContainer!: ElementRef;
+  @ViewChild('input') private input!: ElementRef;
+
   ngOnInit() {
     this.chatService.initSocket();
+
     this.chatService
       .getAllUserStatusEvents()
       .subscribe((statusData: StatusData) => {
@@ -60,19 +66,54 @@ export class ChatComponent {
           this.selectedConversation.status = statusData.status;
         }
       });
+
     this.chatService
       .getMessages()
       .subscribe((message: unknown) => {
         this.selectedConversationMessages.push(message as Message);
         this.scrollToBottom();
       });
-    this.getMatches();
-  }
 
-  @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
-  @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
-  @ViewChild('inputContainer') private inputContainer!: ElementRef;
-  @ViewChild('input') private input!: ElementRef;
+    this.getMatches();
+
+    this.chatService
+      .handleBlock()
+      .subscribe((users) => {
+        if (this.selectedConversation) {
+          if (this.selectedConversation.id == users.author_id) {
+            if (this.input) {
+              this.input.nativeElement.disabled = true;
+              this.input.nativeElement.placeholder = "The relationship is blocked with this user";
+            }
+            this.selectedConversation!.block = {
+              id: users.blockId,
+              author_id: users.author_id,
+              blocked_user_id: users.recipient_id,
+              isBlocked: true
+            }
+          }
+        }
+      });
+
+    this.chatService
+      .handleUnblock()
+      .subscribe((users) => {
+        if (this.selectedConversation) {
+          if (this.selectedConversation.id == users.author_id) {
+            if (this.input) {
+              this.input.nativeElement.disabled = false;
+              this.input.nativeElement.placeholder = "Type a message...";
+            }
+            this.selectedConversation!.block = {
+              id: 0,
+              author_id: 0,
+              blocked_user_id: 0,
+              isBlocked: false
+            }
+          }
+        }
+      });
+  }
 
   triggerMenu() {
     this.menuTrigger.openMenu();
@@ -137,9 +178,9 @@ export class ChatComponent {
       next: (res: any) => {
         if (res && res.exist) {
           this.selectedConversation!.block = {
-            id: res.data.id,
-            author_id: res.data.author_id,
-            blocked_user_id: res.data.recipient_id,
+            id: res.data[0].id,
+            author_id: res.data[0].author_id,
+            blocked_user_id: res.data[0].recipient_id,
             isBlocked: true
           }
           if (this.input) {
@@ -167,17 +208,19 @@ export class ChatComponent {
 
     this.chatService.getMessagesFromUser(user).subscribe({
       next: (messages: Message[]) => {
-        messages.forEach((message) => {
-          message.date = new Date(message.date);
-        });
+        if (messages) {
+          messages.forEach((message) => {
+            message.date = new Date(message.date);
+          });
 
-        messages.sort((message1, message2) => {
-          const date1 = new Date(message1.date).getTime();
-          const date2 = new Date(message2.date).getTime();
-          return date1 - date2;
-        });
-        this.selectedConversationMessages = messages;
-        this.scrollToBottom();
+          messages.sort((message1, message2) => {
+            const date1 = new Date(message1.date).getTime();
+            const date2 = new Date(message2.date).getTime();
+            return date1 - date2;
+          });
+          this.selectedConversationMessages = messages;
+          this.scrollToBottom();
+        }
       },
       error: (err: any) => {
         if (err.status === 404) {
@@ -197,10 +240,11 @@ export class ChatComponent {
   blockUser(user: User) {
     this.chatService.blockUser(user).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res && res.message == "Block created") {
+          if (this.selectedConversation)
+            this.chatService.emitBlock(res.blockId, this.selectedConversation);
           this.selectedConversation!.block = {
-            id: res.data.id,
+            id: res.blockId,
             author_id: res.data.author_id,
             blocked_user_id: res.data.recipient_id,
             isBlocked: true
@@ -220,8 +264,9 @@ export class ChatComponent {
   unblockUser(user: User) {
     this.chatService.unblockUser(user).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res && res.message == "Block deleted") {
+          if (this.selectedConversation)
+            this.chatService.emitUnblock(res.blockId, this.selectedConversation);
           this.selectedConversation!.block = {
             id: 0,
             author_id: 0,

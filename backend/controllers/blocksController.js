@@ -62,11 +62,20 @@ class BlocksController extends BaseController {
                 res.status(400).json({ error: 'Recipient id is incorrect' });
                 return;
             }
+            var blocksReturn = [];
             if (await this.model.check([authorId, recipientId])) {
-                res.status(200).json({ exist: true });
+                let blocks = await this.model.findMultiple(["author_id", "recipient_id"], [authorId, recipientId]);
+                blocks.find((row) => row).forEach(element => {
+                    blocksReturn.push(element);
+                });
+                res.status(200).json({ exist: true, data: blocksReturn });
                 return;
             } else if (await this.model.check([recipientId, authorId])) {
-                res.status(200).json({ exist: true });
+                let blocks = await this.model.findMultiple(["author_id", "recipient_id"], [recipientId, authorId]);
+                blocks.find((row) => row).forEach(element => {
+                    blocksReturn.push(element);
+                });
+                res.status(200).json({ exist: true, data: blocksReturn });
                 return;
             } else {
                 res.status(200).json({ exist: false });
@@ -131,8 +140,10 @@ class BlocksController extends BaseController {
                 res.status(400).json({ error: "Block doesn't exists" });
                 return;
             }
-            const blockIdReturn = await this.model.delete(blockId);
-            res.status(201).json({ message: 'Block deleted', blockIdReturn });
+            if (await this.model.delete(blockId))
+                res.status(201).json({ message: 'Block deleted', blockId });
+            else
+                res.status(500).json({ error: 'Internal Server Error' });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });

@@ -106,11 +106,30 @@ export class ChatService {
         return this.http.get(this.url + '/blocks/' + this.id + "/" + user.id, { withCredentials: true });
     }
 
-    public blockUser(user: User): Observable<any> {
-        return this.http.post(this.url + '/blocks/create/', { author_id: this.id, recipient_id: user.id }, { withCredentials: true });
+    public blockUser(recipient: User): Observable<any> {
+        return this.http.post(this.url + '/blocks/create/', { author_id: this.id, recipient_id: recipient.id }, { withCredentials: true });
+    }
+
+    public emitBlock(blockId: number, recipient: User) {
+        console.log('emit block', blockId, recipient);
+        this.socketService.blockUser(blockId, recipient);
+    }
+
+    public emitUnblock(blockId: number, recipient: User) {
+        console.log('emit unblock', blockId, recipient);
+        this.socketService.unblockUser(blockId, recipient);
     }
 
     public unblockUser(user: User): Observable<any> {
-        return this.http.post(this.url + '/blocks/delete/' + this.id + "/" + user.id, { withCredentials: true });
+        console.log(user.block.id);
+        return this.http.post(this.url + '/blocks/delete/',  {id: user.block.id}, { withCredentials: true });
     }
-} 
+
+    public handleBlock(): Observable<any> {
+        return this.socketService.handleBlock();
+    }
+
+    public handleUnblock(): Observable<any> {
+        return this.socketService.handleUnblock();
+    }
+}

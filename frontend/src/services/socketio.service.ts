@@ -61,7 +61,6 @@ export class SocketioService {
     }
 
     public sendMessage(message: string, recipient_id: number): void {
-        console.log("sendMessage", message, recipient_id);
         this.socket.emit('new-message', { message: message, author_id: this.id, recipient_id: recipient_id, date: new Date() });
     }
 
@@ -102,5 +101,32 @@ export class SocketioService {
                 observer.next(userId);
             });
         });
+    }
+
+    public blockUser(blockId:number, user: User) {
+        this.socket.emit('block-user', {blockId: blockId, author_id: this.id, recipient_id: user.id});
+    }
+
+    public unblockUser(blockId: number, user: User) {
+        this.socket.emit('unblock-user', {blockId: blockId, author_id: this.id, recipient_id: user.id});
+
+    }
+
+    public handleBlock(): Observable<any> {
+        return new Observable((observer) => {
+            this.socket.on('user-blocked', (userIds) => {
+                console.log(userIds);
+                observer.next(userIds);
+            })
+        })
+    }
+
+    public handleUnblock(): Observable<any> {
+        return new Observable((observer) => {
+            this.socket.on('user-unblocked', (userIds) => {
+                console.log(userIds);
+                observer.next(userIds);
+            })
+        })
     }
 }
