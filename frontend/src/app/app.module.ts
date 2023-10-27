@@ -22,6 +22,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule } from '@angular/forms';
 
 
@@ -67,6 +68,7 @@ import { SocketioService } from 'src/services/socketio.service';
     FormsModule,
     MatDialogModule,
     MatProgressBarModule,
+    MatMenuModule
   ],
   providers: [
     {

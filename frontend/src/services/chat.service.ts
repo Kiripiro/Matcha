@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
@@ -86,5 +86,13 @@ export class ChatService {
 
     public handleDisconnect(): Observable<any> {
         return this.socketService.handleDisconnect();
+    }
+
+    public isUserBlocked(user: User): Observable<any> {
+        return this.http.get(this.url + '/blocks/' + this.id + "/" + user.id, { withCredentials: true });
+    }
+
+    public blockUser(user: User): Observable<any> {
+        return this.http.post(this.url + '/blocks/create', { author_id: this.id, recipient_id: user.id }, { withCredentials: true });
     }
 } 

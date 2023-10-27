@@ -1,4 +1,5 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { ChatService } from 'src/services/chat.service';
 
@@ -60,8 +61,15 @@ export class ChatComponent {
     this.getMatches();
   }
 
+  @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
   @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
   @ViewChild('inputContainer') private inputContainer!: ElementRef;
+  @ViewChild('input') private input!: ElementRef;
+
+  triggerMenu() {
+    this.menuTrigger.openMenu();
+  }
+
   scrollToBottom(): void {
     try {
       this.changeDetectorRef.detectChanges();
@@ -116,6 +124,20 @@ export class ChatComponent {
   selectUser(user: User) {
     this.selectedConversation = user;
 
+    const isBlocked = this.chatService.isUserBlocked(user).subscribe({
+      next: (res: any) => {
+        if (res.exist) {
+          //disable this.input and add a placeholder "You have blocked this user"
+          console.log(this.input.nativeElement);
+          this.input.nativeElement.disabled = true;
+          this.input.nativeElement.placeholder = "The relationship is blocked with this user";
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+
     this.chatService.getStatus(user).subscribe({
       next: (statusData: StatusData) => {
         console.log(statusData);
@@ -155,5 +177,18 @@ export class ChatComponent {
 
   viewProfile(user: User) {
     this.router.navigate(['/profile/' + user.username]);
+  }
+
+  blockUser(user: User) {
+    this.chatService.blockUser(user).subscribe({
+      next: (res: any) => {
+        this.users = this.users.filter(u => u.id !== user.id);
+        this.selectedConversation = null;
+        this.selectedConversationMessages = [];
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
   }
 }
