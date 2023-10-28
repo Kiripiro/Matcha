@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,6 +18,19 @@ export class CompleteRegisterComponent implements OnInit {
   genders: string[] = ['Male', 'Female', 'Other'];
   allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
   files: string[] = [];
+  tags: FormControl | undefined;
+  availableTags: string[] = [
+    'Sport',
+    'Music',
+    'Cinema',
+    'Travel',
+    'Art',
+    'Politics',
+    'Technology',
+    'Cooking',
+    'Fashion',
+  ];
+  selectedTags: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -73,6 +86,7 @@ export class CompleteRegisterComponent implements OnInit {
       femaleSexualPreference: false,
       otherSexualPreference: false,
       sexualPreference: [false, [Validators.requiredTrue]],
+      tags: [false, [Validators.requiredTrue]],
       fileStatus: [false, [Validators.requiredTrue]]
     });
   }
@@ -86,6 +100,28 @@ export class CompleteRegisterComponent implements OnInit {
     }
   }
 
+  tagsChange() {
+    if (this.selectedTags.length > 0) {
+      this.completeRegisterForm.get('tags')?.setValue(true);
+    } else {
+      this.completeRegisterForm.get('tags')?.setValue(false);
+    }
+  }
+
+  addTag(tag: string) {
+    const index = this.availableTags.indexOf(tag);
+    this.availableTags.splice(index, 1);
+    this.selectedTags.push(tag);
+    this.tagsChange();
+  }
+
+  removeTag(tag: string) {
+    const index = this.selectedTags.indexOf(tag);
+    this.selectedTags.splice(index, 1);
+    this.availableTags.push(tag);
+    this.tagsChange();
+  }
+
   onSubmit(): void {
     if (this.completeRegisterForm.valid) {
       const { gender, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference } = this.completeRegisterForm.value;
@@ -97,7 +133,8 @@ export class CompleteRegisterComponent implements OnInit {
       else
         sexualPreference = "Other";
       console.log(gender, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference);
-      this.authService.completeRegister(gender, sexualPreference, biography, this.files);
+      this.authService.completeRegister(gender, sexualPreference, biography, this.files, this.selectedTags);
     }
   }
+
 }

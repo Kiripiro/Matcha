@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
+import { User } from 'src/models/models';
 
 interface RegisterResponseData {
   message: string;
@@ -58,6 +59,7 @@ interface GetUserResponseData {
     picture_3: string,
     picture_4: string,
     picture_5: string,
+    tags: string[],
     location_permission: boolean
   };
 }
@@ -175,6 +177,7 @@ export class AuthService {
             { key: localStorageName.firstName, value: response.user.fist_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
+            { key: localStorageName.completeRegister, value: response.user.complete_register || false },
             { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
             { key: localStorageName.biography, value: response.user.biography || "" },
             { key: localStorageName.picture1, value: response.user.picture_1 || "" },
@@ -215,9 +218,9 @@ export class AuthService {
       });
   }
 
-  completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[]): any {
+  completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[], tags: string[]): any {
     console.log("sexual preference = " + sexual_preferences)
-    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexual_preferences, biography, files }, { withCredentials: true })
+    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexual_preferences, biography, files, tags }, { withCredentials: true })
       .subscribe({
         next: (response) => {
           console.log('CompleteRegister success:', response);

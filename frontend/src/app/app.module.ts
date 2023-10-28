@@ -37,6 +37,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { ChatComponent } from './chat/chat.component';
 import { ChatService } from 'src/services/chat.service';
 import { SocketioService } from 'src/services/socketio.service';
+import { RelationService } from 'src/services/relation.service';
+import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,8 @@ import { SocketioService } from 'src/services/socketio.service';
     FormsModule,
     MatDialogModule,
     MatProgressBarModule,
-    MatMenuModule
+    MatMenuModule,
+    MatOptionModule
   ],
   providers: [
     {
@@ -85,7 +88,8 @@ import { SocketioService } from 'src/services/socketio.service';
     AuthService,
     DialogService,
     ChatService,
-    SocketioService
+    SocketioService,
+    RelationService
   ],
   bootstrap: [AppComponent]
 })

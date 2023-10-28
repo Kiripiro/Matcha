@@ -13,9 +13,12 @@
             <div class="checkBoxDiv">
                 <mat-label>Sexual preferences</mat-label>
                 <div class="checkBoxGroup">
-                    <mat-checkbox formControlName="maleSexualPreference" (change)="sexualPreferenceChange()">Homme</mat-checkbox>
-                    <mat-checkbox formControlName="femaleSexualPreference" (change)="sexualPreferenceChange()">Femme</mat-checkbox>
-                    <mat-checkbox formControlName="otherSexualPreference" (change)="sexualPreferenceChange()">Autre</mat-checkbox>
+                    <mat-checkbox formControlName="maleSexualPreference"
+                        (change)="sexualPreferenceChange()">Homme</mat-checkbox>
+                    <mat-checkbox formControlName="femaleSexualPreference"
+                        (change)="sexualPreferenceChange()">Femme</mat-checkbox>
+                    <mat-checkbox formControlName="otherSexualPreference"
+                        (change)="sexualPreferenceChange()">Autre</mat-checkbox>
                 </div>
             </div>
             <mat-form-field class="form-field" hideRequiredMarker>
@@ -24,14 +27,32 @@
             </mat-form-field>
             <div class="inputDiv">
                 <label for="inputPictures">Choose your pictures !</label>
-                <input id="inputPictures" type="file" class="fileInput" multiple (change)="onChangeFileInput($event)" accept=".png, .jpeg, .jpg"/>
+                <input id="inputPictures" type="file" class="fileInput" multiple (change)="onChangeFileInput($event)"
+                    accept=".png, .jpeg, .jpg" />
+            </div>
+            <div class="tagsDiv">
+                <mat-label>Tags</mat-label>
+                <div class="tagsAvailable">
+                    <span *ngFor="let tag of availableTags" (click)="addTag(tag)">{{tag}}</span>
+                    <p class="tagsInfos" *ngIf="availableTags.length <= 0">All tags are selected !</p>
+                </div>
+                <mat-label>Yours tags</mat-label>
+                <div class="tagsSelected">
+                    <div class="tagSelected" *ngFor="let tag of selectedTags">
+                        <button mat-fab (click)="removeTag(tag)">
+                            <mat-icon>remove</mat-icon>
+                        </button>
+                        <p>{{tag}}</p>
+                    </div>
+                    <p class="tagsInfos" *ngIf="selectedTags.length <= 0">Select tags above !</p>
+                </div>
             </div>
             <div id="imageGalleryRegister">
                 <img *ngFor="let image of files" [src]="image" alt="Image">
             </div>
             <button type="submit" [disabled]="completeRegisterForm.invalid" mat-raised-button>Register</button>
         </form>
-        
+
     </div>
-    
+
 </div>

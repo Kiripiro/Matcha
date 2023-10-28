@@ -40,9 +40,9 @@ logoutValidation = (req, res, next) => {
 updateInfosValidation = (req, res, next) => {
     try {
         const id = req.user.userId;
-        const { gender, sexual_preferences, biography, files } = req.body;
+        const { gender, sexual_preferences, biography, files, tags } = req.body;
         const userDTO = new UserDTO();
-        const isValid = userDTO.updateInfos(id, gender, sexual_preferences, biography, files);
+        const isValid = userDTO.updateInfos(id, gender, sexual_preferences, biography, files, tags);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }

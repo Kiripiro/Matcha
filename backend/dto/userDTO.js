@@ -48,7 +48,7 @@ class UserDTO extends baseValidator {
     }
 
     // Manage pictures if needed here
-    updateInfos(id, gender, sexual_preferences, biography, files) {
+    updateInfos(id, gender, sexual_preferences, biography, files, tags) {
         super.fieldIsRequired('id', id);
         super.validatePositiveInteger('id', id);
         if (gender === undefined && sexual_preferences === undefined && biography === undefined) {
@@ -74,6 +74,10 @@ class UserDTO extends baseValidator {
 
             for (var i = 0; i < files.length; i++) {
                 super.validateImageFile(files[i]);
+            }
+
+            for (var y = 0; y < tags.length; y++) {
+                super.validateString('tag ' + tags[y], tags[y], 1, 20, /^[0-9a-zA-Z+ ]+$/);
             }
         }
         return this.isValid();

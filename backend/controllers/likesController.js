@@ -78,7 +78,6 @@ class LikesController extends BaseController {
         try {
             const authorId = this._checkPositiveInteger(req.params.authorId || '');
             if (authorId < 0) {
-                console.log('test');
                 res.status(400).json({ error: 'Author id is incorrect' });
                 return;
             }
@@ -126,22 +125,30 @@ class LikesController extends BaseController {
         }
     }
 
+    async getCheckMatch(req, res) {
+        try {
+            const likeData = req.params;
+            const authorId = likeData.authorId;
+            const recipientId = likeData.recipientId;
+            if (await this.model.check([authorId, recipientId]) && await this.model.check([recipientId, authorId])) {
+                res.status(200).json({ exist: true });
+                return;
+            } else {
+                res.status(200).json({ exist: false });
+                return;
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
     async createLike(req, res) {
         try {
             const likeData = req.body;
-            const authorId = this._checkPositiveInteger(likeData.author_id || '');
-            if (authorId < 0) {
-
-                res.status(400).json({ error: "Author id is incorrect" });
-                return;
-            }
-            const recipientId = this._checkPositiveInteger(likeData.recipient_id || '');
-            if (recipientId < 0) {
-                res.status(400).json({ error: "Recipient id is incorrect" });
-                return;
-            }
+            const authorId = likeData.authorId;
+            const recipientId = likeData.recipientId;
+            console.log("createLike authorId = " + authorId + ", recipientId = " + recipientId)
             if (authorId == recipientId) {
-
                 res.status(400).json({ error: "Author id  and recipient id is equal" });
                 return;
             }
@@ -178,7 +185,7 @@ class LikesController extends BaseController {
         }
     }
 
-    async deleteLike(req, res) {
+    async deleteLikeById(req, res) {
         try {
             const likeData = req.body;
             const likeId = this._checkPositiveInteger(likeData.id || '');
@@ -192,6 +199,21 @@ class LikesController extends BaseController {
             }
             const likeIdReturn = await this.model.delete(likeId);
             res.status(201).json({ message: 'like deleted', likeIdReturn });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async deleteLike(req, res) {
+        try {
+            const likeData = req.body;
+            const authorId = likeData.authorId;
+            const recipientId = likeData.recipientId;
+            console.log("deletelike authorId = " + authorId + ", recipientId = " + recipientId)
+            const count = await this.model.deleteLike(authorId, recipientId);
+            const deleted = (count > 0) ? true : false
+            res.status(201).json({ message: 'Like deleted', deleted: deleted });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });

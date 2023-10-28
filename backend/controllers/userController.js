@@ -209,6 +209,10 @@ class UserController extends BaseController {
             };
             if (await this.checkById(userId)) {
                 const userIdReturn = await this.model.update(userId, data);
+                const userTags = userData.tags;
+                console.log("updateInfos userTags = ");
+                console.log(userTags);
+                const tagsReturn = await TagsModel.addUserTags(userTags, userId);
                 res.status(200).json({ message: 'User updated', user: data });
             } else {
                 res.status(400).json({ error: 'User id is incorrect' });
@@ -292,7 +296,11 @@ class UserController extends BaseController {
                 res.status(404).json({ error: 'User not found' })
                 return;
             } else {
+                const tags = await TagsModel.getAllUserTags(user.id);
+                console.log("getUserByUsername tags = ");
+                console.log(tags);
                 const userReturn = {
+                    "id": user.id || -1,
                     "username": user.username || '',
                     "first_name": user.first_name || '',
                     "last_name": user.last_name || '',
@@ -305,7 +313,8 @@ class UserController extends BaseController {
                     "picture_2": await this._getPictureDataFromPath(user.picture_2),
                     "picture_3": await this._getPictureDataFromPath(user.picture_3),
                     "picture_4": await this._getPictureDataFromPath(user.picture_4),
-                    "picture_5": await this._getPictureDataFromPath(user.picture_5)
+                    "picture_5": await this._getPictureDataFromPath(user.picture_5),
+                    "tags": tags || []
                 }
                 res.json(userReturn);
             }

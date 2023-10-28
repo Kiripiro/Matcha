@@ -3,9 +3,9 @@ export interface Block {
 	author_id: number;
 	blocked_user_id: number;
 	isBlocked: boolean;
-  }
+}
 
-  export interface User {
+export interface User {
 	id: number;
 	username: string;
 	first_name: string;
@@ -13,17 +13,17 @@ export interface Block {
 	picture_1: string;
 	status: string;
 	block: Block;
-  }
+}
 
-  export interface Message {
+export interface Message {
 	id: number;
 	author_id: number;
 	recipient_id: number;
 	message: string;
 	date: Date;
-  }
+}
 
-  export interface StatusData {
+export interface StatusData {
 	userId: number;
 	status: string;
-  }
+}

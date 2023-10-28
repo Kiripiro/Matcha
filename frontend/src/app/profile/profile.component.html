@@ -3,20 +3,29 @@
         <div class="carouselDiv">
             <app-carousel [images]="img" [title]="userInfos.username"></app-carousel>
         </div>
-        <div id="mainDiv">
-            <button mat-fab color="primary" aria-label="Like">
-                <mat-icon>favorite</mat-icon>
+        <div class="mainDivProfil" id="mainDivPersonnal" *ngIf="personalProfil">
+            <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
+        </div>
+        <div class="mainDivProfil" id="mainDivPublic" *ngIf="!personalProfil">
+            <button mat-fab color="primary" aria-label="Like" (click)="like()" ng-disabled="likeWaiting">
+                <mat-icon>{{likeIcon}}</mat-icon>
             </button>
             <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
-            <button mat-fab color="primary" aria-label="Chat">
+            <button mat-fab [disabled]="!match" color="primary" aria-label="Chat" [routerLink]="['../../chat']">
                 <mat-icon>chat</mat-icon>
             </button>
         </div>
-        <p id="biography">{{userInfos.biography}}</p>
         <div id="detailsDiv">
             <p>Gender: {{userInfos.gender}}</p>
             <p>Sexual preference: {{userInfos.sexual_preferences}}</p>
             <p>Location: Perpette les bains</p>
+        </div>
+        <p id="biography">{{userInfos.biography}}</p>
+
+        <div class="tagsDiv">
+            <div class="tagsAvailable">
+                <span *ngFor="let tag of userInfos.tags">{{tag}}</span>
+            </div>
         </div>
     </div>
     <div class="errorCard" *ngIf="error">

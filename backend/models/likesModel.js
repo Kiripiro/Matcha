@@ -18,5 +18,10 @@ class LikesModel extends BaseModel {
         const count = await this.deleteMultipleOrConditions(["author_id", "recipient_id"], [userId, userId]);
         return count;
     }
+
+    async deleteLike(authorId, recipientId) {
+        const count = await this.deleteMultipleAndConditions(["author_id", "recipient_id"], [authorId, recipientId]);
+        return count;
+    }
 }
 module.exports = new LikesModel();

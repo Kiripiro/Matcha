@@ -2,9 +2,11 @@ $background: #FAFAFA;
 $primary: #FDBABA;
 $surface: #3E2266;
 $surfaceAlt: #6DB1BF;
+$surfaceAltDark: #2e7280;
 $onPrimary: #3E2266;
 $onSurface: white;
 $onPrimaryAlt: #6DB1BF;
+$greyInfos: #9a9fa3;
 
 * {
     font-family: Poppins;
@@ -50,17 +52,17 @@ button {
     background-color: $primary;
     border-radius: 20px;
     padding: 2rem;
-    box-shadow: 5px 5px 15px rgba(70,70,70,0.12), -1px -1px 50px rgba(70,70,70,0.12);
+    box-shadow: 5px 5px 15px rgba(70, 70, 70, 0.12), -1px -1px 50px rgba(70, 70, 70, 0.12);
 
-    @media (max-width:700px){
+    @media (max-width:700px) {
         width: 300px;
     }
 
-    @media (max-width:400px){
+    @media (max-width:400px) {
         width: 200px;
     }
 
-    @media (max-width:300px){
+    @media (max-width:300px) {
         width: 150px;
     }
 
@@ -79,7 +81,8 @@ button {
 
     .hint {
         color: $onPrimaryAlt;
-        @media (max-width:300px){
+
+        @media (max-width:300px) {
             font-size: 0.6rem;
         }
     }
@@ -101,7 +104,7 @@ button {
         }
     }
 
-    
+
     .checkBoxDiv {
         display: flex;
         flex-direction: column;
@@ -129,7 +132,7 @@ button {
         width: 300px;
         border-radius: 20px;
         background-color: $surfaceAlt;
-        box-shadow: 5px 5px 15px rgba(70,70,70,0.12), -1px -1px 50px rgba(70,70,70,0.12);
+        box-shadow: 5px 5px 15px rgba(70, 70, 70, 0.12), -1px -1px 50px rgba(70, 70, 70, 0.12);
         margin-bottom: 1rem;
         font-size: 1.1rem;
         font-weight: 500;
@@ -148,5 +151,92 @@ button {
             z-index: -1;
         }
     }
-    
+
+}
+
+.tagsDiv {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 100%;
+
+    mat-label {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: $onPrimary;
+        margin-bottom: 0.3rem;
+    }
+
+    .tagsAvailable {
+        margin-top: 0.3rem;
+        margin-bottom: 0.8rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: stretch;
+
+        span {
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
+            margin-left: 0.1rem;
+            margin-right: 0.1rem;
+            margin-top: 0.2rem;
+            margin-bottom: 0.2rem;
+            max-width: fit-content;
+            background-color: $surfaceAlt;
+            color: $onSurface;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+    }
+
+    .tagsSelected {
+        margin-top: 0.3rem;
+        margin-bottom: 0.3rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: stretch;
+
+        .tagSelected {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
+            padding-left: 0.3rem;
+            padding-right: 0.6rem;
+            margin-left: 0.1rem;
+            margin-right: 0.1rem;
+            margin-top: 0.2rem;
+            margin-bottom: 0.2rem;
+            max-width: fit-content;
+            background-color: $surfaceAlt;
+            color: $onSurface;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+
+            button {
+                width: 25px;
+                height: 25px;
+                margin-right: 0.3rem;
+                background-color: $surfaceAltDark;
+            }
+
+            p {
+                color: $onSurface;
+                height: fit-content;
+                text-align: center;
+                margin: 0;
+            }
+        }
+    }
+
+    .tagsInfos {
+        font-size: 1.2rem;
+        color: $greyInfos;
+    }
 }

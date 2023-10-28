@@ -31,7 +31,7 @@ app-profil {
         width: 700px;
     }
 
-    #mainDiv {
+    .mainDivProfil {
         width: 100%;
         display: flex;
         flex-direction: row;
@@ -55,7 +55,11 @@ app-profil {
             margin-right: 2rem;
         }
 
-        button {}
+        button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
 
     #biography {
@@ -87,6 +91,20 @@ app-profil {
             background-color: $surfaceAlt;
             color: $onSurface;
             text-align: center;
+        }
+    }
+
+    .tagsDiv {
+        width: 650px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .tagsAvailable {
+
+            span {
+                background-color: $surface;
+            }
         }
     }
 }
