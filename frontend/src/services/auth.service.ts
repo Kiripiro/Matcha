@@ -1,82 +1,13 @@
 import { HttpClient, HttpEvent, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
-import { User } from 'src/models/models';
+import { GetUserResponseData, LoginResponseData, RegisterResponseData, CompleteRegisterResponseData } from '../models/models';
 
-interface RegisterResponseData {
-  message: string;
-  user: {
-    id: number,
-    username: string,
-    email: string,
-    fist_name: string,
-    last_name: string,
-    age: number,
-    location_permission: boolean
-  };
-}
-
-interface LoginResponseData {
-  message: string;
-  user: {
-    id: number,
-    username: string,
-    fist_name: string,
-    last_name: string,
-    age: number,
-    gender: string,
-    complete_register: boolean,
-    sexual_preferences: string,
-    biography: string,
-    picture_1: string,
-    picture_2: string,
-    picture_3: string,
-    picture_4: string,
-    picture_5: string,
-    location_permission: boolean,
-    created_at: string
-  };
-}
-
-interface GetUserResponseData {
-  message: string;
-  user: {
-    username: string,
-    fist_name: string,
-    last_name: string,
-    age: number,
-    complete_register: boolean,
-    gender: string,
-    sexual_preferences: string,
-    biography: string,
-    picture_1: string,
-    picture_2: string,
-    picture_3: string,
-    picture_4: string,
-    picture_5: string,
-    tags: string[],
-    location_permission: boolean
-  };
-}
-
-interface CompleteRegisterResponseData {
-  message: string;
-  user: {
-    gender: string,
-    sexual_preferences: string,
-    biography: string,
-    picture_1: string,
-    picture_2: string,
-    picture_3: string,
-    picture_4: string,
-    picture_5: string,
-  };
-}
 
 @Injectable({
   providedIn: 'root'

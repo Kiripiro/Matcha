@@ -47,5 +47,4 @@ export class NavBarComponent implements OnInit {
   profile() {
     this.router.navigate(['profile/' + this.localStorageService.getItem('username')]);
   }
-
 }

@@ -1,0 +1,86 @@
+<div class="settings-container" *ngIf="user">
+	<mat-card>
+		<mat-card-header>
+			<mat-card-title>Settings</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<form>
+				<!-- Name and First Name -->
+				<mat-form-field>
+					<input matInput placeholder="{{user.username}}" name="username">
+				</mat-form-field>
+				<mat-form-field>
+					<input matInput placeholder="{{user.last_name}}" name="name">
+				</mat-form-field>
+				<mat-form-field>
+					<input matInput placeholder="{{user.first_name}}" name="firstName">
+				</mat-form-field>
+
+				<!-- Email -->
+				<mat-form-field>
+					<input matInput placeholder="Email" name="email">
+				</mat-form-field>
+
+				<!-- Password -->
+				<mat-form-field>
+					<input matInput type="password" placeholder="Password" name="password">
+				</mat-form-field>
+
+				<!-- Profile Pictures -->
+				<div class="profile-pictures">
+					<label for="profilePictures">Profile Pictures (up to 5)</label>
+					<input type="file" id="profilePictures" name="profilePictures" multiple>
+				</div>
+
+				<!-- Biography -->
+				<mat-form-field>
+					<textarea matInput placeholder="{{user.biography}}" name="biography"></textarea>
+				</mat-form-field>
+
+				<!-- Gender -->
+				<mat-form-field>
+					<mat-label>Gender</mat-label>
+					<mat-select name="gender" [(value)]="user.gender">
+						<mat-option value="male">Male</mat-option>
+						<mat-option value="female">Female</mat-option>
+						<mat-option value="other">Other</mat-option>
+					</mat-select>
+				</mat-form-field>
+
+				<!-- Sexual Preferences -->
+				<mat-form-field>
+					<mat-label>Sexual Preferences</mat-label>
+					<mat-select name="sexualPreferences" multiple>
+						<mat-option value="straight">Straight</mat-option>
+						<mat-option value="gay">Gay</mat-option>
+						<mat-option value="bisexual">Bisexual</mat-option>
+						<!-- Add more options -->
+					</mat-select>
+				</mat-form-field>
+
+				<!-- List of Interests (Tags) -->
+				<div class="tagsDiv">
+					<mat-label>Tags</mat-label>
+					<div class="tagsAvailable">
+						<span *ngFor="let tag of tagsService.availableTags" (click)="addTag(tag)">{{tag}}</span>
+						<p class="tagsInfos" *ngIf="tagsService.availableTags.length <= 0">All tags are selected !</p>
+					</div>
+					<mat-label>Your Tags</mat-label>
+					<div class="tagsSelected">
+						<div class="tagSelected" *ngFor="let tag of userTags">
+							<button mat-fab (click)="removeTag(tag)">
+								<mat-icon>remove</mat-icon>
+							</button>
+							<p>{{tag}}</p>
+						</div>
+						<p class="tagsInfos" *ngIf="userTags.length <= 0">Select tags above !</p>
+					</div>
+				</div>
+
+				<!-- Delete Account -->
+				<button mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
+				<button mat-raised-button color="primary" (click)="updateSettings()">Update Settings</button>
+			</form>
+		</mat-card-content>
+	</mat-card>
+</div>

@@ -2,20 +2,7 @@ import { Socket, io } from 'socket.io-client';
 import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-interface User {
-    id: number;
-    username: string;
-    first_name: string;
-    last_name: string;
-    picture_1: string;
-    status?: string;
-}
-
-interface StatusData {
-    userId: number;
-    status: string;
-}
+import { StatusData, User } from 'src/models/models';
 
 @Injectable({
     providedIn: 'root'
@@ -103,12 +90,12 @@ export class SocketioService {
         });
     }
 
-    public blockUser(blockId:number, user: User) {
-        this.socket.emit('block-user', {blockId: blockId, author_id: this.id, recipient_id: user.id});
+    public blockUser(blockId: number, user: User) {
+        this.socket.emit('block-user', { blockId: blockId, author_id: this.id, recipient_id: user.id });
     }
 
     public unblockUser(blockId: number, user: User) {
-        this.socket.emit('unblock-user', {blockId: blockId, author_id: this.id, recipient_id: user.id});
+        this.socket.emit('unblock-user', { blockId: blockId, author_id: this.id, recipient_id: user.id });
     }
 
     public handleBlock(): Observable<any> {

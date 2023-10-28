@@ -3,6 +3,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { ChatService } from 'src/services/chat.service';
 import { User, Message, StatusData } from 'src/models/models';
+import { DialogService } from 'src/services/dialog.service';
 
 @Component({
   selector: 'app-chat',
@@ -23,7 +24,8 @@ export class ChatComponent {
   constructor(
     private chatService: ChatService,
     private changeDetectorRef: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private dialogService: DialogService
   ) { }
 
   ngOnInit() {
@@ -256,6 +258,35 @@ export class ChatComponent {
       },
       error: (err: any) => {
         console.log(err);
+      }
+    });
+  }
+
+  reportUser(user: User) {
+    this.chatService.reportUser(user).subscribe({
+      next: (res: any) => {
+        if (res && res.message == "Report created") {
+          console.log("User reported");
+          const dialogData = {
+            title: 'User reported',
+            text: 'The user has been reported.'
+          };
+          this.dialogService.openDialog(dialogData);
+          this.menuTrigger.closeMenu();
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+        if (err.error === "Report already exists") {
+          const dialogData = {
+            title: 'User already reported',
+            text: 'You have already reported this user.'
+          };
+          this.dialogService.openDialog(dialogData);
+          this.menuTrigger.closeMenu();
+        }
+        else
+          console.log(err);
       }
     });
   }

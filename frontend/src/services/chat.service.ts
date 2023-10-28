@@ -27,33 +27,33 @@ export class ChatService {
 
     getMatches(): Observable<User[]> {
         return this.http.get<any[]>(this.url + '/likes/matches/' + this.id, { withCredentials: true }).pipe(
-          switchMap(matches => {
-            const userObservables: Observable<User | null>[] = [];
+            switchMap(matches => {
+                const userObservables: Observable<User | null>[] = [];
 
-            for (const match of matches) {
-              const userObservable = this.http.get<any>(this.url + '/users/' + match, { withCredentials: true }).pipe(
-                map(user => ({
-                  id: match,
-                  username: user.username,
-                  first_name: user.first_name,
-                  last_name: user.last_name,
-                  picture_1: 'data:image/jpeg;base64,' + user.picture_1,
-                  status: "Offline",
-                  block: {
-                    id: -1,
-                    author_id: -1,
-                    blocked_user_id: -1,
-                    isBlocked: false
-                  }
-                } as User)),
-                catchError(error => of(null))
-              );
-              userObservables.push(userObservable);
-            }
-            return forkJoin(userObservables).pipe(
-              map(users => users.filter(user => user !== null) as User[])
-            );
-          })
+                for (const match of matches) {
+                    const userObservable = this.http.get<any>(this.url + '/users/' + match, { withCredentials: true }).pipe(
+                        map(user => ({
+                            id: match,
+                            username: user.username,
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            picture_1: 'data:image/jpeg;base64,' + user.picture_1,
+                            status: "Offline",
+                            block: {
+                                id: -1,
+                                author_id: -1,
+                                blocked_user_id: -1,
+                                isBlocked: false
+                            }
+                        } as User)),
+                        catchError(error => of(null))
+                    );
+                    userObservables.push(userObservable);
+                }
+                return forkJoin(userObservables).pipe(
+                    map(users => users.filter(user => user !== null) as User[])
+                );
+            })
         );
     }
 
@@ -99,7 +99,7 @@ export class ChatService {
     }
 
     public unblockUser(user: User): Observable<any> {
-        return this.http.post(this.url + '/blocks/delete/',  {id: user.block.id}, { withCredentials: true });
+        return this.http.post(this.url + '/blocks/delete/', { id: user.block.id }, { withCredentials: true });
     }
 
     public handleBlock(): Observable<any> {
@@ -108,5 +108,9 @@ export class ChatService {
 
     public handleUnblock(): Observable<any> {
         return this.socketService.handleUnblock();
+    }
+
+    public reportUser(recipient: User): Observable<any> {
+        return this.http.post(this.url + '/reports/create/', { author_id: this.id, recipient_id: recipient.id }, { withCredentials: true });
     }
 }

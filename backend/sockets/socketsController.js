@@ -42,7 +42,8 @@ module.exports = (io) => {
 
         socket.on('new-message', (msg) => {
             io.emit('new-message', msg);
-            const recipientSocketId = users[msg.recipient_id].socketId;
+
+            const recipientSocketId = users[msg.recipient_id]?.socketId;
             if (recipientSocketId) {
                 io.to(recipientSocketId).emit('refresh', msg);
             }
@@ -77,7 +78,7 @@ module.exports = (io) => {
             const recipientSocketId = users[recipient_id]?.socketId;
 
             if (author_id && recipientSocketId && blockId) {
-                io.to(recipientSocketId).emit('user-blocked', {blockId: blockId, author_id: author_id, recipient_id: recipient_id});
+                io.to(recipientSocketId).emit('user-blocked', { blockId: blockId, author_id: author_id, recipient_id: recipient_id });
             }
         });
 
@@ -89,7 +90,7 @@ module.exports = (io) => {
             const recipientSocketId = users[recipient_id]?.socketId;
 
             if (author_id && recipientSocketId && blockId) {
-                io.to(recipientSocketId).emit('user-unblocked', {blockId: blockId, author_id: author_id, recipient_id: recipient_id});
+                io.to(recipientSocketId).emit('user-unblocked', { blockId: blockId, author_id: author_id, recipient_id: recipient_id });
             }
         })
     });

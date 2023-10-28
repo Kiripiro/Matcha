@@ -1,24 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {
+    CheckLikeResponseData,
+    CheckMatchResponseData,
+    CreateLikeResponseData,
+    DeleteLikeResponseData
+} from 'src/models/models';
 
-interface CheckLikeResponseData {
-    exist: boolean;
-}
 
-interface CheckMatchResponseData {
-    exist: boolean;
-}
-
-interface CreateLikeResponseData {
-    message: string;
-    likeId: Number;
-}
-
-interface DeleteLikeResponseData {
-    message: string;
-    deleted: boolean;
-}
 
 interface CreateViewResponseData {
     message: string;

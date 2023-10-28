@@ -1,8 +1,8 @@
 const BlockDTO = require("../dto/blockDTO");
 
 getAllByAuthorId = (req, res, next) => {
-	try {
-        const { id } = req.params.id;
+    try {
+        const id = req.params.id;
         const blockDTO = new BlockDTO();
         const isValid = BlockDTO.validateId(id);
         if (!isValid) {
@@ -15,8 +15,8 @@ getAllByAuthorId = (req, res, next) => {
 }
 
 getBlockById = (req, res, next) => {
-	try {
-        const { id } = req.params.id;
+    try {
+        const id = req.params.id;
         const blockDTO = new BlockDTO();
         const isValid = blockDTO.validateId(id);
         if (!isValid) {
@@ -29,10 +29,9 @@ getBlockById = (req, res, next) => {
 }
 
 getCheckBlock = (req, res, next) => {
-	try {
+    try {
         const author_id = req.params.authorId;
-		const recipient_id = req.params.recipientId;
-
+        const recipient_id = req.params.recipientId;
         const blockDTO = new BlockDTO();
         const isValid = blockDTO.validateAuthorIdAndRecipientId(author_id, recipient_id);
         if (!isValid) {
@@ -45,7 +44,7 @@ getCheckBlock = (req, res, next) => {
 }
 
 createBlock = (req, res, next) => {
-	try {
+    try {
         const { author_id, recipient_id } = req.body;
         const blockDTO = new BlockDTO();
         const isValid = blockDTO.validateAuthorIdAndRecipientId(author_id, recipient_id);
@@ -59,7 +58,7 @@ createBlock = (req, res, next) => {
 }
 
 deleteBlock = (req, res, next) => {
-	try {
+    try {
         const blockId = req.body.id;
         const blockDTO = new BlockDTO();
         const isValid = blockDTO.validateId(blockId);
@@ -73,9 +72,9 @@ deleteBlock = (req, res, next) => {
 }
 
 module.exports = {
-	getAllByAuthorId,
-	getBlockById,
-	getCheckBlock,
-	createBlock,
-	deleteBlock
+    getAllByAuthorId,
+    getBlockById,
+    getCheckBlock,
+    createBlock,
+    deleteBlock
 }

@@ -23,13 +23,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatOptionModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
 import { FormsModule } from '@angular/forms';
-
 
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { DialogService } from 'src/services/dialog.service';
 import { initializeApp } from 'src/services/app-initializer';
 import { CarouselComponent } from './utils/carousel/carousel.component';
@@ -38,7 +40,7 @@ import { ChatComponent } from './chat/chat.component';
 import { ChatService } from 'src/services/chat.service';
 import { SocketioService } from 'src/services/socketio.service';
 import { RelationService } from 'src/services/relation.service';
-import { MatOptionModule } from '@angular/material/core';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,8 @@ import { MatOptionModule } from '@angular/material/core';
     DialogComponent,
     CarouselComponent,
     ProfileComponent,
-    ChatComponent
+    ChatComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -71,7 +74,9 @@ import { MatOptionModule } from '@angular/material/core';
     MatDialogModule,
     MatProgressBarModule,
     MatMenuModule,
-    MatOptionModule
+    MatOptionModule,
+    MatSelectModule,
+    MatChipsModule
   ],
   providers: [
     {
