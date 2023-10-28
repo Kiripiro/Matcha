@@ -9,11 +9,7 @@ class BlocksController extends BaseController {
 
     async getAllByAuthorId(req, res) {
         try {
-            const authorId = this._checkPositiveInteger(req.params.id || '');
-            if (authorId < 0) {
-                res.status(400).json({ error: "Author id is incorrect" });
-                return;
-            }
+            const authorId = req.params.id;
             const blocks = await this.model.findMultiple(["author_id"], [authorId])
             if (!blocks) {
                 res.status(404).json({ error: 'Block not found' })
@@ -32,11 +28,7 @@ class BlocksController extends BaseController {
 
     async getBlockById(req, res) {
         try {
-            const blockId = this._checkPositiveInteger(req.params.id || '');
-            if (blockId < 0) {
-                res.status(400).json({ error: 'Block id is incorrect' });
-                return;
-            }
+            const blockId = req.params.id;
             const block = await this.model.findById(blockId);
             if (!block) {
                 res.status(404).json({ error: 'Block not found' })
@@ -52,16 +44,8 @@ class BlocksController extends BaseController {
 
     async getCheckBlock(req, res) {
         try {
-            const authorId = this._checkPositiveInteger(req.params.authorId || '');
-            if (authorId < 0) {
-                res.status(400).json({ error: 'Author id is incorrect' });
-                return;
-            }
-            const recipientId = this._checkPositiveInteger(req.params.recipientId || '');
-            if (recipientId < 0) {
-                res.status(400).json({ error: 'Recipient id is incorrect' });
-                return;
-            }
+            const authorId = req.params.authorId;
+            const recipientId = req.params.recipientId;
             var blocksReturn = [];
             if (await this.model.check([authorId, recipientId])) {
                 let blocks = await this.model.findMultiple(["author_id", "recipient_id"], [authorId, recipientId]);
@@ -88,19 +72,10 @@ class BlocksController extends BaseController {
 
     async createBlock(req, res) {
         try {
-            const blockData = req.body;
-            const authorId = this._checkPositiveInteger(blockData.author_id || '');
-            if (authorId < 0) {
-                res.status(400).json({ error: "Author id is incorrect" });
-                return;
-            }
-            const recipientId = this._checkPositiveInteger(blockData.recipient_id || '');
-            if (recipientId < 0) {
-                res.status(400).json({ error: "Recipient id is incorrect" });
-                return;
-            }
+            const authorId = req.body.author_id;
+            const recipientId = req.body.recipient_id;
             if (authorId == recipientId) {
-                res.status(400).json({ error: "Author id  and recipient id is equal" });
+                res.status(400).json({ error: "Author id are recipient id is equal" });
                 return;
             }
             if (!await UserController.checkById(authorId)) {
@@ -120,7 +95,6 @@ class BlocksController extends BaseController {
                 "recipient_id": recipientId
             };
             const blockId = await this.model.create(data);
-            console.log('blockId = ' + blockId);
             res.status(201).json({ message: 'Block created', blockId, data });
         } catch (error) {
             console.log('error = ' + error);
@@ -130,12 +104,7 @@ class BlocksController extends BaseController {
 
     async deleteBlock(req, res) {
         try {
-            const blockData = req.body;
-            const blockId = this._checkPositiveInteger(blockData.id || '');
-            if (blockId < 0) {
-                res.status(400).json({ error: "Block id is incorrect" });
-                return;
-            }
+            const blockId = req.body.id;
             if (!await this.checkById(blockId)) {
                 res.status(400).json({ error: "Block doesn't exists" });
                 return;
