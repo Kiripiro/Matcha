@@ -28,7 +28,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
@@ -41,6 +41,7 @@ import { ChatService } from 'src/services/chat.service';
 import { SocketioService } from 'src/services/socketio.service';
 import { RelationService } from 'src/services/relation.service';
 import { SettingsComponent } from './settings/settings.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,9 @@ import { SettingsComponent } from './settings/settings.component';
     MatMenuModule,
     MatOptionModule,
     MatSelectModule,
-    MatChipsModule
+    MatChipsModule,
+    ReactiveFormsModule,
+    MatRadioModule,
   ],
   providers: [
     {

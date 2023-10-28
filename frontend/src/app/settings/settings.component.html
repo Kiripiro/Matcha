@@ -4,7 +4,7 @@
 			<mat-card-title>Settings</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
-			<form>
+			<form (ngSubmit)="onSubmit()" [formGroup]="updateForm">
 				<!-- Name and First Name -->
 				<mat-form-field>
 					<input matInput placeholder="{{user.username}}" name="username">
@@ -48,15 +48,17 @@
 				</mat-form-field>
 
 				<!-- Sexual Preferences -->
-				<mat-form-field>
-					<mat-label>Sexual Preferences</mat-label>
-					<mat-select name="sexualPreferences" multiple>
-						<mat-option value="straight">Straight</mat-option>
-						<mat-option value="gay">Gay</mat-option>
-						<mat-option value="bisexual">Bisexual</mat-option>
-						<!-- Add more options -->
-					</mat-select>
-				</mat-form-field>
+				<div class="checkBoxDiv">
+					<mat-label>Sexual preferences</mat-label>
+					<div class="checkBoxGroup">
+						<mat-checkbox formControlName="maleSexualPreference"
+							(change)="sexualPreferenceChange()">Male</mat-checkbox>
+						<mat-checkbox formControlName="femaleSexualPreference"
+							(change)="sexualPreferenceChange()">Female</mat-checkbox>
+						<mat-checkbox formControlName="otherSexualPreference"
+							(change)="sexualPreferenceChange()">Other</mat-checkbox>
+					</div>
+				</div>
 
 				<!-- List of Interests (Tags) -->
 				<div class="tagsDiv">
@@ -79,7 +81,7 @@
 
 				<!-- Delete Account -->
 				<button mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
-				<button mat-raised-button color="primary" (click)="updateSettings()">Update Settings</button>
+				<button type="submit" color="primary" [disabled]="updateForm.invalid" mat-raised-button>Update</button>
 			</form>
 		</mat-card-content>
 	</mat-card>

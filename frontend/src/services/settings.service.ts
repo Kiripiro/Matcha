@@ -8,6 +8,7 @@ import { Observable } from "rxjs";
 	providedIn: "root"
 })
 export class SettingsService {
+	private url = "http://localhost:3000";
 	constructor(
 		private localStorageService: LocalStorageService,
 		private http: HttpClient
@@ -15,6 +16,11 @@ export class SettingsService {
 
 	public getUser(): Observable<GetUserResponseData> {
 		const id = this.localStorageService.getItem("id");
-		return this.http.get<GetUserResponseData>(`http://localhost:3000/users/${id}`, { withCredentials: true });
+		return this.http.get<GetUserResponseData>(this.url + `/users/${id}`, { withCredentials: true });
+	}
+
+	public updateUser(user: any): Observable<any> {
+		const id = this.localStorageService.getItem("id");
+		return this.http.post(this.url + `users/${id}`, user, { withCredentials: true });
 	}
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserSettings } from 'src/models/models';
 import { SettingsService } from 'src/services/settings.service';
 import { TagsService } from 'src/services/tags.service';
@@ -21,45 +21,61 @@ export class SettingsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getUser();
-    this.getSelectedTags();
     this.updateForm = this.fb.group({
-      gender: ['', Validators.required],
-      biography: ['', Validators.required],
+      username: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      gender: '',
+      biography: '',
       maleSexualPreference: false,
       femaleSexualPreference: false,
       otherSexualPreference: false,
-      sexualPreference: [false, [Validators.requiredTrue]],
-      tags: [false, [Validators.requiredTrue]],
-      fileStatus: [false, [Validators.requiredTrue]]
+      sexualPreference: false,
+      tags: false,
+      profilePictures: '',
     });
+    this.getUser();
+    this.getSelectedTags();
   }
 
-  public getUser() {
+  getUser() {
     this.settingsService.getUser().subscribe((user: any) => {
       this.user = user;
       console.log(this.user);
     });
   }
 
-  public getSelectedTags() {
+  getSelectedTags() {
     this.tagsService.getSelectedTags().subscribe((tags) => {
       this.userTags = tags.map((tag) => tag.name);
       this.tagsService.availableTags = this.tagsService.availableTags.filter((tag) => !this.userTags.includes(tag));
+      console.log(this.userTags);
     });
   }
 
-  public tagsChange() {
+  sexualPreferenceChange() {
+    const { maleSexualPreference, femaleSexualPreference, otherSexualPreference } = this.updateForm.value;
+    if (maleSexualPreference || femaleSexualPreference || otherSexualPreference) {
+      this.updateForm.get('sexualPreference')?.setValue(true);
+    } else {
+      this.updateForm.get('sexualPreference')?.setValue(false);
+    }
+  }
+
+  tagsChange() {
     this.updateForm.get('tags')?.setValue(this.userTags.length > 0);
   }
 
-  public addTag(tag: string) {
+  addTag(tag: string) {
     this.tagsService.addTag(tag);
     this.userTags.push(tag);
     this.tagsChange();
   }
 
-  public removeTag(tag: string) {
+  removeTag(tag: string) {
     this.tagsService.removeTag(tag);
     this.userTags = this.userTags.filter((t) => t !== tag);
     this.tagsChange();
@@ -67,10 +83,13 @@ export class SettingsComponent implements OnInit {
 
   deleteAccount() {
     console.log("delete account");
-    // Implement your delete account logic here
   }
 
-  updateSettings() {
-    // Implement your updateSettings logic here
+  updateUserInfos() {
+    console.log("update user infos");
+  }
+
+  onSubmit(): void {
+    console.log(this.updateForm.value);
   }
 }
