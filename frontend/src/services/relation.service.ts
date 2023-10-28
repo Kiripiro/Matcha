@@ -20,6 +20,10 @@ interface DeleteLikeResponseData {
     deleted: boolean;
 }
 
+interface CreateViewResponseData {
+    message: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -47,6 +51,17 @@ export class RelationService {
     deleteLike(authorId: Number, recipientId: Number): Observable<DeleteLikeResponseData> {
         console.log("deleteLike authorId = " + authorId + ", recipientId = " + recipientId);
         return this.http.post<DeleteLikeResponseData>('http://localhost:3000/likes/delete', { authorId, recipientId }, { withCredentials: true });
+    }
+
+    createView(authorId: Number, recipientId: Number) {
+        console.log("createView authorId = " + authorId + ", recipientId = " + recipientId);
+        this.http.post<CreateViewResponseData>('http://localhost:3000/views/create', { authorId, recipientId }, { withCredentials: true }).subscribe(
+            (response) => {
+                console.log('post createView successful:', response);
+            },
+            (error) => {
+                console.error('post createView failed:', error);
+            })
     }
 
 }

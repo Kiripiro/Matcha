@@ -67,7 +67,7 @@ export class ProfileComponent implements OnInit {
               this.loading = false;
               this.error = true;
             }
-          )
+          );
           this.relationService.getCheckMatch(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
             (response) => {
               console.log('get getCheckMatch successful:', response);
@@ -84,7 +84,10 @@ export class ProfileComponent implements OnInit {
               this.loading = false;
               this.error = true;
             }
-          )
+          );
+          if (!this.personalProfil) {
+            this.relationService.createView(this.localStorageService.getItem('id'), this.userInfos.id);
+          }
           if (this.userInfos.picture_1) {
             this.img.push("data:image/jpeg;base64," + this.userInfos.picture_1);
           }

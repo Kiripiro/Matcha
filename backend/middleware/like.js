@@ -8,7 +8,7 @@ getCheckLike = (req, res, next) => {
         const likeDTO = new LikeDTO();
         const isValid = likeDTO.getCheckLike(authorId, recipientId);
         if (!isValid) {
-            return res.status(400).json(userDTO.getValidationErrors());
+            return res.status(400).json(likeDTO.getValidationErrors());
         }
         next();
     } catch (error) {
@@ -24,7 +24,7 @@ getCheckMatch = (req, res, next) => {
         const likeDTO = new LikeDTO();
         const isValid = likeDTO.getCheckMatch(authorId, recipientId);
         if (!isValid) {
-            return res.status(400).json(userDTO.getValidationErrors());
+            return res.status(400).json(likeDTO.getValidationErrors());
         }
         next();
     } catch (error) {
@@ -41,7 +41,7 @@ createLike = (req, res, next) => {
         const likeDTO = new LikeDTO();
         const isValid = likeDTO.createLike(authorId, recipientId);
         if (!isValid) {
-            return res.status(400).json(userDTO.getValidationErrors());
+            return res.status(400).json(likeDTO.getValidationErrors());
         }
         next();
     } catch (error) {
@@ -57,7 +57,7 @@ deleteLike = (req, res, next) => {
         const likeDTO = new LikeDTO();
         const isValid = likeDTO.deleteLike(authorId, recipientId);
         if (!isValid) {
-            return res.status(400).json(userDTO.getValidationErrors());
+            return res.status(400).json(likeDTO.getValidationErrors());
         }
         next();
     } catch (error) {

@@ -13,12 +13,12 @@ class ViewsController extends BaseController {
             const authorId = this._checkPositiveInteger(req.params.id || '');
             if (authorId < 0) {
                 res.status(400).json({ error: "Author id is incorrect" });
-                return ;
+                return;
             }
             const views = await this.model.findMultiple(["author_id"], [authorId])
             if (!views) {
                 res.status(404).json({ error: 'View not found' })
-                return ;
+                return;
             } else {
                 var viewsReturn = [];
                 views.find((row) => row).forEach(element => {
@@ -36,12 +36,12 @@ class ViewsController extends BaseController {
             const recipientId = this._checkPositiveInteger(req.params.id || '');
             if (recipientId < 0) {
                 res.status(400).json({ error: "Recipient id is incorrect" });
-                return ;
+                return;
             }
             const views = await this.model.findMultiple(["recipient_id"], [recipientId])
             if (!views) {
                 res.status(404).json({ error: 'View not found' })
-                return ;
+                return;
             } else {
                 var viewsReturn = [];
                 views.find((row) => row).forEach(element => {
@@ -59,16 +59,16 @@ class ViewsController extends BaseController {
             const viewId = this._checkPositiveInteger(req.params.id || '');
             if (viewId < 0) {
                 res.status(400).json({ error: 'View id is incorrect' });
-                return ;
+                return;
             }
             const view = await this.model.findById(viewId);
             if (!view) {
                 res.status(404).json({ error: 'View not found' })
-                return ;
+                return;
             } else {
                 res.json(view);
             }
-            return ;
+            return;
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
@@ -79,19 +79,19 @@ class ViewsController extends BaseController {
             const authorId = this._checkPositiveInteger(req.params.authorId || '');
             if (authorId < 0) {
                 res.status(400).json({ error: 'Author id is incorrect' });
-                return ;
+                return;
             }
             const recipientId = this._checkPositiveInteger(req.params.recipientId || '');
             if (recipientId < 0) {
                 res.status(400).json({ error: 'Recipient id is incorrect' });
-                return ;
+                return;
             }
             if (await this.model.check([authorId, recipientId])) {
                 res.status(200).json({ exist: true });
-                return ;
+                return;
             } else {
                 res.status(200).json({ exist: false });
-                return ;
+                return;
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
@@ -101,47 +101,40 @@ class ViewsController extends BaseController {
     async createView(req, res) {
         try {
             const viewData = req.body;
-            const authorId = this._checkPositiveInteger(viewData.author_id || '');
-            if (authorId < 0) {
-                res.status(400).json({ error: "Author id is incorrect" });
-                return ;
-            }
-            const recipientId = this._checkPositiveInteger(viewData.recipient_id || '');
-            if (recipientId < 0) {
-                res.status(400).json({ error: "Recipient id is incorrect" });
-                return ;
-            }
+            const authorId = viewData.authorId;
+            const recipientId = viewData.recipientId;
             if (authorId == recipientId) {
                 res.status(400).json({ error: "Author id  and recipient id is equal" });
-                return ;
+                return;
             }
             if (!await UserController.checkById(authorId)) {
                 res.status(400).json({ error: "Author id doesn't exists" });
-                return ;
+                return;
             }
             if (!await UserController.checkById(recipientId)) {
                 res.status(400).json({ error: "Recipient id doesn't exists" });
-                return ;
+                return;
             }
             const checkBlock = await BlocksController._checkBlock(authorId, recipientId);
             if (checkBlock == true) {
                 res.status(400).json({ error: "Relationship is blocked" });
-                return ;
+                return;
             } else if (checkBlock != false) {
                 console.log('error = ' + checkBlock);
                 res.status(500).json({ error: 'Internal Server Error' });
-                return ;
+                return;
             }
             if (await this.model.check([authorId, recipientId])) {
-                res.status(400).json({ error: "View already exists" });
-                return ;
+                res.status(201).json({ message: "View already exists" });
+                return;
             }
             const data = {
                 "author_id": authorId,
                 "recipient_id": recipientId
             };
             const viewId = await this.model.create(data);
-            res.status(201).json({ message: 'View created', viewId });
+            console.log("createView = " + viewId)
+            res.status(201).json({ message: 'View created' });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -154,11 +147,11 @@ class ViewsController extends BaseController {
             const viewId = this._checkPositiveInteger(viewData.id || '');
             if (viewId < 0) {
                 res.status(400).json({ error: "View id is incorrect" });
-                return ;
+                return;
             }
             if (!await this.checkById(viewId)) {
                 res.status(400).json({ error: "View doesn't exists" });
-                return ;
+                return;
             }
             const viewIdReturn = await this.model.delete(viewId);
             res.status(201).json({ message: 'view deleted', viewIdReturn });
