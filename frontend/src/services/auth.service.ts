@@ -206,7 +206,12 @@ export class AuthService {
     if (error.length > 0) {
       const dialogData = {
         title: 'Server error',
-        text: error
+        text: error,
+        text_yes_button: "",
+        text_no_button: "Close",
+        yes_callback: () => {},
+        no_callback: () => {},
+        reload: false
       };
       this.dialogService.openDialog(dialogData);
     }

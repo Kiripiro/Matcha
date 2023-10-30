@@ -44,4 +44,12 @@ router.post('/delete', auth, block.deleteBlock, async (req, res) => {
     }
 });
 
+router.post('/delete/users', auth, block.deleteBlockByUsersId, async (req, res) => {
+    try {
+        await BlocksController.deleteBlockByUsersId(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 module.exports = router;

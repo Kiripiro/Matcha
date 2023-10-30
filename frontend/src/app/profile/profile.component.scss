@@ -107,6 +107,20 @@ app-profil {
             }
         }
     }
+
+    .blockAndReportDiv {
+        width: 650px;
+        display: flex;
+        justify-content: space-between;
+
+        button {
+            background-color: $greyInfos;
+            color: $greyInfosDark;
+            font-weight: 500;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+    }
 }
 
 .errorCard {

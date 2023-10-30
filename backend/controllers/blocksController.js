@@ -95,7 +95,7 @@ class BlocksController extends BaseController {
                 "recipient_id": recipientId
             };
             const blockId = await this.model.create(data);
-            res.status(201).json({ message: 'Block created', blockId, data });
+            res.status(201).json({ message: 'Block created', blockId: blockId, data: data });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -111,6 +111,37 @@ class BlocksController extends BaseController {
             }
             if (await this.model.delete(blockId))
                 res.status(201).json({ message: 'Block deleted', blockId });
+            else
+                res.status(500).json({ error: 'Internal Server Error' });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async deleteBlockByUsersId(req, res) {
+        try {
+            const authorId = req.body.author_id;
+            const recipientId = req.body.recipient_id;
+            if (authorId == recipientId) {
+                res.status(400).json({ error: "Author id are recipient id is equal" });
+                return;
+            }
+            if (!await UserController.checkById(authorId)) {
+                res.status(400).json({ error: "Author id doesn't exists" });
+                return;
+            }
+            if (!await UserController.checkById(recipientId)) {
+                res.status(400).json({ error: "Recipient id doesn't exists" });
+                return;
+            }
+            const blockId = await this.model.getBlockByUsersId([authorId, recipientId]);
+            if (!blockId) {
+                res.status(400).json({ error: "Block doesn't exists" });
+                return;
+            }
+            if (await this.model.delete(blockId))
+                res.status(201).json({ message: 'Block deleted' });
             else
                 res.status(500).json({ error: 'Internal Server Error' });
         } catch (error) {

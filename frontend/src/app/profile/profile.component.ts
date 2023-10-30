@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { RelationService } from 'src/services/relation.service';
 import { User } from 'src/models/models';
+import { DialogService } from 'src/services/dialog.service';
 
 @Component({
   selector: 'app-profile',
@@ -23,11 +24,17 @@ export class ProfileComponent implements OnInit {
   likeWaiting = false;
   likeIcon = "favorite_outlined";
   match = false;
+  you_blocked_he = false;
+  he_blocked_you = false;
+  blockButtonMessage = "Block";
+  you_reported_he = false;
+  reportButtonMessage = "Report";
 
   constructor(
     private localStorageService: LocalStorageService,
     private authService: AuthService,
     private relationService: RelationService,
+    private dialogService: DialogService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -52,6 +59,15 @@ export class ProfileComponent implements OnInit {
           }
           if (this.username == this.localStorageService.getItem(localStorageName.username)) {
             this.personalProfil = true;
+          }
+          this.you_blocked_he = this.userInfos.you_blocked_he;
+          this.he_blocked_you = this.userInfos.he_blocked_you;
+          if (this.you_blocked_he) {
+            this.blockButtonMessage = "Unblock";
+          }
+          this.you_reported_he = this.userInfos.you_reported_he;
+          if (this.you_reported_he) {
+            this.reportButtonMessage = "Unreport";
           }
           this.relationService.getCheckLike(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
             (response) => {
@@ -88,7 +104,7 @@ export class ProfileComponent implements OnInit {
               this.error = true;
             }
           );
-          if (!this.personalProfil) {
+          if (!this.personalProfil && !this.he_blocked_you && !this.you_blocked_he) {
             this.relationService.createView(this.localStorageService.getItem('id'), this.userInfos.id);
           }
           if (this.userInfos.picture_1) {
@@ -169,4 +185,105 @@ export class ProfileComponent implements OnInit {
       )
     }
   }
+
+  blockCallback() {
+    this.relationService.createBlock(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
+      (response) => {
+        console.log('createBlock successful:', response);
+      },
+      (error) => {
+        console.error('createBlock failed:', error);
+      }
+    )
+  }
+
+  unblockCallback():void {
+    this.relationService.deleteBlock(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
+      (response) => {
+        console.log('deleteBlock successful:', response);
+      },
+      (error) => {
+        console.error('createBlock failed:', error);
+      }
+    )
+  }
+
+  block() {
+    if (this.you_blocked_he) {
+      const dialogData = {
+        title: 'Unblock',
+        text: "Are you sure to unblock this user ?",
+        text_yes_button: "Yes",
+        text_no_button: "No",
+        yes_callback: () => this.unblockCallback(),
+        no_callback: function () {},
+        reload: true
+      };
+      this.dialogService.openDialog(dialogData);
+    }
+    else {
+      const dialogData = {
+        title: 'Block',
+        text: "Are you sure to block this user ?",
+        text_yes_button: "Yes",
+        text_no_button: "No",
+        yes_callback: () => this.blockCallback(),
+        no_callback: function () {},
+        reload: true
+      };
+      this.dialogService.openDialog(dialogData);
+    }
+    
+  }
+
+  reportCallback() {
+    this.relationService.createReport(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
+      (response) => {
+        console.log('createReport successful:', response);
+      },
+      (error) => {
+        console.error('createReport failed:', error);
+      }
+    )
+  }
+
+  unreportCallback():void {
+    this.relationService.deleteReport(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
+      (response) => {
+        console.log('deleteReport successful:', response);
+      },
+      (error) => {
+        console.error('deleteReport failed:', error);
+      }
+    )
+  }
+
+  report() {
+    if (this.you_reported_he) {
+      const dialogData = {
+        title: 'Unreport',
+        text: "Are you sure to unreport this user ?",
+        text_yes_button: "Yes",
+        text_no_button: "No",
+        yes_callback: () => this.unreportCallback(),
+        no_callback: function () {},
+        reload: true
+      };
+      this.dialogService.openDialog(dialogData);
+    }
+    else {
+      const dialogData = {
+        title: 'Report',
+        text: "Are you sure to report this user ?",
+        text_yes_button: "Yes",
+        text_no_button: "No",
+        yes_callback: () => this.reportCallback(),
+        no_callback: function () {},
+        reload: true
+      };
+      this.dialogService.openDialog(dialogData);
+    }
+    
+  }
+
 }

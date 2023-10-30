@@ -99,17 +99,8 @@ class ReportsController extends BaseController {
 
     async createReport(req, res) {
         try {
-            const reportData = req.body;
-            const authorId = this._checkPositiveInteger(reportData.author_id || '');
-            if (authorId < 0) {
-                res.status(400).json({ error: "Author id is incorrect" });
-                return ;
-            }
-            const recipientId = this._checkPositiveInteger(reportData.recipient_id || '');
-            if (recipientId < 0) {
-                res.status(400).json({ error: "Recipient id is incorrect" });
-                return ;
-            }
+            const authorId = req.body.author_id;
+            const recipientId = req.body.recipient_id;
             if (authorId == recipientId) {
                 res.status(400).json({ error: "Author id  and recipient id is equal" });
                 return ;
@@ -132,6 +123,37 @@ class ReportsController extends BaseController {
             };
             const reportId = await this.model.create(data);
             res.status(201).json({ message: 'Report created', reportId });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async deleteReportByUsersId(req, res) {
+        try {
+            const authorId = req.body.author_id;
+            const recipientId = req.body.recipient_id;
+            if (authorId == recipientId) {
+                res.status(400).json({ error: "Author id are recipient id is equal" });
+                return;
+            }
+            if (!await UserController.checkById(authorId)) {
+                res.status(400).json({ error: "Author id doesn't exists" });
+                return;
+            }
+            if (!await UserController.checkById(recipientId)) {
+                res.status(400).json({ error: "Recipient id doesn't exists" });
+                return;
+            }
+            const reportId = await this.model.getReportByUsersId([authorId, recipientId]);
+            if (!reportId) {
+                res.status(400).json({ error: "Report doesn't exists" });
+                return;
+            }
+            if (await this.model.delete(reportId))
+                res.status(201).json({ message: 'Report deleted', reportId });
+            else
+                res.status(500).json({ error: 'Internal Server Error' });
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });

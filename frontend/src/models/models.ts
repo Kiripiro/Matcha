@@ -83,6 +83,9 @@ export interface GetUserResponseData {
 		picture_4: string,
 		picture_5: string,
 		tags: string[],
+		you_blocked_he: boolean,
+		he_blocked_you: boolean,
+		you_reported_he: boolean,
 		location_permission: boolean
 	};
 }
@@ -124,6 +127,32 @@ export interface CreateLikeResponseData {
 export interface DeleteLikeResponseData {
 	message: string;
 	deleted: boolean;
+}
+
+export interface CreateBlockResponseData {
+	message: string;
+	blockId: number;
+	data: {
+		author_id: number,
+		recipient_id: number
+	};
+}
+
+export interface DeleteBlockResponseData {
+	message: string;
+}
+
+export interface CreateReportResponseData {
+	message: string;
+	blockId: number;
+	data: {
+		author_id: number,
+		recipient_id: number
+	};
+}
+
+export interface DeleteReportResponseData {
+	message: string;
 }
 
 /* Settings */

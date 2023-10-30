@@ -316,7 +316,10 @@ class UserController extends BaseController {
                     "picture_3": await this._getPictureDataFromPath(user.picture_3),
                     "picture_4": await this._getPictureDataFromPath(user.picture_4),
                     "picture_5": await this._getPictureDataFromPath(user.picture_5),
-                    "tags": tags || []
+                    "tags": tags || [],
+                    "you_blocked_he": await BlocksModel.check([req.user.userId, user.id]),
+                    "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
+                    "you_reported_he": await ReportsModel.check([req.user.userId, user.id])
                 }
                 res.json(userReturn);
             }

@@ -4,8 +4,12 @@ import { Observable } from 'rxjs';
 import {
     CheckLikeResponseData,
     CheckMatchResponseData,
+    CreateBlockResponseData,
     CreateLikeResponseData,
-    DeleteLikeResponseData
+    CreateReportResponseData,
+    DeleteBlockResponseData,
+    DeleteLikeResponseData,
+    DeleteReportResponseData
 } from 'src/models/models';
 
 
@@ -54,4 +58,19 @@ export class RelationService {
             })
     }
 
+    createBlock(authorId: Number, recipientId: Number): Observable<CreateBlockResponseData> {
+        return this.http.post<CreateBlockResponseData>('http://localhost:3000/blocks/create/', { author_id: authorId, recipient_id: recipientId }, { withCredentials: true });
+    }
+
+    deleteBlock(authorId: Number, recipientId: Number): Observable<DeleteBlockResponseData> {
+        return this.http.post<DeleteBlockResponseData>('http://localhost:3000/blocks/delete/users', { author_id: authorId, recipient_id: recipientId }, { withCredentials: true });
+    }
+
+    createReport(authorId: Number, recipientId: Number): Observable<CreateReportResponseData> {
+        return this.http.post<CreateReportResponseData>('http://localhost:3000/reports/create/', { author_id: authorId, recipient_id: recipientId }, { withCredentials: true });
+    }
+
+    deleteReport(authorId: Number, recipientId: Number): Observable<DeleteReportResponseData> {
+        return this.http.post<DeleteReportResponseData>('http://localhost:3000/reports/delete/users', { author_id: authorId, recipient_id: recipientId }, { withCredentials: true });
+    }
 }

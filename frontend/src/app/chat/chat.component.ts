@@ -269,7 +269,12 @@ export class ChatComponent {
           console.log("User reported");
           const dialogData = {
             title: 'User reported',
-            text: 'The user has been reported.'
+            text: 'The user has been reported.',
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => {},
+            no_callback: () => {},
+            reload: false
           };
           this.dialogService.openDialog(dialogData);
           this.menuTrigger.closeMenu();
@@ -280,7 +285,12 @@ export class ChatComponent {
         if (err.error === "Report already exists") {
           const dialogData = {
             title: 'User already reported',
-            text: 'You have already reported this user.'
+            text: 'You have already reported this user.',
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => {},
+            no_callback: () => {},
+            reload: false
           };
           this.dialogService.openDialog(dialogData);
           this.menuTrigger.closeMenu();

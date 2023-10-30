@@ -1,6 +1,8 @@
 const express = require('express');
 const ReportsController = require('../controllers/reportsController');
 const router = express.Router();
+const auth = require('../middleware/auth');
+const report = require('../middleware/report');
 
 router.get('/author/:id', async (req, res) => {
     try {
@@ -34,7 +36,7 @@ router.get('/:authorId/:recipientId', async (req, res) => {
     }
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth, report.createReport, async (req, res) => {
     try {
         await ReportsController.createReport(req, res);
     } catch (error) {
@@ -42,9 +44,9 @@ router.post('/create', async (req, res) => {
     }
 });
 
-router.post('/delete', async (req, res) => {
+router.post('/delete/users', auth, report.deleteReportByUsersId, async (req, res) => {
     try {
-        await ReportsController.deleteReport(req, res);
+        await ReportsController.deleteReportByUsersId(req, res);
     } catch (error) {
         console.error(error);
     }

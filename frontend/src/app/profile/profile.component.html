@@ -7,11 +7,11 @@
             <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
         </div>
         <div class="mainDivProfil" id="mainDivPublic" *ngIf="!personalProfil">
-            <button mat-fab color="primary" aria-label="Like" (click)="like()" ng-disabled="likeWaiting">
+            <button mat-fab [disabled]="you_blocked_he || he_blocked_you" color="primary" aria-label="Like" (click)="like()" ng-disabled="likeWaiting">
                 <mat-icon>{{likeIcon}}</mat-icon>
             </button>
             <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
-            <button mat-fab [disabled]="!match" color="primary" aria-label="Chat" [routerLink]="['../../chat']">
+            <button mat-fab [disabled]="!match || you_blocked_he || he_blocked_you" color="primary" aria-label="Chat" [routerLink]="['../../chat']">
                 <mat-icon>chat</mat-icon>
             </button>
         </div>
@@ -26,6 +26,14 @@
             <div class="tagsAvailable">
                 <span *ngFor="let tag of userInfos.tags">{{tag}}</span>
             </div>
+        </div>
+        <div class="blockAndReportDiv">
+            <button mat-button (click)="block()">
+                {{blockButtonMessage}}
+            </button>
+            <button mat-button (click)="report()">
+                {{reportButtonMessage}}
+            </button>
         </div>
     </div>
     <div class="errorCard" *ngIf="error">

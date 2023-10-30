@@ -71,10 +71,25 @@ deleteBlock = (req, res, next) => {
     }
 }
 
+deleteBlockByUsersId = (req, res, next) => {
+    try {
+        const { author_id, recipient_id } = req.body;
+        const blockDTO = new BlockDTO();
+        const isValid = blockDTO.validateAuthorIdAndRecipientId(author_id, recipient_id);
+        if (!isValid) {
+            return res.status(400).json(blockDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+}
+
 module.exports = {
     getAllByAuthorId,
     getBlockById,
     getCheckBlock,
     createBlock,
-    deleteBlock
+    deleteBlock,
+    deleteBlockByUsersId
 }

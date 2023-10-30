@@ -18,5 +18,13 @@ class ReportsModel extends BaseModel {
         const count = await this.deleteMultipleOrConditions(["author_id", "recipient_id"], [userId, userId]);
         return count;
     }
+
+    async getReportByUsersId(values) {
+        const item = await this.findMultiple(["author_id", "recipient_id"], values)
+        if (item) {
+            return item[0][0].id || null;
+        }
+        return null;
+    }
 }
 module.exports = new ReportsModel();
