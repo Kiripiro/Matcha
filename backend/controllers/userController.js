@@ -11,7 +11,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid')
 const fs = require('fs');
-const Jimp = require("jimp");
 const decode = require('node-base64-image').decode;
 
 class UserController extends BaseController {
@@ -94,7 +93,7 @@ class UserController extends BaseController {
             const data = {
                 "id": user.id,
                 "username": user.username,
-                "fist_name": user.first_name,
+                "first_name": user.first_name,
                 "last_name": user.last_name,
                 "age": user.age,
                 "email_checked": user.email_checked,
@@ -184,8 +183,6 @@ class UserController extends BaseController {
         try {
             const userId = req.user.userId;
             const userData = req.body;
-            // console.log("userData = ");
-            // console.log(userData);
             var pictures = await this._savePictures(userData.files, userId);
             if (pictures == null) {
                 res.status(400).json({ error: 'Invalid pictures files' });
@@ -195,7 +192,6 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'Picture missing' });
                 return;
             }
-            console.log("user.sexual_preferences = " + userData.sexual_preferences);
             const data = {
                 "complete_register": true,
                 "gender": userData.gender,
@@ -290,6 +286,43 @@ class UserController extends BaseController {
         }
     }
 
+    async getUserById(req, res) {
+        try {
+            const user = await this.model.findById(req.body.id);
+            if (!user) {
+                res.status(404).json({ error: 'User not found' })
+                return;
+            } else {
+                const tags = await TagsModel.getAllUserTags(user.id);
+                console.log("getUserById tags = ");
+                console.log(tags);
+                const userReturn = {
+                    "id": user.id || -1,
+                    "username": user.username || '',
+                    "first_name": user.first_name || '',
+                    "last_name": user.last_name || '',
+                    "age": user.age || '',
+                    "gender": user.gender || '',
+                    "sexual_preferences": user.sexual_preferences || '',
+                    "complete_register": user.complete_register || false,
+                    "biography": user.biography || '',
+                    "picture_1": await this._getPictureDataFromPath(user.picture_1),
+                    "picture_2": await this._getPictureDataFromPath(user.picture_2),
+                    "picture_3": await this._getPictureDataFromPath(user.picture_3),
+                    "picture_4": await this._getPictureDataFromPath(user.picture_4),
+                    "picture_5": await this._getPictureDataFromPath(user.picture_5),
+                    "tags": tags || [],
+                    "you_blocked_he": await BlocksModel.check([req.user.userId, user.id]),
+                    "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
+                    "you_reported_he": await ReportsModel.check([req.user.userId, user.id])
+                }
+                res.json({user: userReturn});
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
     async getUserByUsername(req, res) {
         try {
             console.log("getUserByUsername");
@@ -326,6 +359,40 @@ class UserController extends BaseController {
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
+
+    async getInterestingUsers(req, res) {
+        try {
+            console.log("getInterestingUsers");
+            const user = await this.model.findById(req.user.userId);
+            const allUsers = await this.model.findAll();
+            const usersList = this._filterUsers(user, allUsers[0]);
+            console.log("usersList.length = ", usersList.length)
+            const usersListSimplified = this._usersListSimplified(usersList);
+            console.log("usersListSimplified.length = ", usersListSimplified.length)
+            res.status(200).json({users: usersListSimplified});
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    _filterUsers(user, allUsers) {
+        // console.log("allUsers.length = ", allUsers.length);
+        const genderFilter = allUsers.filter(it => it.gender == user.sexual_preferences);
+        // console.log("genderFilter.length = ", genderFilter);
+        // console.log("user.gender = ", genuser.gender);
+        const sexualPreferencesFilter = genderFilter.filter(it => it.sexual_preferences == user.gender);
+        // console.log("sexualPreferencesFilter.length = ", sexualPreferencesFilter);
+        return sexualPreferencesFilter;
+    }
+
+    _usersListSimplified(usersList) {
+        var list = [];
+        for (var i = 0; i < usersList.length; i++) {
+            list.push({id: usersList[i].id, username: usersList[i].username})
+        }
+        return list;
     }
 
     _generateToken(userId) {

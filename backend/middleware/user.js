@@ -67,11 +67,39 @@ getUserByIdValidation = (req, res, next) => {
     }
 };
 
+postUserByIdValidation = (req, res, next) => {
+    try {
+        const id = req.body.id;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.getUserById(id);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 getUserByUsernameValidation = (req, res, next) => {
     try {
         const username = req.body.username;
         const userDTO = new UserDTO();
         const isValid = userDTO.getUserByUsername(username);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
+getInterestingUsersValidation = (req, res, next) => {
+    try {
+        const userId = req.user.userId;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.getUserById(userId);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }
@@ -87,5 +115,7 @@ module.exports = {
     logoutValidation,
     updateInfosValidation,
     getUserByIdValidation,
-    getUserByUsernameValidation
+    postUserByIdValidation,
+    getUserByUsernameValidation,
+    getInterestingUsersValidation
 };

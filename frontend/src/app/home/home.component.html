@@ -1,2 +1,26 @@
-<p>Welcome home {{username}}!</p>
-<button color="primary" mat-raised-button (click)="getInfosBack()">Get infos back</button>
+<div class="centerDiv">
+    <div class="profileCard" *ngIf="!loading && !error">
+        <div class="carouselDiv">
+            <app-carousel [images]="img" [title]="userDisplayed.username"></app-carousel>
+        </div>
+        <div class="mainDivProfil">
+            <p id="nameAge">{{userDisplayed.first_name}} {{userDisplayed.last_name}}</p>
+        </div>
+        <div id="detailsDiv">
+            <p>Gender: {{userDisplayed.gender}}</p>
+            <p>Sexual preference: {{userDisplayed.sexual_preferences}}</p>
+        </div>
+        <!-- <div class="tagsDiv">
+            <div class="tagsAvailable">
+                <span *ngFor="let tag of userInfos.tags">{{tag}}</span>
+            </div>
+        </div> -->
+    </div>
+    <div class="errorCard" *ngIf="error">
+        <p>User not found</p>
+    </div>
+    <div class="loadingCard" *ngIf="loading && !error">
+        <p>Loading</p>
+        <mat-progress-bar mode="query"></mat-progress-bar>
+    </div>
+</div>

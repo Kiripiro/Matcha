@@ -132,8 +132,9 @@ export class CompleteRegisterComponent implements OnInit {
         sexualPreference = "Female";
       else
         sexualPreference = "Other";
-      console.log(gender, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference);
-      this.authService.completeRegister(gender, sexualPreference, biography, this.files, this.selectedTags);
+      const genderUp = gender.charAt(0).toUpperCase() + gender.slice(1);
+      console.log(genderUp, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference);
+      this.authService.completeRegister(genderUp, sexualPreference, biography, this.files, this.selectedTags);
     }
   }
 

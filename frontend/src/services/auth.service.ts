@@ -34,6 +34,11 @@ export class AuthService {
     return this.http.post<GetUserResponseData>('http://localhost:3000/users/username', { username }, { withCredentials: true });
   }
 
+  getUserInfosById(id: number): Observable<GetUserResponseData> {
+    console.log("getUserInfosById")
+    return this.http.post<GetUserResponseData>('http://localhost:3000/users/id', { id }, { withCredentials: true });
+  }
+
   checkLog() {
     if (!this.localStorageService.getItem(localStorageName.username))
       return false;
@@ -57,7 +62,7 @@ export class AuthService {
           this.localStorageService.setMultipleItems(
             { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
-            { key: localStorageName.firstName, value: response.user.fist_name || "" },
+            { key: localStorageName.firstName, value: response.user.first_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
             { key: localStorageName.gender, value: response.user.gender || "" },
@@ -89,7 +94,7 @@ export class AuthService {
           this.localStorageService.setMultipleItems(
             { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
-            { key: localStorageName.firstName, value: response.user.fist_name || "" },
+            { key: localStorageName.firstName, value: response.user.first_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
             { key: localStorageName.locationPermission, value: response.user.location_permission || false }
@@ -115,7 +120,7 @@ export class AuthService {
           this.localStorageService.setMultipleItems(
             { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
-            { key: localStorageName.firstName, value: response.user.fist_name || "" },
+            { key: localStorageName.firstName, value: response.user.first_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
             { key: localStorageName.completeRegister, value: response.user.complete_register || false },
@@ -160,7 +165,6 @@ export class AuthService {
   }
 
   completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[], tags: string[]): any {
-    console.log("sexual preference = " + sexual_preferences)
     this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexual_preferences, biography, files, tags }, { withCredentials: true })
       .subscribe({
         next: (response) => {

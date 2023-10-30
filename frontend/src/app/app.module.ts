@@ -42,6 +42,7 @@ import { SocketioService } from 'src/services/socketio.service';
 import { RelationService } from 'src/services/relation.service';
 import { SettingsComponent } from './settings/settings.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { HomeService } from 'src/services/home.service';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ import { MatRadioModule } from '@angular/material/radio';
     DialogService,
     ChatService,
     SocketioService,
-    RelationService
+    RelationService,
+    HomeService
   ],
   bootstrap: [AppComponent]
 })

@@ -46,7 +46,7 @@ export class LocalStorageService {
 export const localStorageName = {
   id: "id",
   username: "username",
-  firstName: "fist_name",
+  firstName: "first_name",
   lastName: "last_name",
   age: "age",
   completeRegister: "complete_register",

@@ -1,6 +1,7 @@
 const connection = require('./database');
 const fs = require('fs');
 const initUsers = require('./initUsers');
+const initTags = require('./initTags');
 
 const createTableIfNotExists = (tableName, sql) => {
     connection.query(`SHOW TABLES LIKE "${tableName}"`, (err, result) => {
@@ -14,7 +15,8 @@ const createTableIfNotExists = (tableName, sql) => {
             console.log(`Table "${tableName}" has been created`);
             if (tableName == 'users') {
                 initUsers.insertInitialUsers();
-                console.log("All these beautiful people were inserted into my grandmother")
+            } else if (tableName == 'tags') {
+                initTags.insertInitialTags();
             }
         });
     });

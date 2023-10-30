@@ -36,7 +36,7 @@ export interface RegisterResponseData {
 		id: number,
 		username: string,
 		email: string,
-		fist_name: string,
+		first_name: string,
 		last_name: string,
 		age: number,
 		location_permission: boolean
@@ -48,7 +48,7 @@ export interface LoginResponseData {
 	user: {
 		id: number,
 		username: string,
-		fist_name: string,
+		first_name: string,
 		last_name: string,
 		age: number,
 		gender: string,
@@ -70,7 +70,7 @@ export interface GetUserResponseData {
 	user: {
 		id: number,
 		username: string,
-		fist_name: string,
+		first_name: string,
 		last_name: string,
 		age: number,
 		complete_register: boolean,
@@ -88,6 +88,28 @@ export interface GetUserResponseData {
 		you_reported_he: boolean,
 		location_permission: boolean
 	};
+}
+
+export interface HomeUserData {
+	id: number,
+	username: string,
+	first_name: string,
+	last_name: string,
+	age: number,
+	complete_register: boolean,
+	gender: string,
+	sexual_preferences: string,
+	biography: string,
+	picture_1: string,
+	picture_2: string,
+	picture_3: string,
+	picture_4: string,
+	picture_5: string,
+	tags: string[],
+	you_blocked_he: boolean,
+	he_blocked_you: boolean,
+	you_reported_he: boolean,
+	location_permission: boolean
 }
 
 export interface CompleteRegisterResponseData {
@@ -153,6 +175,17 @@ export interface CreateReportResponseData {
 
 export interface DeleteReportResponseData {
 	message: string;
+}
+
+/* Home */
+
+export interface UserSimplified {
+	id: number,
+	username: string
+}
+
+export interface GetInterestingUsersResponseData {
+	users: UserSimplified[]
 }
 
 /* Settings */

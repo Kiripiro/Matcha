@@ -41,6 +41,7 @@ const insertInitialUsers = async () => {
             console.log(`User "${user.username}" was inserted into the database`);
         });
     });
+    console.log("All these beautiful people were inserted into my grandmother")
 }
 
 module.exports = {
