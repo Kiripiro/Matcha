@@ -1,5 +1,6 @@
 const connection = require('./database');
 const fs = require('fs');
+const initUsers = require('./initUsers');
 
 const createTableIfNotExists = (tableName, sql) => {
     connection.query(`SHOW TABLES LIKE "${tableName}"`, (err, result) => {
@@ -11,6 +12,10 @@ const createTableIfNotExists = (tableName, sql) => {
         connection.query(sql, (err, result) => {
             if (err) throw err;
             console.log(`Table "${tableName}" has been created`);
+            if (tableName == 'users') {
+                initUsers.insertInitialUsers();
+                console.log("All these beautiful people were inserted into my grandmother")
+            }
         });
     });
 }
@@ -153,6 +158,7 @@ const runMigrations = () => {
             fs.appendFileSync(migrationsLockFile, 'createBlocksTable\n');
             fs.appendFileSync(migrationsLockFile, 'createMessagesTable\n');
             fs.appendFileSync(migrationsLockFile, 'createInvalidTokensTable\n');
+
         } catch (error) {
             console.error('Error running migrations:', error);
         }

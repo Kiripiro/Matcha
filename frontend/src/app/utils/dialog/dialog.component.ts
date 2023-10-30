@@ -20,7 +20,6 @@ export class DialogComponent {
       @Inject(MAT_DIALOG_DATA) public dialogData: any,
       private dialogRef: MatDialogRef<DialogComponent>
     ) {
-      console.log(dialogData)
       this.title = dialogData.title || "";
       this.text = dialogData.text || "";
       this.text_yes_button = dialogData.text_yes_button || "";
