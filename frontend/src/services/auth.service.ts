@@ -32,36 +32,11 @@ export class AuthService {
   getUserInfos(username: string): Observable<GetUserResponseData> {
     console.log("getUserInfos")
     return this.http.post<GetUserResponseData>('http://localhost:3000/users/username', { username }, { withCredentials: true });
-    //   .subscribe({
-    //     next: (response) => {
-    //       console.log('get successful:', response);
-    //       return response;
-    //     },
-    //     error: (error) => {
-    //       console.error('get failed:', error);
-    //       return null;
-    //     },
-    //     complete: () => {
-    //     }
-    // });
-  }
-
-  test(username: string): any {
-    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/username', { username }, { withCredentials: true })
-      .subscribe({
-        next: (response) => {
-          console.log('CompleteRegister success:', response);
-        },
-        error: (error) => {
-          console.error('CompleteRegister failed:', error);
-        }
-      });
   }
 
   checkLog() {
     if (!this.localStorageService.getItem(localStorageName.username))
       return false;
-    console.log('initsocket auth')
     return true;
   }
 
@@ -70,6 +45,41 @@ export class AuthService {
       return false;
     }
     return true;
+  }
+
+  checkLogAndLogout() {
+    if (!this.checkLog()) {
+      return ;
+    }
+    this.http.get<GetUserResponseData>('http://localhost:3000/users/id', { withCredentials: true }).subscribe({
+        next: (response) => {
+          console.log(response)
+          this.localStorageService.setMultipleItems(
+            { key: localStorageName.id, value: response.user.id || -1 },
+            { key: localStorageName.username, value: response.user.username || "" },
+            { key: localStorageName.firstName, value: response.user.fist_name || "" },
+            { key: localStorageName.lastName, value: response.user.last_name || "" },
+            { key: localStorageName.age, value: response.user.age || -1 },
+            { key: localStorageName.gender, value: response.user.gender || "" },
+            { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
+            { key: localStorageName.biography, value: response.user.biography || "" },
+            { key: localStorageName.locationPermission, value: response.user.location_permission || false },
+            { key: localStorageName.completeRegister, value: response.user.complete_register || false }
+          );
+          if (!this.socketService.socketExists()) {
+            this.socketService.initSocket();
+          }
+          this.logEmitChange(true);
+        },
+        error: (error) => {
+          console.error('User not log:', error);
+          if (error == 'User not found') {
+            this._frontLogOut('');
+          } else {
+            this._frontLogOut('Please try to log in again.');
+          }
+        }
+      });
   }
 
   register(username: string, first_name: string, last_name: string, age: number, email: string, password: string): any {

@@ -68,6 +68,7 @@ export interface LoginResponseData {
 export interface GetUserResponseData {
 	message: string;
 	user: {
+		id: number,
 		username: string,
 		fist_name: string,
 		last_name: string,

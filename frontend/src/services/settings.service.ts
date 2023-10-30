@@ -15,8 +15,7 @@ export class SettingsService {
 	) { }
 
 	public getUser(): Observable<GetUserResponseData> {
-		const id = this.localStorageService.getItem("id");
-		return this.http.get<GetUserResponseData>(this.url + `/users/${id}`, { withCredentials: true });
+		return this.http.get<GetUserResponseData>(this.url + `/users/id`, { withCredentials: true });
 	}
 
 	public updateUser(user: any): Observable<any> {

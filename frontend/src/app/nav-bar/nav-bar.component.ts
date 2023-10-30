@@ -33,7 +33,7 @@ export class NavBarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    this.authService.checkLogAndLogout();
   }
 
   logOut() {

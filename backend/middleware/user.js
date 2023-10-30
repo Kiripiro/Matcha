@@ -55,7 +55,7 @@ updateInfosValidation = (req, res, next) => {
 
 getUserByIdValidation = (req, res, next) => {
     try {
-        const id = req.params.id;
+        const id = req.user.userId;
         const userDTO = new UserDTO();
         const isValid = userDTO.getUserById(id);
         if (!isValid) {

@@ -262,18 +262,20 @@ class UserController extends BaseController {
 
     async getUserById(req, res) {
         try {
-            const user = await this.model.findById(req.params.id);
+            const user = await this.model.findById(req.user.userId);
             if (!user) {
                 res.status(404).json({ error: 'User not found' })
                 return;
             } else {
                 const userReturn = {
+                    "id": user.id || -1,
                     "username": user.username || '',
                     "first_name": user.first_name || '',
                     "last_name": user.last_name || '',
                     "age": user.age || '',
                     "gender": user.gender || '',
                     "sexual_preferences": user.sexual_preferences || '',
+                    "complete_register": user.complete_register || false,
                     "biography": user.biography || '',
                     "picture_1": await this._getPictureDataFromPath(user.picture_1),
                     "picture_2": await this._getPictureDataFromPath(user.picture_2),
@@ -281,7 +283,7 @@ class UserController extends BaseController {
                     "picture_4": await this._getPictureDataFromPath(user.picture_4),
                     "picture_5": await this._getPictureDataFromPath(user.picture_5)
                 }
-                res.json(userReturn);
+                res.json({user: userReturn});
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });

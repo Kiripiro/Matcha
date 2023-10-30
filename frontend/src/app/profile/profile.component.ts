@@ -31,6 +31,9 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
+    if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
+      this.router.navigate(['auth/completeRegister']);
+    }
     this.loading = true;
     this.error = false;
     this.route.params.subscribe(params => {
@@ -114,7 +117,9 @@ export class ProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
+    if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
+      this.router.navigate(['auth/completeRegister']);
+    }
   }
 
   like() {

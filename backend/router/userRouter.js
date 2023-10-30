@@ -61,7 +61,7 @@ router.post('/delete', auth, async (req, res) => {
     }
 });
 
-router.get('/:id', auth, user.getUserByIdValidation, async (req, res) => {
+router.get('/id', auth, user.getUserByIdValidation, async (req, res) => {
     try {
         await UserController.getUserById(req, res);
     } catch (error) {
