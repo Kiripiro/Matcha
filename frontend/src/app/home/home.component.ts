@@ -17,9 +17,11 @@ export class HomeComponent implements OnInit {
   interestingUsers: UserSimplified[] = [];
   userDisplayed!: HomeUserData;
   img: string[] = [];
+  userIndex = 0;
 
   loading = true;
   error = false;
+  notConnected = true;
 
   personalProfil = false;
   likeWaiting = false;
@@ -38,6 +40,15 @@ export class HomeComponent implements OnInit {
     private homeService: HomeService,
     private router: Router,
   ) {
+    if (!this.authService.checkLog()) {
+      this.notConnected = true;
+      return ;
+    }
+    this.notConnected = false;
+    if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
+      this.router.navigate(['auth/completeRegister']);
+    }
+    this.username = this.localStorageService.getItem(localStorageName.username);
     this.authService.isLoggedEmitter.subscribe(value => {
       this.username = this.localStorageService.getItem(localStorageName.username);
     });
@@ -51,7 +62,7 @@ export class HomeComponent implements OnInit {
         if (this.interestingUsers.length <= 0) {
           this.error = true;
         } else {
-          this.newUserGenerate(this.interestingUsers[0].id);
+          this.newUserGenerate();
         }
       },
       (error) => {
@@ -61,8 +72,10 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  newUserGenerate(id: number) {
-    this.authService.getUserInfosById(id).subscribe(
+  newUserGenerate() {
+    this.loading = true;
+    this.img.splice(0,this.img.length);
+    this.authService.getUserInfosById(this.interestingUsers[this.userIndex].id).subscribe(
       (response) => {
         console.log('get getUserInfosById successful:', response);
         this.userDisplayed = response.user;
@@ -82,20 +95,25 @@ export class HomeComponent implements OnInit {
           this.img.push("data:image/jpeg;base64," + this.userDisplayed.picture_5);
         }
         this.loading = false;
+        if (this.userIndex + 1 >= this.interestingUsers.length)
+          this.userIndex = 0;
+        else
+          this.userIndex++;
       },
       (error) => {
         console.error('get getUserInfosById failed:', error);
         this.loading = false;
         this.error = true;
+        if (this.userIndex + 1 >= this.interestingUsers.length)
+          this.userIndex = 0;
+        else
+          this.userIndex++;
       }
     );
   }
 
   ngOnInit(): void {
-    if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
-      this.router.navigate(['auth/completeRegister']);
-    }
-    this.username = this.localStorageService.getItem(localStorageName.username);
+    
   }
 
   getInfosBack() {

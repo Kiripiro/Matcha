@@ -1,4 +1,4 @@
-<div class="centerDiv">
+<div class="centerDiv" *ngIf="!notConnected">
     <div class="profileCard" *ngIf="!loading && !error">
         <div class="carouselDiv">
             <app-carousel [images]="img" [title]="userDisplayed.username"></app-carousel>
@@ -10,11 +10,15 @@
             <p>Gender: {{userDisplayed.gender}}</p>
             <p>Sexual preference: {{userDisplayed.sexual_preferences}}</p>
         </div>
-        <!-- <div class="tagsDiv">
+        <div class="tagsDiv">
             <div class="tagsAvailable">
-                <span *ngFor="let tag of userInfos.tags">{{tag}}</span>
+                <span *ngFor="let tag of userDisplayed.tags">{{tag}}</span>
             </div>
-        </div> -->
+        </div>
+        <div class="homeButtonAction">
+            <button mat-button [routerLink]="['profile/' + userDisplayed.username]">Profil</button>
+            <button mat-button (click)="newUserGenerate()">Next</button>
+        </div>
     </div>
     <div class="errorCard" *ngIf="error">
         <p>User not found</p>
@@ -22,5 +26,10 @@
     <div class="loadingCard" *ngIf="loading && !error">
         <p>Loading</p>
         <mat-progress-bar mode="query"></mat-progress-bar>
+    </div>
+</div>
+<div class="centerDiv" *ngIf="notConnected">
+    <div class="notConnectedCard">
+        <p>Welcome to Matcha !</p>
     </div>
 </div>
