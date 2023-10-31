@@ -334,7 +334,8 @@ class UserController extends BaseController {
                     "tags": tags || [],
                     "you_blocked_he": await BlocksModel.check([req.user.userId, user.id]),
                     "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
-                    "you_reported_he": await ReportsModel.check([req.user.userId, user.id])
+                    "you_reported_he": await ReportsModel.check([req.user.userId, user.id]),
+                    "city": user.city
                 }
                 res.json({user: userReturn});
             }
@@ -372,7 +373,8 @@ class UserController extends BaseController {
                     "tags": tags || [],
                     "you_blocked_he": await BlocksModel.check([req.user.userId, user.id]),
                     "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
-                    "you_reported_he": await ReportsModel.check([req.user.userId, user.id])
+                    "you_reported_he": await ReportsModel.check([req.user.userId, user.id]),
+                    "city": user.city
                 }
                 res.json(userReturn);
             }

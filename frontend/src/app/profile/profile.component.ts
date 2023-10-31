@@ -107,6 +107,7 @@ export class ProfileComponent implements OnInit {
           if (!this.personalProfil && !this.he_blocked_you && !this.you_blocked_he) {
             this.relationService.createView(this.localStorageService.getItem('id'), this.userInfos.id);
           }
+          this.img.splice(0, this.img.length)
           if (this.userInfos.picture_1) {
             this.img.push("data:image/jpeg;base64," + this.userInfos.picture_1);
           }

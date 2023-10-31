@@ -278,7 +278,8 @@ export class AuthService {
             console.log('updateLocation successful:', response);
             this.localStorageService.setMultipleItems(
               { key: localStorageName.latitude, value: latitude},
-              { key: localStorageName.longitude, value: longitude}
+              { key: localStorageName.longitude, value: longitude},
+              { key: localStorageName.city, value: response.user.city || "" }
             );
           },
           error: (error) => {

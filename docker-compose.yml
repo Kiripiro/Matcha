@@ -33,7 +33,6 @@ services:
       - mysql
     environment:
       - TZ=Europe/Paris
-      - LOCATION_IQ_KEY=${LOCATION_IQ_KEY}
 
   # MySQL Service
   mysql:
