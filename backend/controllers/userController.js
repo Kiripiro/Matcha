@@ -13,6 +13,9 @@ const { v4: uuidv4 } = require('uuid')
 const fs = require('fs');
 const decode = require('node-base64-image').decode;
 
+const MAX_RADIUS_LOCATION_FILTER = 35;
+const COMMON_TAGS_MINIMUM_FILTER = 1;
+
 class UserController extends BaseController {
     constructor() {
         super(UserModel);
@@ -299,7 +302,7 @@ class UserController extends BaseController {
                     "complete_register": user.complete_register || false,
                     "biography": user.biography || ''
                 }
-                res.json({user: userReturn});
+                res.json({ user: userReturn });
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
@@ -337,7 +340,7 @@ class UserController extends BaseController {
                     "you_reported_he": await ReportsModel.check([req.user.userId, user.id]),
                     "city": user.city
                 }
-                res.json({user: userReturn});
+                res.json({ user: userReturn });
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
@@ -388,33 +391,92 @@ class UserController extends BaseController {
             console.log("getInterestingUsers");
             const user = await this.model.findById(req.user.userId);
             const allUsers = await this.model.findAll();
-            const usersList = this._filterUsers(user, allUsers[0]);
-            console.log("usersList.length = ", usersList.length)
-            const usersListSimplified = this._usersListSimplified(usersList);
-            console.log("usersListSimplified.length = ", usersListSimplified.length)
-            res.status(200).json({users: usersListSimplified});
+            const usersList = this._firstFilterUsers(user, allUsers[0]);
+            const newUserList = await this._secondFilterUsers(user, usersList);
+            const usersListSimplified = this._usersListSimplified(newUserList);
+            // const userListSimplifiedSuffled = this._shuffleArray(usersListSimplified);
+            res.status(200).json({ users: usersListSimplified });
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
 
-    _filterUsers(user, allUsers) {
-        // console.log("allUsers.length = ", allUsers.length);
+    _firstFilterUsers(user, allUsers) {
         const genderFilter = allUsers.filter(it => it.gender == user.sexual_preferences);
-        // console.log("genderFilter.length = ", genderFilter);
-        // console.log("user.gender = ", genuser.gender);
         const sexualPreferencesFilter = genderFilter.filter(it => it.sexual_preferences == user.gender);
-        // console.log("sexualPreferencesFilter.length = ", sexualPreferencesFilter);
-        return sexualPreferencesFilter;
+        const locationFilter = sexualPreferencesFilter.filter(it => {
+            const isClose = this._isInsideRadius(user.latitude, user.longitude, it.latitude, it.longitude, MAX_RADIUS_LOCATION_FILTER);
+            return isClose;
+        });
+        return locationFilter;
+    }
+
+    async _secondFilterUsers(user, allUsers) {
+        var newUserList = [];
+        const userTags = await TagsModel.getAllUserTags(user.id);
+        for (var i = 0; i < allUsers.length; i++) {
+            const tags = await TagsModel.getAllUserTags(allUsers[i].id);
+            const commonTags = this._nbCommonElements(userTags, tags);
+            if (commonTags >= COMMON_TAGS_MINIMUM_FILTER) {
+                newUserList.push(allUsers[i]);
+            }
+        }
+        return newUserList;
+    }
+
+    _nbCommonElements(array1, array2) {
+        var count = 0;
+        for (var i = 0; i < array1.length; i++) {
+            for (var y = 0; y < array2.length; y++) {
+                if (array1[i] == array2[y])
+                    count++;
+            }
+        }
+        return count;
     }
 
     _usersListSimplified(usersList) {
         var list = [];
         for (var i = 0; i < usersList.length; i++) {
-            list.push({id: usersList[i].id, username: usersList[i].username})
+            list.push({ id: usersList[i].id, username: usersList[i].username })
         }
         return list;
+    }
+
+    _shuffleArray(array) {
+        let currentIndex = array.length;
+        var randomIndex = 0;
+        while (currentIndex > 0) {
+
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+
+            [array[currentIndex], array[randomIndex]] = [
+                array[randomIndex], array[currentIndex]];
+        }
+
+        return array;
+    }
+
+    _isInsideRadius(originalLatitude, originalLongitude, newLatitude, newLongitude, radiusInKm) {
+        const earthRadiusInKm = 6371;
+        const differenceLatitude = this._toRadians(newLatitude - originalLatitude);
+        const differenceLongitude = this._toRadians(newLongitude - originalLongitude);
+        //haversine formula
+        const a =
+            Math.sin(differenceLatitude / 2) * Math.sin(differenceLatitude / 2) +
+            Math.cos(this._toRadians(originalLatitude)) * Math.cos(this._toRadians(newLatitude)) *
+            Math.sin(differenceLongitude / 2) * Math.sin(differenceLongitude / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        const distance = earthRadiusInKm * c;
+
+        return distance <= radiusInKm;
+    }
+
+    _toRadians(degrees) {
+        return degrees * (Math.PI / 180);
     }
 
     _generateToken(userId) {

@@ -81,6 +81,7 @@ import { HomeService } from 'src/services/home.service';
     MatChipsModule,
     ReactiveFormsModule,
     MatRadioModule,
+    MatSelectModule
   ],
   providers: [
     {

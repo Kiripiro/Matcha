@@ -55,37 +55,37 @@ export class AuthService {
 
   checkLogAndLogout() {
     if (!this.checkLog()) {
-      return ;
+      return;
     }
     this.http.get<GetUserResponseData>('http://localhost:3000/users/id', { withCredentials: true }).subscribe({
-        next: (response) => {
-          console.log(response)
-          this.localStorageService.setMultipleItems(
-            { key: localStorageName.id, value: response.user.id || -1 },
-            { key: localStorageName.username, value: response.user.username || "" },
-            { key: localStorageName.firstName, value: response.user.first_name || "" },
-            { key: localStorageName.lastName, value: response.user.last_name || "" },
-            { key: localStorageName.age, value: response.user.age || -1 },
-            { key: localStorageName.gender, value: response.user.gender || "" },
-            { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
-            { key: localStorageName.biography, value: response.user.biography || "" },
-            { key: localStorageName.locationPermission, value: response.user.location_permission || false },
-            { key: localStorageName.completeRegister, value: response.user.complete_register || false }
-          );
-          if (!this.socketService.socketExists()) {
-            this.socketService.initSocket();
-          }
-          this.logEmitChange(true);
-        },
-        error: (error) => {
-          console.error('User not log:', error);
-          if (error == 'User not found') {
-            this._frontLogOut('');
-          } else {
-            this._frontLogOut('Please try to log in again.');
-          }
+      next: (response) => {
+        console.log(response)
+        this.localStorageService.setMultipleItems(
+          { key: localStorageName.id, value: response.user.id || -1 },
+          { key: localStorageName.username, value: response.user.username || "" },
+          { key: localStorageName.firstName, value: response.user.first_name || "" },
+          { key: localStorageName.lastName, value: response.user.last_name || "" },
+          { key: localStorageName.age, value: response.user.age || -1 },
+          { key: localStorageName.gender, value: response.user.gender || "" },
+          { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
+          { key: localStorageName.biography, value: response.user.biography || "" },
+          { key: localStorageName.locationPermission, value: response.user.location_permission || false },
+          { key: localStorageName.completeRegister, value: response.user.complete_register || false }
+        );
+        if (!this.socketService.socketExists()) {
+          this.socketService.initSocket();
         }
-      });
+        this.logEmitChange(true);
+      },
+      error: (error) => {
+        console.error('User not log:', error);
+        if (error == 'User not found') {
+          this._frontLogOut('');
+        } else {
+          this._frontLogOut('Please try to log in again.');
+        }
+      }
+    });
   }
 
   register(username: string, first_name: string, last_name: string, age: number, email: string, password: string): any {
@@ -214,8 +214,8 @@ export class AuthService {
         text: error,
         text_yes_button: "",
         text_no_button: "Close",
-        yes_callback: () => {},
-        no_callback: () => {},
+        yes_callback: () => { },
+        no_callback: () => { },
         reload: false
       };
       this.dialogService.openDialog(dialogData);
@@ -238,10 +238,10 @@ export class AuthService {
           this.updateLocation(latitude, longitude);
         }
       },
-      (error) => {
-        console.error('getLocation error : ', error);
-        this.getLocationWithIp();
-      });
+        (error) => {
+          console.error('getLocation error : ', error);
+          this.getLocationWithIp();
+        });
     } else {
       console.log('Location not available with this browser.');
       this.getLocationWithIp();
@@ -256,29 +256,29 @@ export class AuthService {
       if (ipApiData && ipApiData.lat && ipApiData.lon && ipApiData.lat > -90.0
         && ipApiData.lat < 90.0 && ipApiData.lon > -180.0 && ipApiData.lon < 180.0
         && !this._isInsideRadius(latitudeSaved, longitudeSaved, ipApiData.lat, ipApiData.lon, 30)) {
-          this.updateLocation(ipApiData.lat, ipApiData.lon);
-        }
+        this.updateLocation(ipApiData.lat, ipApiData.lon);
+      }
     });
   }
 
   updateLocation(latitude: number, longitude: number) {
     const apiKey = environment.location_iq_key || 'default';
-    const url = "https://us1.locationiq.com/v1/reverse?key="+apiKey+"&lat="+latitude+"&lon="+longitude+"&format=json";
-      this.http.get<LocationIQApiResponseData>(url).subscribe(data => {
-        const locationApiData = data;
-        var city = "";
-        if (locationApiData.address.municipality) {
-          city = locationApiData.address.municipality;
-        } else if (locationApiData.address.city) {
-          city = locationApiData.address.city;
-        }
-        this.http.post<UpdateLocationResponseData>('http://localhost:3000/users/updateLocation', { latitude, longitude, city }, { withCredentials: true })
+    const url = "https://us1.locationiq.com/v1/reverse?key=" + apiKey + "&lat=" + latitude + "&lon=" + longitude + "&format=json";
+    this.http.get<LocationIQApiResponseData>(url).subscribe(data => {
+      const locationApiData = data;
+      var city = "";
+      if (locationApiData.address.municipality) {
+        city = locationApiData.address.municipality;
+      } else if (locationApiData.address.city) {
+        city = locationApiData.address.city;
+      }
+      this.http.post<UpdateLocationResponseData>('http://localhost:3000/users/updateLocation', { latitude, longitude, city }, { withCredentials: true })
         .subscribe({
           next: (response) => {
             console.log('updateLocation successful:', response);
             this.localStorageService.setMultipleItems(
-              { key: localStorageName.latitude, value: latitude},
-              { key: localStorageName.longitude, value: longitude},
+              { key: localStorageName.latitude, value: latitude },
+              { key: localStorageName.longitude, value: longitude },
               { key: localStorageName.city, value: response.user.city || "" }
             );
           },
@@ -286,16 +286,10 @@ export class AuthService {
             console.error('updateLocation failed:', error);
           }
         });
-      });
+    });
   }
 
-  _isInsideRadius(
-    originalLatitude: number,
-    originalLongitude: number,
-    newLatitude: number,
-    newLongitude: number,
-    radiusInKm: number
-  ): boolean {
+  _isInsideRadius(originalLatitude: number, originalLongitude: number, newLatitude: number, newLongitude: number, radiusInKm: number): boolean {
     const earthRadiusInKm = 6371;
     const differenceLatitude = this._toRadians(newLatitude - originalLatitude);
     const differenceLongitude = this._toRadians(newLongitude - originalLongitude);
@@ -305,14 +299,14 @@ export class AuthService {
       Math.cos(this._toRadians(originalLatitude)) * Math.cos(this._toRadians(newLatitude)) *
       Math.sin(differenceLongitude / 2) * Math.sin(differenceLongitude / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  
+
     const distance = earthRadiusInKm * c;
-  
+
     return distance <= radiusInKm;
   }
-  
+
   _toRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
   }
-  
+
 }

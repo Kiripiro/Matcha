@@ -211,6 +211,12 @@ export interface GetInterestingUsersResponseData {
 	users: UserSimplified[]
 }
 
+export const sortSelectType = {
+	Location: "Location",
+	Age: "Age",
+	Tags: "Tags"
+}
+
 /* Settings */
 export interface UserSettings {
 	username: string;

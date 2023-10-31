@@ -1,5 +1,15 @@
 <div class="centerDiv" *ngIf="!notConnected">
     <div class="profileCard" *ngIf="!loading && !error">
+        <div class="selectListDiv">
+            <!-- <mat-form-field>
+                <mat-label>Favorite food</mat-label>
+                <mat-select [(ngModel)]="sortSelected" name="food">
+                    <mat-option *ngFor="let sort of sortType" [value]="sort">
+                        {{sort}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+        </div>
         <div class="carouselDiv">
             <app-carousel [images]="img" [title]="userDisplayed.username"></app-carousel>
         </div>

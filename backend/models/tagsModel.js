@@ -31,18 +31,14 @@ class TagsModel extends BaseModel {
     }
 
     async getAllUserTags(userId) {
-        console.log("model getAllUserTags userId = " + userId)
         const tags = await this.findMultiple(["owner_id"], [userId])
         if (!tags) {
-            console.log("model getAllUserTags return null ")
             return null;
         } else {
             var tagsReturn = [];
             tags.find((row) => row).forEach(element => {
                 tagsReturn.push(element.name);
             });
-            console.log("model getAllUserTags tagsReturn = ")
-            console.log(tagsReturn);
             return tagsReturn;
         }
     }

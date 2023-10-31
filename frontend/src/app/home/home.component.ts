@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { SocketioService } from 'src/services/socketio.service';
 import { HomeService } from 'src/services/home.service';
-import { HomeUserData, UserSimplified } from 'src/models/models';
+import { HomeUserData, UserSimplified, sortSelectType } from 'src/models/models';
 
 @Component({
   selector: 'app-home',
@@ -19,20 +19,16 @@ export class HomeComponent implements OnInit {
   img: string[] = [];
   userIndex = 0;
 
+  sortSelected = sortSelectType.Location
+  sortType: String[] = [
+    sortSelectType.Age,
+    sortSelectType.Location,
+    sortSelectType.Tags,
+  ];
+
   loading = true;
   error = false;
   notConnected = true;
-
-  personalProfil = false;
-  likeWaiting = false;
-  likeIcon = "favorite_outlined";
-  match = false;
-  you_blocked_he = false;
-  he_blocked_you = false;
-  blockButtonMessage = "Block";
-  you_reported_he = false;
-  reportButtonMessage = "Report";
-  
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -42,18 +38,18 @@ export class HomeComponent implements OnInit {
   ) {
     if (!this.authService.checkLog()) {
       this.notConnected = true;
-      return ;
+      return;
     }
     this.notConnected = false;
     if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
       this.router.navigate(['auth/completeRegister']);
+      return;
     }
     this.authService.getLocation();
     this.username = this.localStorageService.getItem(localStorageName.username);
     this.authService.isLoggedEmitter.subscribe(value => {
       this.username = this.localStorageService.getItem(localStorageName.username);
     });
-    console.log("constructor home")
     this.loading = true;
     this.error = false;
     this.homeService.getInterestingUsers().subscribe(
@@ -75,7 +71,7 @@ export class HomeComponent implements OnInit {
 
   newUserGenerate() {
     this.loading = true;
-    this.img.splice(0,this.img.length);
+    this.img.splice(0, this.img.length);
     this.authService.getUserInfosById(this.interestingUsers[this.userIndex].id).subscribe(
       (response) => {
         console.log('get getUserInfosById successful:', response);
@@ -114,7 +110,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
   }
 
   getInfosBack() {
