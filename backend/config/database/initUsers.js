@@ -7,8 +7,8 @@ const insertInitialUsers = async () => {
         const sql = `
             INSERT INTO users (username, email, password, first_name, last_name, age, token, token_creation, token_expiration, 
                 email_checked, complete_register, gender, sexual_preferences, biography, picture_1, picture_2, picture_3, picture_4, picture_5, 
-                fame_rating, location_permission, last_connection)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                fame_rating, location_permission, latitude, longitude, city, last_connection)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
 
         const values = [
@@ -33,6 +33,9 @@ const insertInitialUsers = async () => {
             user.picture_5,
             user.fame_rating,
             user.location_permission,
+            user.latitude,
+            user.longitude,
+            user.city,
             null
         ];
 

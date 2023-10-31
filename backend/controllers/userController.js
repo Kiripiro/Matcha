@@ -43,7 +43,9 @@ class UserController extends BaseController {
                 "location_permission": 0,
                 "token": refreshToken,
                 "token_creation": this._getTimestampString(),
-                "token_expiration": this._getTimestampString(1)
+                "token_expiration": this._getTimestampString(1),
+                "latitude": 0,
+                "longitude": 0
             };
             const userId = await this.model.create(data);
             res.cookie('accessToken', this._generateToken(userId), { httpOnly: true, maxAge: 900000 });
@@ -55,7 +57,9 @@ class UserController extends BaseController {
                 "first_name": userData.first_name,
                 "last_name": userData.last_name,
                 "age": userData.age,
-                "location_permission": 0
+                "location_permission": 0,
+                "latitude": 0,
+                "longitude": 0
             };
             res.status(201).json({ message: 'User created', user: returnData });
         } catch (error) {
@@ -219,6 +223,27 @@ class UserController extends BaseController {
         }
     }
 
+    async updateLocation(req, res) {
+        try {
+            const userId = req.user.userId;
+            const userData = req.body;
+            const data = {
+                "latitude": userData.latitude,
+                "longitude": userData.longitude,
+                "city": userData.city
+            };
+            if (await this.checkById(userId)) {
+                const userIdReturn = await this.model.update(userId, data);
+                res.status(200).json({ message: 'User updated', user: data });
+            } else {
+                res.status(400).json({ error: 'User id is incorrect' });
+            }
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
     async deleteUser(req, res) {
         try {
             const userData = req.body;
@@ -256,7 +281,7 @@ class UserController extends BaseController {
         }
     }
 
-    async getUserById(req, res) {
+    async getPersonaleUser(req, res) {
         try {
             const user = await this.model.findById(req.user.userId);
             if (!user) {
@@ -272,12 +297,7 @@ class UserController extends BaseController {
                     "gender": user.gender || '',
                     "sexual_preferences": user.sexual_preferences || '',
                     "complete_register": user.complete_register || false,
-                    "biography": user.biography || '',
-                    "picture_1": await this._getPictureDataFromPath(user.picture_1),
-                    "picture_2": await this._getPictureDataFromPath(user.picture_2),
-                    "picture_3": await this._getPictureDataFromPath(user.picture_3),
-                    "picture_4": await this._getPictureDataFromPath(user.picture_4),
-                    "picture_5": await this._getPictureDataFromPath(user.picture_5)
+                    "biography": user.biography || ''
                 }
                 res.json({user: userReturn});
             }

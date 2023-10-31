@@ -53,6 +53,22 @@ updateInfosValidation = (req, res, next) => {
     }
 };
 
+updateLocationValidation = (req, res, next) => {
+    try {
+        const id = req.user.userId;
+        const { latitude, longitude, city } = req.body;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.updateLocation(id, latitude, longitude, city);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 getUserByIdValidation = (req, res, next) => {
     try {
         const id = req.user.userId;
@@ -114,6 +130,7 @@ module.exports = {
     loginValidation,
     logoutValidation,
     updateInfosValidation,
+    updateLocationValidation,
     getUserByIdValidation,
     postUserByIdValidation,
     getUserByUsernameValidation,

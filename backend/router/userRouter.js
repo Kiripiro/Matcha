@@ -44,6 +44,15 @@ router.post('/updateInfos', auth, user.updateInfosValidation, async (req, res) =
     }
 });
 
+router.post('/updateLocation', auth, user.updateLocationValidation, async (req, res) => {
+    try {
+        await UserController.updateLocation(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+
 router.post('/username', auth, user.getUserByUsernameValidation, async (req, res) => {
     try {
         await UserController.getUserByUsername(req, res);

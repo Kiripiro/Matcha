@@ -45,7 +45,10 @@ const createUsersTable = () => {
         picture_4 VARCHAR(255), 
         picture_5 VARCHAR(255), 
         fame_rating INT, 
-        location_permission boolean NOT NULL, 
+        location_permission boolean NOT NULL,
+        latitude FLOAT,
+        longitude FLOAT,
+        city VARCHAR(255),
         last_connection TIMESTAMP, 
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`;

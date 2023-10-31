@@ -126,6 +126,28 @@ export interface CompleteRegisterResponseData {
 	};
 }
 
+export interface UpdateLocationResponseData {
+	message: string;
+	user: {
+		latitude: number,
+		longitude: number,
+		city: string
+	};
+}
+
+export interface IpApiResponseData {
+	status: string;
+	lat: number;
+	lon: number;
+}
+
+export interface LocationIQApiResponseData {
+	address: {
+		city: string;
+		municipality: string;
+	};
+}
+
 /* Sockets */
 export interface StatusData {
 	userId: number;

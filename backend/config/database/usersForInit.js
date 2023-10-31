@@ -24,6 +24,9 @@ const usersInit = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'JohnDoe44',
@@ -47,6 +50,9 @@ const usersInit = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'Sophia89',
@@ -70,6 +76,9 @@ const usersInit = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'DavidSmith77',
@@ -93,6 +102,9 @@ const usersInit = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
 ];
 
@@ -119,6 +131,9 @@ const userInit2 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
     {
         username: 'MarkRoberts42',
@@ -142,6 +157,9 @@ const userInit2 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
     {
         username: 'EmmaBrown31',
@@ -165,6 +183,9 @@ const userInit2 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
     {
         username: 'MichaelJohnson49',
@@ -188,6 +209,9 @@ const userInit2 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'LilyChen36',
@@ -211,6 +235,9 @@ const userInit2 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
 ];
 
@@ -237,6 +264,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'MatthewLee47',
@@ -260,6 +290,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'SophieAdams30',
@@ -283,6 +316,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'DanielMoore55',
@@ -306,6 +342,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'SophiaWilson28',
@@ -329,6 +368,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
     {
         username: 'JamesBrown39',
@@ -352,6 +394,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
     {
         username: 'AvaAnderson32',
@@ -375,6 +420,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'DanielWilson45',
@@ -398,6 +446,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'OliverSmith32',
@@ -421,6 +472,9 @@ const userInit3 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
 ];
 
@@ -447,6 +501,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'WilliamJohnson34',
@@ -470,6 +527,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'EllaDavis29',
@@ -493,6 +553,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'BenjaminMiller31',
@@ -516,6 +579,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
     {
         username: 'SophieTaylor26',
@@ -539,6 +605,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 48.856614,
+        longitude: 2.3522219,
+        city: "Paris"
     },
     {
         username: 'JamesWilson40',
@@ -562,6 +631,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'LiamBrown33',
@@ -585,6 +657,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'MiaRoberts28',
@@ -608,6 +683,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
     {
         username: 'NoahChen30',
@@ -631,6 +709,9 @@ const userInit4 = [
         picture_5: null,
         fame_rating: 0,
         location_permission: true,
+        latitude: 45.764043,
+        longitude: 4.835659,
+        city: "Lyon"
     },
 ];
 

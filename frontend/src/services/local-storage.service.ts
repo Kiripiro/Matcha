@@ -59,5 +59,7 @@ export const localStorageName = {
   picture4: "picture_4",
   picture5: "picture_5",
   locationPermission: "location_permission",
-  createdAt: "created_at"
+  createdAt: "created_at",
+  latitude: "latitude",
+  longitude: "longitude"
 }

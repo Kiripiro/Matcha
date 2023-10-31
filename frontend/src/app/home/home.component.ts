@@ -48,6 +48,7 @@ export class HomeComponent implements OnInit {
     if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
       this.router.navigate(['auth/completeRegister']);
     }
+    this.authService.getLocation();
     this.username = this.localStorageService.getItem(localStorageName.username);
     this.authService.isLoggedEmitter.subscribe(value => {
       this.username = this.localStorageService.getItem(localStorageName.username);

@@ -34,6 +34,28 @@ class BaseValidator {
         }
     }
 
+    validateFloatLatitude(propName, value) {
+        if (typeof value === 'string' && /^\d+$/.test(value) || typeof value === 'number') {
+            value = parseFloat(value);
+            if (value < -90.0 || value > 90.0) {
+                this.errors.push(`${propName} must be within a valid range.`);
+            }
+        } else {
+            this.errors.push(`${propName} must be a valid float.`);
+        }
+    }
+
+    validateFloatLongitude(propName, value) {
+        if (typeof value === 'string' && /^\d+$/.test(value) || typeof value === 'number') {
+            value = parseFloat(value);
+            if (value < -180.0 || value > 180.0) {
+                this.errors.push(`${propName} must be within a valid range.`);
+            }
+        } else {
+            this.errors.push(`${propName} must be a valid float.`);
+        }
+    }
+
     validateImageFile(file) {
         if (file.substring(0, 23) != 'data:image\/jpeg;base64,' && file.substring(0, 22) != 'data:image\/jpg;base64,' && file.substring(0, 22) != 'data:image\/png;base64,') {
             this.errors.push(`Invalid image`);

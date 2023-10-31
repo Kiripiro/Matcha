@@ -27,7 +27,6 @@ class UserDTO extends baseValidator {
             super.validatePositiveInteger('age', age);
             super.validateNumberMoreThan('age', age, 18);
         }
-
         return this.isValid();
     }
 
@@ -47,7 +46,6 @@ class UserDTO extends baseValidator {
         return this.isValid();
     }
 
-    // Manage pictures if needed here
     updateInfos(id, gender, sexual_preferences, biography, files, tags) {
         super.fieldIsRequired('id', id);
         super.validatePositiveInteger('id', id);
@@ -79,6 +77,21 @@ class UserDTO extends baseValidator {
             for (var y = 0; y < tags.length; y++) {
                 super.validateString('tag ' + tags[y], tags[y], 1, 20, /^[0-9a-zA-Z+ ]+$/);
             }
+        }
+        return this.isValid();
+    }
+
+    updateLocation(id, latitude, longitude, city) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
+        super.fieldIsRequired('latitude', latitude);
+        super.fieldIsRequired('longitude', longitude);
+        super.fieldIsRequired('city', city);
+
+        if (this.isValid()) {
+            super.validateFloatLatitude('latitude', latitude);
+            super.validateFloatLongitude('longitude', longitude);
+            super.validateString('city', city, 0, 100, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/ ]+$/);
         }
         return this.isValid();
     }

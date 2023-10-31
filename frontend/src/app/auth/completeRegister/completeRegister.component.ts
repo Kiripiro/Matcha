@@ -37,7 +37,7 @@ export class CompleteRegisterComponent implements OnInit {
     private authService: AuthService,
     private socketService: SocketioService
   ) {
-
+    this.authService.getLocation();
   }
 
   onChangeFileInput(event: any) {
