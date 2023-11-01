@@ -43,6 +43,7 @@ import { RelationService } from 'src/services/relation.service';
 import { SettingsComponent } from './settings/settings.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { HomeService } from 'src/services/home.service';
+import { WaitComponent } from './wait/wait.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { HomeService } from 'src/services/home.service';
     CarouselComponent,
     ProfileComponent,
     ChatComponent,
-    SettingsComponent
+    SettingsComponent,
+    WaitComponent
   ],
   imports: [
     BrowserModule,

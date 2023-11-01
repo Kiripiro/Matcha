@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UserSettings } from 'src/models/models';
+import { AuthService } from 'src/services/auth.service';
 import { SettingsService } from 'src/services/settings.service';
 import { TagsService } from 'src/services/tags.service';
 
@@ -17,8 +19,23 @@ export class SettingsComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private settingsService: SettingsService,
+    private authService: AuthService,
+    private router: Router,
     protected tagsService: TagsService
-  ) { }
+  ) {
+    if (!this.authService.checkLog()) {
+      this.router.navigate(['auth/login']);
+      return;
+    }
+    if (this.authService.checkLog() && !this.authService.checkEmailChecked()) {
+      this.router.navigate(['emailverification/wait']);
+      return;
+    }
+    if (!this.authService.checkCompleteRegister()) {
+      this.router.navigate(['auth/completeRegister']);
+      return;
+    }
+  }
 
   ngOnInit(): void {
     this.updateForm = this.fb.group({

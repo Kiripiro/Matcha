@@ -5,16 +5,17 @@ const insertInitialUsers = async () => {
 
     usersForInit.randomUsersForInit.forEach((user) => {
         const sql = `
-            INSERT INTO users (username, email, password, first_name, last_name, age, token, token_creation, token_expiration, 
+            INSERT INTO users (username, email, password, password_reset, first_name, last_name, age, token, token_creation, token_expiration, 
                 email_checked, complete_register, gender, sexual_preferences, biography, picture_1, picture_2, picture_3, picture_4, picture_5, 
                 fame_rating, location_permission, latitude, longitude, city, last_connection)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         `;
 
         const values = [
             user.username,
             user.email,
             user.password,
+            false,
             user.first_name,
             user.last_name,
             user.age,

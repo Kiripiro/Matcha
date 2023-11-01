@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const requiredEnvVars = ['HOST', 'USER', 'PASSWORD', 'DATABASE', 'NODE_PORT', 'JWT_SECRET', 'JWT_EXPIRES_IN'];
+const requiredEnvVars = ['HOST', 'USER', 'PASSWORD', 'DATABASE', 'NODE_PORT', 'JWT_SECRET', 'JWT_EXPIRES_IN', 'EMAIL', 'EMAIL_PASSWORD'];
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 

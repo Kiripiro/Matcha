@@ -38,8 +38,17 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
+    if (!this.authService.checkLog()) {
+      this.router.navigate(['auth/login']);
+      return;
+    }
+    if (this.authService.checkLog() && !this.authService.checkEmailChecked()) {
+      this.router.navigate(['emailverification/wait']);
+      return;
+    }
+    if (!this.authService.checkCompleteRegister()) {
       this.router.navigate(['auth/completeRegister']);
+      return;
     }
     this.loading = true;
     this.error = false;
@@ -198,7 +207,7 @@ export class ProfileComponent implements OnInit {
     )
   }
 
-  unblockCallback():void {
+  unblockCallback(): void {
     this.relationService.deleteBlock(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
       (response) => {
         console.log('deleteBlock successful:', response);
@@ -217,7 +226,7 @@ export class ProfileComponent implements OnInit {
         text_yes_button: "Yes",
         text_no_button: "No",
         yes_callback: () => this.unblockCallback(),
-        no_callback: function () {},
+        no_callback: function () { },
         reload: true
       };
       this.dialogService.openDialog(dialogData);
@@ -229,12 +238,12 @@ export class ProfileComponent implements OnInit {
         text_yes_button: "Yes",
         text_no_button: "No",
         yes_callback: () => this.blockCallback(),
-        no_callback: function () {},
+        no_callback: function () { },
         reload: true
       };
       this.dialogService.openDialog(dialogData);
     }
-    
+
   }
 
   reportCallback() {
@@ -248,7 +257,7 @@ export class ProfileComponent implements OnInit {
     )
   }
 
-  unreportCallback():void {
+  unreportCallback(): void {
     this.relationService.deleteReport(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
       (response) => {
         console.log('deleteReport successful:', response);
@@ -267,7 +276,7 @@ export class ProfileComponent implements OnInit {
         text_yes_button: "Yes",
         text_no_button: "No",
         yes_callback: () => this.unreportCallback(),
-        no_callback: function () {},
+        no_callback: function () { },
         reload: true
       };
       this.dialogService.openDialog(dialogData);
@@ -279,12 +288,12 @@ export class ProfileComponent implements OnInit {
         text_yes_button: "Yes",
         text_no_button: "No",
         yes_callback: () => this.reportCallback(),
-        no_callback: function () {},
+        no_callback: function () { },
         reload: true
       };
       this.dialogService.openDialog(dialogData);
     }
-    
+
   }
 
 }

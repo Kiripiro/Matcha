@@ -1,5 +1,5 @@
 <mat-toolbar id="nav-bar">
-  <img src="../../assets/logo.png" alt="Logo" (click)="home()">
+  <img src="../../assets/logo.png" alt="Logo" [routerLink]="['']">
   <div id="navBar_logPart">
     <div *ngIf="!isLoggedIn">
       <button mat-button class="primaryButton" [routerLink]="['auth/register']">Sign up</button>

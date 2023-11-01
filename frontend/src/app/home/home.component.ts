@@ -47,7 +47,11 @@ export class HomeComponent implements OnInit {
       return;
     }
     this.notConnected = false;
-    if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
+    if (this.authService.checkLog() && !this.authService.checkEmailChecked()) {
+      this.router.navigate(['emailverification/wait']);
+      return;
+    }
+    if (!this.authService.checkCompleteRegister()) {
       this.router.navigate(['auth/completeRegister']);
       return;
     }

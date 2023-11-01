@@ -77,6 +77,14 @@ router.post('/delete', auth, async (req, res) => {
     }
 });
 
+router.post('/emailvalidation', auth, async (req, res) => {
+    try {
+        await UserController.emailValidation(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 router.get('/id', auth, user.getUserByIdValidation, async (req, res) => {
     try {
         await UserController.getPersonaleUser(req, res);

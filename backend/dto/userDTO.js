@@ -96,6 +96,14 @@ class UserDTO extends baseValidator {
         return this.isValid();
     }
 
+    emailValidation(id, token) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
+        super.fieldIsRequired('token', token);
+
+        return this.isValid();
+    }
+
     getUserById(id) {
         super.fieldIsRequired('id', id);
         super.validatePositiveInteger('id', id);

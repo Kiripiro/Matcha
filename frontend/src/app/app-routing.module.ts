@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ChatComponent } from './chat/chat.component';
 import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
+import { WaitComponent } from './wait/wait.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'auth', loadChildren: () => AuthModule },
   { path: 'chat', component: ChatComponent },
   { path: 'settings', component: SettingsComponent },
+  { path: 'emailverification/:token', component: WaitComponent },
   { path: 'notFound', component: NotFoundComponent },
   { path: '**', redirectTo: '/notFound', pathMatch: 'full' }
 ];

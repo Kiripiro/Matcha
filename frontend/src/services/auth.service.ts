@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
-import { GetUserResponseData, LoginResponseData, RegisterResponseData, CompleteRegisterResponseData, IpApiResponseData, LocationIQApiResponseData, UpdateLocationResponseData } from '../models/models';
+import { GetUserResponseData, LoginResponseData, RegisterResponseData, CompleteRegisterResponseData, IpApiResponseData, LocationIQApiResponseData, UpdateLocationResponseData, EmailValidationResponseData } from '../models/models';
 import { environment } from 'src/environments/environment.template';
 
 
@@ -46,6 +46,12 @@ export class AuthService {
     return true;
   }
 
+  checkEmailChecked() {
+    if (this.localStorageService.getItem(localStorageName.emailChecked))
+      return true;
+    return false;
+  }
+
   checkCompleteRegister() {
     if (!this.localStorageService.getItem(localStorageName.completeRegister)) {
       return false;
@@ -69,6 +75,7 @@ export class AuthService {
           { key: localStorageName.gender, value: response.user.gender || "" },
           { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
           { key: localStorageName.biography, value: response.user.biography || "" },
+          { key: localStorageName.emailChecked, value: response.user.email_checked || false },
           { key: localStorageName.locationPermission, value: response.user.location_permission || false },
           { key: localStorageName.completeRegister, value: response.user.complete_register || false }
         );
@@ -98,6 +105,7 @@ export class AuthService {
             { key: localStorageName.firstName, value: response.user.first_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
+            { key: localStorageName.emailChecked, value: response.user.email_checked || false },
             { key: localStorageName.locationPermission, value: response.user.location_permission || false }
           );
           if (!this.socketService.socketExists()) {
@@ -124,6 +132,7 @@ export class AuthService {
             { key: localStorageName.firstName, value: response.user.first_name || "" },
             { key: localStorageName.lastName, value: response.user.last_name || "" },
             { key: localStorageName.age, value: response.user.age || -1 },
+            { key: localStorageName.emailChecked, value: response.user.email_checked || false },
             { key: localStorageName.completeRegister, value: response.user.complete_register || false },
             { key: localStorageName.sexualPreferences, value: response.user.sexual_preferences || "" },
             { key: localStorageName.biography, value: response.user.biography || "" },
@@ -189,6 +198,10 @@ export class AuthService {
           console.error('CompleteRegister failed:', error);
         }
       });
+  }
+
+  emailValidation(token: string): Observable<EmailValidationResponseData> {
+    return this.http.post<EmailValidationResponseData>('http://localhost:3000/users/emailvalidation', { token }, { withCredentials: true });
   }
 
   _getUserInfosBack() {

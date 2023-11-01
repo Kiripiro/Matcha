@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ChatService } from 'src/services/chat.service';
 import { User, Message, StatusData } from 'src/models/models';
 import { DialogService } from 'src/services/dialog.service';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-chat',
@@ -24,9 +25,23 @@ export class ChatComponent {
   constructor(
     private chatService: ChatService,
     private changeDetectorRef: ChangeDetectorRef,
+    private authService: AuthService,
     private router: Router,
     private dialogService: DialogService
-  ) { }
+  ) {
+    if (!this.authService.checkLog()) {
+      this.router.navigate(['auth/login']);
+      return;
+    }
+    if (this.authService.checkLog() && !this.authService.checkEmailChecked()) {
+      this.router.navigate(['emailverification/wait']);
+      return;
+    }
+    if (!this.authService.checkCompleteRegister()) {
+      this.router.navigate(['auth/completeRegister']);
+      return;
+    }
+  }
 
   ngOnInit() {
     this.chatService.initSocket();
@@ -272,8 +287,8 @@ export class ChatComponent {
             text: 'The user has been reported.',
             text_yes_button: "",
             text_no_button: "Close",
-            yes_callback: () => {},
-            no_callback: () => {},
+            yes_callback: () => { },
+            no_callback: () => { },
             reload: false
           };
           this.dialogService.openDialog(dialogData);
@@ -288,8 +303,8 @@ export class ChatComponent {
             text: 'You have already reported this user.',
             text_yes_button: "",
             text_no_button: "Close",
-            yes_callback: () => {},
-            no_callback: () => {},
+            yes_callback: () => { },
+            no_callback: () => { },
             reload: false
           };
           this.dialogService.openDialog(dialogData);

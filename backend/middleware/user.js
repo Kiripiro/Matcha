@@ -97,6 +97,21 @@ postUserByIdValidation = (req, res, next) => {
     }
 };
 
+emailValidation = (req, res, next) => {
+    try {
+        const id = req.user.userId;
+        const token = req.body.token
+        const userDTO = new UserDTO();
+        const isValid = userDTO.emailValidation(id, token);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 getUserByUsernameValidation = (req, res, next) => {
     try {
         const username = req.body.username;
@@ -133,6 +148,7 @@ module.exports = {
     updateLocationValidation,
     getUserByIdValidation,
     postUserByIdValidation,
+    emailValidation,
     getUserByUsernameValidation,
     getInterestingUsersValidation
 };

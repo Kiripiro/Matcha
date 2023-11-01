@@ -16,6 +16,23 @@ const decode = require('node-base64-image').decode;
 const MAX_RADIUS_LOCATION_FILTER = 35;
 const COMMON_TAGS_MINIMUM_FILTER = 1;
 
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD
+    }
+});
+
+var mailOptions = {
+    from: process.env.EMAIL,
+    to: '',
+    subject: '',
+    text: ''
+};
+
 class UserController extends BaseController {
     constructor() {
         super(UserModel);
@@ -35,14 +52,17 @@ class UserController extends BaseController {
 
             const hashedPassword = await bcrypt.hash(userData.password, 10);
             const refreshToken = uuidv4();
+            const emailVerificationToken = uuidv4();
             const data = {
                 "username": userData.username,
                 "email": userData.email,
                 "password": hashedPassword,
+                "password_reset": 0,
                 "first_name": userData.first_name,
                 "last_name": userData.last_name,
                 "age": userData.age,
                 "email_checked": 0,
+                "email_verification_token": emailVerificationToken,
                 "location_permission": 0,
                 "token": refreshToken,
                 "token_creation": this._getTimestampString(),
@@ -60,10 +80,21 @@ class UserController extends BaseController {
                 "first_name": userData.first_name,
                 "last_name": userData.last_name,
                 "age": userData.age,
+                "email_checked": 0,
                 "location_permission": 0,
                 "latitude": 0,
                 "longitude": 0
             };
+            mailOptions.to = userData.email;
+            mailOptions.subject = "Email verification";
+            mailOptions.text = "Hi " + userData.username + "\nClick on the following link to activate your account:\n" + "http://localhost:4200/emailverification/" + emailVerificationToken;
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
             res.status(201).json({ message: 'User created', user: returnData });
         } catch (error) {
             console.log('error = ' + error);
@@ -296,6 +327,30 @@ class UserController extends BaseController {
         }
     }
 
+    async emailValidation(req, res) {
+        try {
+            const user = await this.model.findById(req.user.userId);
+            const validationEmailData = req.body;
+            if (user) {
+                if (user.email_verification_token == (validationEmailData.token || "")) {
+                    const data = {
+                        "email_checked": 1,
+                        "email_verification_token": "",
+                    };
+                    const userIdReturn = await this.model.update(user.id, data);
+                    res.status(200).json({ message: 'Email validated' });
+                } else {
+                    res.status(400).json({ error: 'Incorrect token' });
+                }
+            } else {
+                res.status(400).json({ error: 'User not found' });
+            }
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
     async getPersonaleUser(req, res) {
         try {
             const user = await this.model.findById(req.user.userId);
@@ -311,6 +366,7 @@ class UserController extends BaseController {
                     "age": user.age || '',
                     "gender": user.gender || '',
                     "sexual_preferences": user.sexual_preferences || '',
+                    "email_checked": user.email_checked,
                     "complete_register": user.complete_register || false,
                     "biography": user.biography || ''
                 }

@@ -39,6 +39,7 @@ export interface RegisterResponseData {
 		first_name: string,
 		last_name: string,
 		age: number,
+		email_checked: boolean,
 		location_permission: boolean
 	};
 }
@@ -52,6 +53,7 @@ export interface LoginResponseData {
 		last_name: string,
 		age: number,
 		gender: string,
+		email_checked: boolean,
 		complete_register: boolean,
 		sexual_preferences: string,
 		biography: string,
@@ -73,6 +75,7 @@ export interface GetUserResponseData {
 		first_name: string,
 		last_name: string,
 		age: number,
+		email_checked: boolean,
 		complete_register: boolean,
 		gender: string,
 		sexual_preferences: string,
@@ -149,6 +152,12 @@ export interface LocationIQApiResponseData {
 		municipality: string;
 	};
 }
+
+export interface EmailValidationResponseData {
+	message: string;
+	error: string;
+}
+
 
 /* Sockets */
 export interface StatusData {
