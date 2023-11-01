@@ -1,33 +1,36 @@
 <div class="centerDiv" *ngIf="!notConnected">
     <div class="profileCard" *ngIf="!loading && !error">
-        <div class="selectListDiv">
-            <!-- <mat-form-field>
-                <mat-label>Favorite food</mat-label>
-                <mat-select [(ngModel)]="sortSelected" name="food">
-                    <mat-option *ngFor="let sort of sortType" [value]="sort">
-                        {{sort}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field> -->
-        </div>
         <div class="carouselDiv">
             <app-carousel [images]="img" [title]="userDisplayed.username"></app-carousel>
         </div>
         <div class="mainDivProfil">
-            <p id="nameAge">{{userDisplayed.first_name}} {{userDisplayed.last_name}}</p>
-        </div>
-        <div id="detailsDiv">
-            <p>Gender: {{userDisplayed.gender}}</p>
-            <p>Sexual preference: {{userDisplayed.sexual_preferences}}</p>
-        </div>
-        <div class="tagsDiv">
-            <div class="tagsAvailable">
-                <span *ngFor="let tag of userDisplayed.tags">{{tag}}</span>
-            </div>
+            <p id="nameAge">{{userDisplayed.first_name}} {{userDisplayed.last_name}} - {{userDisplayed.age}} years</p>
         </div>
         <div class="homeButtonAction">
             <button mat-button [routerLink]="['profile/' + userDisplayed.username]">Profil</button>
             <button mat-button (click)="newUserGenerate()">Next</button>
+        </div>
+        <div class="dropdownDiv">
+            <div class="dropdownList">
+                <mat-form-field class="dropdownList" color="primary" appearance="outline">
+                    <mat-label>Sort by</mat-label>
+                    <mat-select (selectionChange)="sortOrFilterChange()" [(ngModel)]="sortSelected">
+                        <mat-option *ngFor="let sort of sortType" [value]="sort">
+                            {{sort}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="dropdownList">
+                <mat-form-field class="dropdownList" color="primary" appearance="outline">
+                    <mat-label>Filter by</mat-label>
+                    <mat-select (selectionChange)="sortOrFilterChange()" [(ngModel)]="filterSelected">
+                        <mat-option *ngFor="let filter of filterType" [value]="filter">
+                            {{filter}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
     </div>
     <div class="errorCard" *ngIf="error">

@@ -8,3 +8,4 @@ backend/node_modules
 backend/config/database/migrations.lock
 backend/imagesSaved/*.png
 backend/imagesSaved/*.jpg
+backend/imagesSaved/*.jpeg

@@ -60,6 +60,7 @@ export const localStorageName = {
   picture5: "picture_5",
   locationPermission: "location_permission",
   createdAt: "created_at",
+  tags: "tags",
   latitude: "latitude",
   longitude: "longitude",
   city: "city"

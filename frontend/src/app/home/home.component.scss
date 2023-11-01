@@ -26,6 +26,30 @@ app-profil {
     margin-top: 1rem;
     margin-bottom: 1rem;
 
+    .dropdownDiv {
+        margin-top: 1.5rem;
+        width: 550px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .dropdownList {
+            width: 150px;
+
+            mat-label {
+                color: $surface;
+                font-size: 1.2rem;
+                font-weight: 500;
+            }
+
+            mat-select {
+                color: $surface;
+                font-size: 1.2rem;
+                font-weight: 500;
+            }
+        }
+    }
+
     .carouselDiv {
         height: 600px;
         width: 600px;
@@ -109,7 +133,7 @@ app-profil {
 
         button {
             border-radius: 15px;
-            background-color: $surface;
+            background-color: $surfaceAlt;
             color: $onSurface;
             font-size: 1.5rem;
             font-weight: 600;

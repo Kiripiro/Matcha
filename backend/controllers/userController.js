@@ -216,7 +216,19 @@ class UserController extends BaseController {
                 console.log("updateInfos userTags = ");
                 console.log(userTags);
                 const tagsReturn = await TagsModel.addUserTags(userTags, userId);
-                res.status(200).json({ message: 'User updated', user: data });
+                const dataReturn = {
+                    "complete_register": true,
+                    "gender": userData.gender,
+                    "sexual_preferences": userData.sexual_preferences,
+                    "biography": userData.biography,
+                    "picture_1": pictures[0],
+                    "picture_2": pictures[1],
+                    "picture_3": pictures[2],
+                    "picture_4": pictures[3],
+                    "picture_5": pictures[4],
+                    "tags": userTags
+                };
+                res.status(200).json({ message: 'User updated', user: dataReturn });
             } else {
                 res.status(400).json({ error: 'User id is incorrect' });
             }
@@ -393,9 +405,9 @@ class UserController extends BaseController {
             const allUsers = await this.model.findAll();
             const usersList = this._firstFilterUsers(user, allUsers[0]);
             const newUserList = await this._secondFilterUsers(user, usersList);
-            const usersListSimplified = this._usersListSimplified(newUserList);
+            // const usersListSimplified = this._usersListSimplified(newUserList);
             // const userListSimplifiedSuffled = this._shuffleArray(usersListSimplified);
-            res.status(200).json({ users: usersListSimplified });
+            res.status(200).json({ users: newUserList });
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Internal Server Error' });
@@ -419,7 +431,13 @@ class UserController extends BaseController {
             const tags = await TagsModel.getAllUserTags(allUsers[i].id);
             const commonTags = this._nbCommonElements(userTags, tags);
             if (commonTags >= COMMON_TAGS_MINIMUM_FILTER) {
-                newUserList.push(allUsers[i]);
+                newUserList.push(
+                    {
+                        id: allUsers[i].id, username: allUsers[i].username,
+                        age: allUsers[i].age, tags: tags,
+                        latitude: allUsers[i].latitude, longitude: allUsers[i].longitude
+                    }
+                );
             }
         }
         return newUserList;
@@ -439,7 +457,11 @@ class UserController extends BaseController {
     _usersListSimplified(usersList) {
         var list = [];
         for (var i = 0; i < usersList.length; i++) {
-            list.push({ id: usersList[i].id, username: usersList[i].username })
+            list.push({
+                id: usersList[i].id, username: usersList[i].username,
+                age: usersList[i].age, tags: usersList[i].tags,
+                latitude: usersList[i].latitude, longitude: usersList[i].longitude
+            })
         }
         return list;
     }

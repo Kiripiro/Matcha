@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { LocalStorageService, localStorageName } from '../../services/local-storage.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { SocketioService } from 'src/services/socketio.service';
 import { HomeService } from 'src/services/home.service';
-import { HomeUserData, UserSimplified, sortSelectType } from 'src/models/models';
+import { HomeUserData, UserSimplified, filterSelectType, sortSelectType } from 'src/models/models';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss', '../app.component.scss']
 })
 export class HomeComponent implements OnInit {
 
@@ -19,11 +18,18 @@ export class HomeComponent implements OnInit {
   img: string[] = [];
   userIndex = 0;
 
-  sortSelected = sortSelectType.Location
+  sortSelected = "";
   sortType: String[] = [
     sortSelectType.Age,
     sortSelectType.Location,
     sortSelectType.Tags,
+  ];
+
+  filterSelected = "";
+  filterType: String[] = [
+    filterSelectType.Age,
+    filterSelectType.Location,
+    filterSelectType.Tags,
   ];
 
   loading = true;
@@ -107,6 +113,46 @@ export class HomeComponent implements OnInit {
           this.userIndex++;
       }
     );
+  }
+
+  sortOrFilterChange() {
+    this.filterSelectChange();
+    this.sortSelectChange();
+    this.userIndex = 0;
+    this.newUserGenerate();
+  }
+
+  sortSelectChange() {
+    if (this.sortSelected == sortSelectType.Age) {
+      this.interestingUsers = this.interestingUsers.sort((a, b) => a.age - b.age);
+
+    } else if (this.sortSelected == sortSelectType.Location) {
+      const userLatitude = this.localStorageService.getItem(localStorageName.latitude);
+      const userLongitude = this.localStorageService.getItem(localStorageName.longitude);
+      this.interestingUsers = this.interestingUsers.sort((a, b) =>
+        this.homeService.positionToDistance(userLatitude, userLongitude, a.latitude, a.longitude) -
+        this.homeService.positionToDistance(userLatitude, userLongitude, b.latitude, b.longitude));
+    } else if (this.sortSelected == sortSelectType.Tags) {
+      const tags = this.localStorageService.getItem(localStorageName.tags);
+      this.interestingUsers = this.interestingUsers.sort((a, b) => {
+        return this.homeService.nbCommonTags(tags, b.tags) -
+          this.homeService.nbCommonTags(tags, a.tags);
+      });
+    }
+  }
+
+  filterSelectChange() {
+    if (this.filterSelected == filterSelectType.Age) {
+      const userAge = this.localStorageService.getItem(localStorageName.age);
+      this.interestingUsers = this.interestingUsers.filter(it => it.age < userAge + 5 && it.age > userAge - 5);
+    } else if (this.filterSelected == filterSelectType.Location) {
+      const userLatitude = this.localStorageService.getItem(localStorageName.latitude);
+      const userLongitude = this.localStorageService.getItem(localStorageName.longitude);
+      this.interestingUsers = this.interestingUsers.filter(it => this.homeService.positionToDistance(userLatitude, userLongitude, it.latitude, it.longitude) < 30.0);
+    } else if (this.filterSelected == filterSelectType.Tags) {
+      const tags = this.localStorageService.getItem(localStorageName.tags);
+      this.interestingUsers = this.interestingUsers.filter(it => this.homeService.nbCommonTags(tags, it.tags) >= 3);
+    }
   }
 
   ngOnInit(): void {

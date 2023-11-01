@@ -124,6 +124,7 @@ export interface CompleteRegisterResponseData {
 		picture_3: string,
 		picture_4: string,
 		picture_5: string,
+		tags: UserTags[]
 	};
 }
 
@@ -204,7 +205,16 @@ export interface DeleteReportResponseData {
 
 export interface UserSimplified {
 	id: number,
-	username: string
+	username: string,
+	age: number,
+	tags: UserTags[],
+	latitude: number,
+	longitude: number
+}
+
+export interface UserTags {
+	owner_id: number,
+	name: string
 }
 
 export interface GetInterestingUsersResponseData {
@@ -215,6 +225,12 @@ export const sortSelectType = {
 	Location: "Location",
 	Age: "Age",
 	Tags: "Tags"
+}
+
+export const filterSelectType = {
+	Location: "to less than 20km",
+	Age: "+/- 5 years",
+	Tags: "3 common tags minimum"
 }
 
 /* Settings */
