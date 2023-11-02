@@ -216,8 +216,37 @@ export interface CreateReportResponseData {
 	};
 }
 
+export interface CreateBlockResponseData {
+	message: string;
+	blockId: number;
+	data: {
+		author_id: number,
+		recipient_id: number
+	};
+}
+
 export interface DeleteReportResponseData {
 	message: string;
+}
+
+export interface GetAllProfileViewsResponseData {
+	data: {
+		author_id: number,
+		authorUsername: string,
+		authorFirstName: string,
+		authorLastName: string,
+		recipient_id: number
+	}[];
+}
+
+export interface GetAllProfileLikesResponseData {
+	data: {
+		author_id: number,
+		authorUsername: string,
+		authorFirstName: string,
+		authorLastName: string,
+		recipient_id: number
+	}[];
 }
 
 /* Home */
@@ -274,4 +303,14 @@ export interface Tag {
 	id: number;
 	name: string;
 	owner_id: number;
+}
+
+/* Profile */
+
+export interface ElementListData {
+	author_id: number,
+	authorUsername: string,
+	authorFirstName: string,
+	authorLastName: string,
+	recipient_id: number
 }

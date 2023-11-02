@@ -8,7 +8,7 @@ class LikesController extends BaseController {
         super(LikesModel);
     }
 
-    async getAllByAuthorId(req, res) {
+    async getAllByAuthorId(req, res) { //doesnt work ! look getAllByRecipientId
         try {
             const authorId = this._checkPositiveInteger(req.params.id || '');
             if (authorId < 0) {
@@ -33,21 +33,24 @@ class LikesController extends BaseController {
 
     async getAllByRecipientId(req, res) {
         try {
-            const recipientId = this._checkPositiveInteger(req.params.id || '');
-            if (recipientId < 0) {
-                res.status(400).json({ error: "Recipient id is incorrect" });
-                return;
-            }
+            const recipientId = req.params.id;
             const likes = await this.model.findMultiple(["recipient_id"], [recipientId])
-            if (!likes) {
-                res.status(404).json({ error: 'Like not found' })
-                return;
-            } else {
-                var likesReturn = [];
+            if (likes) {
+                var likesFind = [];
                 likes.find((row) => row).forEach(element => {
-                    likesReturn.push(element);
+                    likesFind.push(element);
                 });
-                res.json(likesReturn);
+                var likesReturnData = [];
+                for (var i = 0; i < likesFind.length; i++) {
+                    const user = await UserController.model.findById(likesFind[i].author_id);
+                    console.log(user);
+                    if (user) {
+                        likesReturnData.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: likesFind[i].recipient_id});
+                    }
+                }
+                res.status(200).json({ data: likesReturnData });
+            } else {
+                res.status(200).json({ data: [] });
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });

@@ -65,9 +65,24 @@ deleteLike = (req, res, next) => {
     }
 };
 
+getAllByRecipientId = (req, res, next) => {
+    try {
+        const recipientId = req.params.id;
+        const likeDTO = new LikeDTO();
+        const isValid = likeDTO.getAllByRecipientId(recipientId);
+        if (!isValid) {
+            return res.status(400).json(likeDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 module.exports = {
     getCheckLike,
     getCheckMatch,
     createLike,
-    deleteLike
+    deleteLike,
+    getAllByRecipientId
 };

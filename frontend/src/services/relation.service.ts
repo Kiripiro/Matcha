@@ -9,7 +9,9 @@ import {
     CreateReportResponseData,
     DeleteBlockResponseData,
     DeleteLikeResponseData,
-    DeleteReportResponseData
+    DeleteReportResponseData,
+    GetAllProfileLikesResponseData,
+    GetAllProfileViewsResponseData
 } from 'src/models/models';
 
 
@@ -72,5 +74,15 @@ export class RelationService {
 
     deleteReport(authorId: Number, recipientId: Number): Observable<DeleteReportResponseData> {
         return this.http.post<DeleteReportResponseData>('http://localhost:3000/reports/delete/users', { author_id: authorId, recipient_id: recipientId }, { withCredentials: true });
+    }
+
+    getAllProfileViews(recipientId: number) {
+        console.log(recipientId)
+        return this.http.get<GetAllProfileViewsResponseData>('http://localhost:3000/views/recipient/' + recipientId, { withCredentials: true });
+    }
+
+    getAllProfileLikes(recipientId: number) {
+        console.log(recipientId)
+        return this.http.get<GetAllProfileLikesResponseData>('http://localhost:3000/likes/recipient/' + recipientId, { withCredentials: true });
     }
 }

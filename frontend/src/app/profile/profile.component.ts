@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { RelationService } from 'src/services/relation.service';
-import { User } from 'src/models/models';
+import { ElementListData, User } from 'src/models/models';
 import { DialogService } from 'src/services/dialog.service';
 
 @Component({
@@ -29,6 +29,9 @@ export class ProfileComponent implements OnInit {
   blockButtonMessage = "Block";
   you_reported_he = false;
   reportButtonMessage = "Report";
+  displayList = false;
+  displayListTitle = "Views";
+  list: ElementListData[] = [];
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -290,6 +293,38 @@ export class ProfileComponent implements OnInit {
       this.dialogService.openDialog(dialogData);
     }
 
+  }
+
+  openList(list: number) {
+    this.displayList = true;
+    this.list = [];
+    if (list == 1) {
+      this.displayListTitle = "Views";
+      this.relationService.getAllProfileViews(this.localStorageService.getItem(localStorageName.id)).subscribe(
+        (response) => {
+          console.log('getAllProfileViews successful:', response);
+          this.list = response.data;
+        },
+        (error) => {
+          console.error('getAllProfileViews failed:', error);
+        }
+      )
+    } else if (list == 2) {
+      this.displayListTitle = "Likes";
+      this.relationService.getAllProfileLikes(this.localStorageService.getItem(localStorageName.id)).subscribe(
+        (response) => {
+          console.log('getAllProfileLikes successful:', response);
+          this.list = response.data;
+        },
+        (error) => {
+          console.error('getAllProfileLikes failed:', error);
+        }
+      )
+    }
+  }
+
+  backArrow() {
+    this.displayList = false;
   }
 
 }

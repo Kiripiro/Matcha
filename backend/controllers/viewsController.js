@@ -8,7 +8,7 @@ class ViewsController extends BaseController {
         super(ViewsModel);
     }
 
-    async getAllByAuthorId(req, res) {
+    async getAllByAuthorId(req, res) { //doesnt work ! look getAllByRecipientId
         try {
             const authorId = this._checkPositiveInteger(req.params.id || '');
             if (authorId < 0) {
@@ -16,16 +16,15 @@ class ViewsController extends BaseController {
                 return;
             }
             const views = await this.model.findMultiple(["author_id"], [authorId])
-            if (!views) {
-                res.status(404).json({ error: 'View not found' })
-                return;
-            } else {
-                var viewsReturn = [];
-                views.find((row) => row).forEach(element => {
-                    viewsReturn.push(element);
-                });
-                res.json(viewsReturn);
-            }
+            var viewsReturn = [];
+            views.find((row) => row).forEach(element => {
+                const user = UserController.model.findById(element.author_id);
+                console.log(user);
+                if (user) {
+                    viewsReturn.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: element.recipient_id});
+                }
+            });
+            res.json(viewsReturn);
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
@@ -33,21 +32,45 @@ class ViewsController extends BaseController {
 
     async getAllByRecipientId(req, res) {
         try {
-            const recipientId = this._checkPositiveInteger(req.params.id || '');
-            if (recipientId < 0) {
-                res.status(400).json({ error: "Recipient id is incorrect" });
-                return;
-            }
+            const recipientId = req.params.id;
             const views = await this.model.findMultiple(["recipient_id"], [recipientId])
-            if (!views) {
-                res.status(404).json({ error: 'View not found' })
-                return;
-            } else {
+            if (views) {
                 var viewsReturn = [];
                 views.find((row) => row).forEach(element => {
-                    viewsReturn.push(element);
+                    console.log(element.author_id);
+                    const user = UserController.model.findById(element.author_id);
+                    console.log(user);
+                    if (user) {
+                        viewsReturn.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: element.recipient_id});
+                    }
                 });
-                res.json(viewsReturn);
+                res.status(200).json({ data: viewsReturn });
+            }
+            res.status(200).json({ data: [] });
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getAllByRecipientId(req, res) {
+        try {
+            const recipientId = req.params.id;
+            const views = await this.model.findMultiple(["recipient_id"], [recipientId])
+            if (views) {
+                var viewsFind = [];
+                views.find((row) => row).forEach(element => {
+                    viewsFind.push(element);
+                });
+                var viewsReturnData = [];
+                for (var i = 0; i < viewsFind.length; i++) {
+                    const user = await UserController.model.findById(viewsFind[i].author_id);
+                    if (user) {
+                        viewsReturnData.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: viewsFind[i].recipient_id});
+                    }
+                }
+                res.status(200).json({ data: viewsReturnData });
+            } else {
+                res.status(200).json({ data: [] });
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });

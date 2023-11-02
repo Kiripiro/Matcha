@@ -12,7 +12,7 @@ router.get('/author/:id', async (req, res) => {
     }
 });
 
-router.get('/recipient/:id', async (req, res) => {
+router.get('/recipient/:id', auth, like.getAllByRecipientId, async (req, res) => {
     try {
         await LikesController.getAllByRecipientId(req, res);
     } catch (error) {

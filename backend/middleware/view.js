@@ -16,6 +16,21 @@ createView = (req, res, next) => {
     }
 };
 
+getAllByRecipientId = (req, res, next) => {
+    try {
+        const recipientId = req.params.id;
+        const viewDTO = new ViewDTO();
+        const isValid = viewDTO.getAllByRecipientId(recipientId);
+        if (!isValid) {
+            return res.status(400).json(viewDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 module.exports = {
-    createView
+    createView,
+    getAllByRecipientId
 };
