@@ -33,7 +33,7 @@ import { SingleFileUploadComponent } from '../utils/single-file-upload/single-fi
     RouterModule.forChild([
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },
-      { path: 'completeRegister', component: CompleteRegisterComponent },
+      { path: 'completeRegister', component: CompleteRegisterComponent }
     ])
   ],
   providers: [],

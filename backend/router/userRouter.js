@@ -77,9 +77,25 @@ router.post('/delete', auth, async (req, res) => {
     }
 });
 
-router.post('/emailvalidation', auth, async (req, res) => {
+router.post('/emailvalidation', user.emailValidation, async (req, res) => {
     try {
         await UserController.emailValidation(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.post('/resetpasswordrequest', user.resetPasswordRequestValidation, async (req, res) => {
+    try {
+        await UserController.resetPasswordRequest(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.post('/resetpasswordvalidation', user.resetPasswordValidation, async (req, res) => {
+    try {
+        await UserController.resetPasswordValidation(req, res);
     } catch (error) {
         console.error(error);
     }

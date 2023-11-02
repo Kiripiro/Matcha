@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
-import { GetUserResponseData, LoginResponseData, RegisterResponseData, CompleteRegisterResponseData, IpApiResponseData, LocationIQApiResponseData, UpdateLocationResponseData, EmailValidationResponseData } from '../models/models';
+import { GetUserResponseData, LoginResponseData, RegisterResponseData, CompleteRegisterResponseData, IpApiResponseData, LocationIQApiResponseData, UpdateLocationResponseData, EmailValidationResponseData, PasswordResetRequestResponseData, PasswordResetValidationResponseData } from '../models/models';
 import { environment } from 'src/environments/environment.template';
 
 
@@ -46,11 +46,6 @@ export class AuthService {
     return true;
   }
 
-  checkEmailChecked() {
-    if (this.localStorageService.getItem(localStorageName.emailChecked))
-      return true;
-    return false;
-  }
 
   checkCompleteRegister() {
     if (!this.localStorageService.getItem(localStorageName.completeRegister)) {
@@ -99,21 +94,31 @@ export class AuthService {
     this.http.post<RegisterResponseData>('http://localhost:3000/users/register', { username, first_name, last_name, age, email, password }, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          this.localStorageService.setMultipleItems(
-            { key: localStorageName.id, value: response.user.id || -1 },
-            { key: localStorageName.username, value: response.user.username || "" },
-            { key: localStorageName.firstName, value: response.user.first_name || "" },
-            { key: localStorageName.lastName, value: response.user.last_name || "" },
-            { key: localStorageName.age, value: response.user.age || -1 },
-            { key: localStorageName.emailChecked, value: response.user.email_checked || false },
-            { key: localStorageName.locationPermission, value: response.user.location_permission || false }
-          );
-          if (!this.socketService.socketExists()) {
-            this.socketService.initSocket();
-          }
-          this.router.navigate(['']);
-          location.reload();
-          this.logEmitChange(true);
+          // this.localStorageService.setMultipleItems(
+          //   { key: localStorageName.id, value: response.user.id || -1 },
+          //   { key: localStorageName.username, value: response.user.username || "" },
+          //   { key: localStorageName.firstName, value: response.user.first_name || "" },
+          //   { key: localStorageName.lastName, value: response.user.last_name || "" },
+          //   { key: localStorageName.age, value: response.user.age || -1 },
+          //   { key: localStorageName.emailChecked, value: response.user.email_checked || false },
+          //   { key: localStorageName.locationPermission, value: response.user.location_permission || false }
+          // );
+          // if (!this.socketService.socketExists()) {
+          //   this.socketService.initSocket();
+          // }
+          // this.router.navigate(['']);
+          // location.reload();
+          // this.logEmitChange(true);
+          const dialogData = {
+            title: 'Check yours emails',
+            text: "An email has been sent to you for check your email address",
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => { },
+            no_callback: () => {this.router.navigate(['/auth/login']); },
+            reload: false
+          };
+          this.dialogService.openDialog(dialogData);
         },
         error: (error) => {
           console.error('Registration failed:', error);
@@ -202,6 +207,14 @@ export class AuthService {
 
   emailValidation(token: string): Observable<EmailValidationResponseData> {
     return this.http.post<EmailValidationResponseData>('http://localhost:3000/users/emailvalidation', { token }, { withCredentials: true });
+  }
+
+  sendPasswordResetRequest(email: string): Observable<PasswordResetRequestResponseData> {
+    return this.http.post<PasswordResetRequestResponseData>('http://localhost:3000/users/resetpasswordrequest', { email }, { withCredentials: true });
+  }
+
+  passwordResetValidation(token: string, password: string): Observable<PasswordResetValidationResponseData> {
+    return this.http.post<PasswordResetValidationResponseData>('http://localhost:3000/users/resetpasswordvalidation', { token, password }, { withCredentials: true });
   }
 
   _getUserInfosBack() {

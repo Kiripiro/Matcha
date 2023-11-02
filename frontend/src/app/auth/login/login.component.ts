@@ -21,9 +21,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.checkLog()) {
-      if (!this.authService.checkEmailChecked()) {
-        this.router.navigate(['emailverification/wait']);
-      } else if (this.authService.checkCompleteRegister()) {
+      if (this.authService.checkCompleteRegister()) {
         this.router.navigate(['']);
       } else {
         this.router.navigate(['auth/completeRegister']);

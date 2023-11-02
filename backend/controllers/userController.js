@@ -58,6 +58,7 @@ class UserController extends BaseController {
                 "email": userData.email,
                 "password": hashedPassword,
                 "password_reset": 0,
+                "password_verification_token": "",
                 "first_name": userData.first_name,
                 "last_name": userData.last_name,
                 "age": userData.age,
@@ -87,7 +88,7 @@ class UserController extends BaseController {
             };
             mailOptions.to = userData.email;
             mailOptions.subject = "Email verification";
-            mailOptions.text = "Hi " + userData.username + "\nClick on the following link to activate your account:\n" + "http://localhost:4200/emailverification/" + emailVerificationToken;
+            mailOptions.text = "Hi " + userData.username + "\nClick on the following link to activate your account:\n" + "http://localhost:4200/verification/email/" + emailVerificationToken;
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                     console.log(error);
@@ -115,19 +116,34 @@ class UserController extends BaseController {
 
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (!passwordMatch) {
-                res.status(401).json({ error: 'Invalid credentials' });
+                res.status(401).json({ error: 'Invalid credentials (password)' });
+                return;
+            }
+
+            if (!user.email_checked) {
+                res.status(401).json({ error: 'Please check your email address' });
                 return;
             }
 
             const accessToken = this._generateToken(user.id);
             const refreshToken = uuidv4();
-            const dataToUpdate = {
-                "token": refreshToken,
-                "token_creation": this._getTimestampString(),
-                "token_expiration": this._getTimestampString(1)
-            };
-            const userIdReturn = await this.model.update(user.id, dataToUpdate);
-
+            if (user.password_reset) {
+                const dataToUpdate = {
+                    "password_reset": 0,
+                    "password_verification_token": "",
+                    "token": refreshToken,
+                    "token_creation": this._getTimestampString(),
+                    "token_expiration": this._getTimestampString(1)
+                };
+                const userIdReturn = await this.model.update(user.id, dataToUpdate);
+            } else {
+                const dataToUpdate = {
+                    "token": refreshToken,
+                    "token_creation": this._getTimestampString(),
+                    "token_expiration": this._getTimestampString(1)
+                };
+                const userIdReturn = await this.model.update(user.id, dataToUpdate);
+            }
             const data = {
                 "id": user.id,
                 "username": user.username,
@@ -329,21 +345,70 @@ class UserController extends BaseController {
 
     async emailValidation(req, res) {
         try {
-            const user = await this.model.findById(req.user.userId);
             const validationEmailData = req.body;
+            const user = await this.model.findByEmailVerificationToken(validationEmailData.token || "");
             if (user) {
-                if (user.email_verification_token == (validationEmailData.token || "")) {
-                    const data = {
-                        "email_checked": 1,
-                        "email_verification_token": "",
-                    };
-                    const userIdReturn = await this.model.update(user.id, data);
-                    res.status(200).json({ message: 'Email validated' });
-                } else {
-                    res.status(400).json({ error: 'Incorrect token' });
-                }
+                const data = {
+                    "email_checked": 1,
+                    "email_verification_token": "",
+                };
+                const userIdReturn = await this.model.update(user.id, data);
+                res.status(200).json({ message: 'Email validated' });
             } else {
-                res.status(400).json({ error: 'User not found' });
+                res.status(400).json({ error: 'Incorrect token' });
+            }
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async resetPasswordRequest(req, res) {
+        try {
+            const resetPasswordData = req.body;
+            const user = await this.model.findByEmail(resetPasswordData.email);
+            if (user) {
+                const resetPasswordToken = uuidv4();
+                mailOptions.to = user.email;
+                mailOptions.subject = "Reset Password";
+                mailOptions.text = "Hi " + user.username + "\nClick on the following link to reset your password:\n" + "http://localhost:4200/verification/resetpassword/" + resetPasswordToken;
+                const sendMailReturn = await transporter.sendMail(mailOptions, async function (error, info) {
+                    if (error) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+                const data = {
+                    "password_reset": 1,
+                    "password_verification_token": resetPasswordToken,
+                };
+                const userIdReturn = await this.model.update(user.id, data);
+                res.status(200).json({ message: 'Reset password request sent' });
+            } else {
+                res.status(400).json({ error: 'User not found with this email' });
+            }
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async resetPasswordValidation(req, res) {
+        try {
+            const resetPasswordData = req.body;
+            const user = await this.model.findByResetPasswordToken(resetPasswordData.token || "");
+            if (user) {
+                const hashedPassword = await bcrypt.hash(resetPasswordData.password, 10);
+                const data = {
+                    "password": hashedPassword,
+                    "password_reset": 0,
+                    "password_verification_token": "",
+                };
+                const userIdReturn = await this.model.update(user.id, data);
+                res.status(200).json({ message: 'Password reset' });
+            } else {
+                res.status(400).json({ error: 'Incorrect token' });
             }
         } catch (error) {
             console.log('error = ' + error);

@@ -16,6 +16,21 @@ class UserModel extends BaseModel {
         return user;
     }
 
+    async findByEmailToken(token) {
+        const user = await super.findOne('token', token);
+        return user;
+    }
+
+    async findByResetPasswordToken(token) {
+        const user = await super.findOne('password_verification_token', token);
+        return user;
+    }
+
+    async findByEmailVerificationToken(token) {
+        const user = await super.findOne('email_verification_token', token);
+        return user;
+    }
+
     async findByToken(token) {
         const user = await super.findOne('token', token);
         return user;

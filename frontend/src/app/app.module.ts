@@ -44,6 +44,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { MatRadioModule } from '@angular/material/radio';
 import { HomeService } from 'src/services/home.service';
 import { WaitComponent } from './wait/wait.component';
+import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { WaitComponent } from './wait/wait.component';
     ProfileComponent,
     ChatComponent,
     SettingsComponent,
-    WaitComponent
+    WaitComponent,
+    ResetComponent
   ],
   imports: [
     BrowserModule,

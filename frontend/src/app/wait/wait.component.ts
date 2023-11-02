@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService, localStorageName } from '../../services/local-storage.service';
+import { LocalStorageService } from '../../services/local-storage.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { RelationService } from 'src/services/relation.service';
-import { User } from 'src/models/models';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'src/services/dialog.service';
 
 @Component({
@@ -15,40 +13,107 @@ import { DialogService } from 'src/services/dialog.service';
 })
 export class WaitComponent implements OnInit {
 
-  text = "Waiting for validation of your email...";
+  text = "Waiting...";
+
+  emailValid = false;
+
+  resetPasswordForm!: FormGroup;
+
+  resetPassword = false;
+  token = "";
 
   constructor(
     private localStorageService: LocalStorageService,
     private authService: AuthService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private dialogService: DialogService,
+    private activatedRoute: ActivatedRoute,
+    private fb: FormBuilder,
   ) {
-    if (!this.authService.checkLog()) {
-      this.router.navigate(['auth/login']);
-      return;
-    }
-    if (this.authService.checkEmailChecked()) {
-      this.router.navigate(['']);
-      return;
-    }
+
   }
 
   ngOnInit(): void {
+    this.resetPasswordForm = this.fb.group({
+      password: ['qqqqqqqq', [Validators.required, Validators.minLength(8)]],
+      repeat_password: ['qqqqqqqq', [Validators.required, Validators.minLength(8)]],
+    });
     this.activatedRoute.params.subscribe(params => {
-      if (params['token'] && params['token'].length > 0 && params['token'] != "wait") {
-        this.text = "Wait...";
-        this.authService.emailValidation(params['token']).subscribe(
-          (response) => {
-            console.log('emailValidation successful:', response);
-            this.localStorageService.setItem(localStorageName.emailChecked, true);
-            this.router.navigate(['auth/completeRegister']);
-          },
-          (error) => {
-            console.error('emailValidation failed:', error);
-            this.text = "Error";
-          }
-        );
+      if (params['type'] && (params['type'] == "email" || params['type'] == "resetpassword") && params['token'] && params['token'].length > 0) {
+        this.token = params['token'];
+        if (params['type'] == "email") {
+          this.text = "Wait...";
+          this.authService.emailValidation(this.token).subscribe(
+            (response) => {
+              console.log('emailValidation successful:', response);
+              this.text = "Your email has been validate !";
+              this.emailValid = true;
+            },
+            (error) => {
+              console.error('emailValidation failed:', error);
+              this.text = "Error";
+              const dialogData = {
+                title: 'Email verification',
+                text: error,
+                text_yes_button: "",
+                text_no_button: "Close",
+                yes_callback: () => { },
+                no_callback: () => { },
+                reload: false
+              };
+              this.dialogService.openDialog(dialogData);
+            }
+          );
+        } else if (params['type'] == "resetpassword") {
+          this.text = "Wait...";
+          this.resetPassword = true;
+        } else {
+          this.text = "Error";
+        }
+      } else {
+        this.text = "Error";
       }
     })
+  }
+
+  onSubmit(): void {
+    if (this.resetPasswordForm.valid) {
+      const { password, repeat_password } = this.resetPasswordForm.value;
+      if (password != repeat_password) {
+        const dialogData = {
+          title: 'Password reset',
+          text: "Password doesn't match",
+          text_yes_button: "",
+          text_no_button: "Close",
+          yes_callback: () => { },
+          no_callback: () => { },
+          reload: false
+        };
+        this.dialogService.openDialog(dialogData);
+        return ;
+      }
+      this.authService.passwordResetValidation(this.token, password).subscribe(
+        (response) => {
+          console.log('emailValidation successful:', response);
+          this.text = "Your password has been reset !";
+          this.emailValid = true;
+          this.resetPassword = false;
+        },
+        (error) => {
+          console.error('emailValidation failed:', error);
+          this.text = "Error";
+          const dialogData = {
+            title: 'Password reset',
+            text: error.error,
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => { },
+            no_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(dialogData);
+        }
+      );
+    }
   }
 }

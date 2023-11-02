@@ -158,6 +158,16 @@ export interface EmailValidationResponseData {
 	error: string;
 }
 
+export interface PasswordResetRequestResponseData {
+	message: string;
+	error: string;
+}
+
+export interface PasswordResetValidationResponseData {
+	message: string;
+	error: string;
+}
+
 
 /* Sockets */
 export interface StatusData {

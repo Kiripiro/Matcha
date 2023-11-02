@@ -10,7 +10,10 @@
                 <mat-label>Password</mat-label>
                 <input matInput type="password" id="password" formControlName="password" minlength="8">
             </mat-form-field>
-            <button type="submit" [disabled]="loginForm.invalid" color="primary" mat-raised-button>Login</button>
+            <div class="loginButtonDiv">
+                <button type="submit" [disabled]="loginForm.invalid" color="primary" mat-raised-button>Log in</button>
+                <a [routerLink]="['/resetpassword']" class="resetPassword">Reset password</a>
+            </div>
         </form>
     </div>
 </div>

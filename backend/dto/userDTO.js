@@ -96,11 +96,36 @@ class UserDTO extends baseValidator {
         return this.isValid();
     }
 
-    emailValidation(id, token) {
-        super.fieldIsRequired('id', id);
-        super.validatePositiveInteger('id', id);
+    emailValidation(token) {
         super.fieldIsRequired('token', token);
 
+        return this.isValid();
+    }
+
+    resetPasswordRequest(email) {
+        super.fieldIsRequired('email', email);
+
+        if (this.isValid()) {
+            super.validateString('email', email, 5, 50, /^[0-9a-zA-Z@._-]+$/);
+        }
+
+        if (this.isValid()) {
+            super.validateEmail('email', email);
+        }
+        return this.isValid();
+    }
+
+    resetPasswordValidation(token, password) {
+        super.fieldIsRequired('token', token);
+        super.fieldIsRequired('password', password);
+
+        if (this.isValid()) {
+            super.validateString('password', password, 8, 25);
+        }
+
+        if (this.isValid()) {
+            super.validatePassword('password', password);
+        }
         return this.isValid();
     }
 

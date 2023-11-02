@@ -99,10 +99,38 @@ postUserByIdValidation = (req, res, next) => {
 
 emailValidation = (req, res, next) => {
     try {
-        const id = req.user.userId;
         const token = req.body.token
         const userDTO = new UserDTO();
-        const isValid = userDTO.emailValidation(id, token);
+        const isValid = userDTO.emailValidation(token);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
+resetPasswordRequestValidation = (req, res, next) => {
+    try {
+        const email = req.body.email
+        const userDTO = new UserDTO();
+        const isValid = userDTO.resetPasswordRequest(email);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
+resetPasswordValidation = (req, res, next) => {
+    try {
+        const token = req.body.token
+        const password = req.body.password
+        const userDTO = new UserDTO();
+        const isValid = userDTO.resetPasswordValidation(token, password);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }
@@ -149,6 +177,8 @@ module.exports = {
     getUserByIdValidation,
     postUserByIdValidation,
     emailValidation,
+    resetPasswordRequestValidation,
+    resetPasswordValidation,
     getUserByUsernameValidation,
     getInterestingUsersValidation
 };

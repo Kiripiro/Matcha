@@ -27,10 +27,6 @@ export class SettingsComponent implements OnInit {
       this.router.navigate(['auth/login']);
       return;
     }
-    if (this.authService.checkLog() && !this.authService.checkEmailChecked()) {
-      this.router.navigate(['emailverification/wait']);
-      return;
-    }
     if (!this.authService.checkCompleteRegister()) {
       this.router.navigate(['auth/completeRegister']);
       return;
