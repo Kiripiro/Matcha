@@ -108,6 +108,28 @@ app-profil {
         }
     }
 
+    .fameRatingDiv {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 650px;
+
+        p {
+            font-size: 1.0rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            border-radius: 15px;
+            width: auto;
+            background-color: $surfaceAlt;
+            color: $onSurface;
+            text-align: center;
+        }
+    }
+
     .blockAndReportDiv {
         width: 650px;
         display: flex;
@@ -140,6 +162,7 @@ app-profil {
 .listCard {
     width: 300px;
     height: 500px;
+    max-height: 500px;
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 5px 5px 15px rgba(70, 70, 70, 0.12), -1px -1px 50px rgba(70, 70, 70, 0.12);
@@ -170,6 +193,7 @@ app-profil {
     .listCardList {
         height: 100%;
         overflow: scroll;
+        overflow-x: hidden;
 
         mat-list-item {
             background-color: $surface;

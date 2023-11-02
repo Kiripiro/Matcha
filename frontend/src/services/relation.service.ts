@@ -51,13 +51,7 @@ export class RelationService {
 
     createView(authorId: Number, recipientId: Number) {
         console.log("createView authorId = " + authorId + ", recipientId = " + recipientId);
-        this.http.post<CreateViewResponseData>('http://localhost:3000/views/create', { authorId, recipientId }, { withCredentials: true }).subscribe(
-            (response) => {
-                console.log('post createView successful:', response);
-            },
-            (error) => {
-                console.error('post createView failed:', error);
-            })
+        return this.http.post<CreateViewResponseData>('http://localhost:3000/views/create', { authorId, recipientId }, { withCredentials: true });
     }
 
     createBlock(authorId: Number, recipientId: Number): Observable<CreateBlockResponseData> {

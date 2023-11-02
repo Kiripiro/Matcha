@@ -27,6 +27,9 @@
                 <span *ngFor="let tag of userInfos.tags">{{tag}}</span>
             </div>
         </div>
+        <div class="fameRatingDiv">
+            <p>Fame rating: {{fameRating}}</p>
+        </div>
         <div class="blockAndReportDiv" *ngIf="!personalProfil">
             <button mat-button (click)="block()">
                 {{blockButtonMessage}}

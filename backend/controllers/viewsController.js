@@ -3,6 +3,8 @@ const ViewsModel = require('../models/viewsModel');
 const UserController = require('../controllers/userController');
 const BlocksController = require('../controllers/blocksController');
 
+const VIEW_FAME_RATING_VALUE = 1;
+
 class ViewsController extends BaseController {
     constructor() {
         super(ViewsModel);
@@ -157,6 +159,7 @@ class ViewsController extends BaseController {
             };
             const viewId = await this.model.create(data);
             console.log("createView = " + viewId)
+            await UserController._updateFameRating(VIEW_FAME_RATING_VALUE, recipientId);
             res.status(201).json({ message: 'View created' });
         } catch (error) {
             console.log('error = ' + error);

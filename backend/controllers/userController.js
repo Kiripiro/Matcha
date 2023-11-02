@@ -69,7 +69,8 @@ class UserController extends BaseController {
                 "token_creation": this._getTimestampString(),
                 "token_expiration": this._getTimestampString(1),
                 "latitude": 0,
-                "longitude": 0
+                "longitude": 0,
+                "fame_rating": 0
             };
             const userId = await this.model.create(data);
             res.cookie('accessToken', this._generateToken(userId), { httpOnly: true, maxAge: 900000 });
@@ -416,6 +417,19 @@ class UserController extends BaseController {
         }
     }
 
+    async _updateFameRating(value, userId) {
+        try {
+            const user = await this.model.findById(userId);
+            const data = {
+                "fame_rating": user.fame_rating + value,
+            };
+            const userIdReturn = await this.model.update(user.id, data);
+        } catch (error) {
+            console.log('_updateFameRating error = ' + error);
+            throw error;
+        }
+    }
+
     async getPersonaleUser(req, res) {
         try {
             const user = await this.model.findById(req.user.userId);
@@ -468,6 +482,7 @@ class UserController extends BaseController {
                     "picture_4": await this._getPictureDataFromPath(user.picture_4),
                     "picture_5": await this._getPictureDataFromPath(user.picture_5),
                     "tags": tags || [],
+                    "fame_rating": user.fame_rating,
                     "you_blocked_he": await BlocksModel.check([req.user.userId, user.id]),
                     "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
                     "you_reported_he": await ReportsModel.check([req.user.userId, user.id]),
@@ -507,6 +522,7 @@ class UserController extends BaseController {
                     "picture_4": await this._getPictureDataFromPath(user.picture_4),
                     "picture_5": await this._getPictureDataFromPath(user.picture_5),
                     "tags": tags || [],
+                    "fame_rating": user.fame_rating,
                     "you_blocked_he": await BlocksModel.check([req.user.userId, user.id]),
                     "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
                     "you_reported_he": await ReportsModel.check([req.user.userId, user.id]),
@@ -556,7 +572,8 @@ class UserController extends BaseController {
                     {
                         id: allUsers[i].id, username: allUsers[i].username,
                         age: allUsers[i].age, tags: tags,
-                        latitude: allUsers[i].latitude, longitude: allUsers[i].longitude
+                        latitude: allUsers[i].latitude, longitude: allUsers[i].longitude,
+                        fameRating: allUsers[i].fame_rating
                     }
                 );
             }

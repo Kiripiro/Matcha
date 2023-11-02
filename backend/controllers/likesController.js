@@ -3,6 +3,8 @@ const LikesModel = require('../models/likesModel');
 const UserController = require('../controllers/userController');
 const BlocksController = require('../controllers/blocksController');
 
+const LIKE_FAME_RATING_VALUE = 10;
+
 class LikesController extends BaseController {
     constructor() {
         super(LikesModel);
@@ -181,6 +183,7 @@ class LikesController extends BaseController {
                 "recipient_id": recipientId
             };
             const likeId = await this.model.create(data);
+            await UserController._updateFameRating(LIKE_FAME_RATING_VALUE, recipientId);
             res.status(201).json({ message: 'Like created', likeId });
         } catch (error) {
             console.log('error = ' + error);
@@ -216,6 +219,7 @@ class LikesController extends BaseController {
             console.log("deletelike authorId = " + authorId + ", recipientId = " + recipientId)
             const count = await this.model.deleteLike(authorId, recipientId);
             const deleted = (count > 0) ? true : false
+            await UserController._updateFameRating(-LIKE_FAME_RATING_VALUE, recipientId);
             res.status(201).json({ message: 'Like deleted', deleted: deleted });
         } catch (error) {
             console.log('error = ' + error);

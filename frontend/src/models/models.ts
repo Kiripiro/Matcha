@@ -86,6 +86,7 @@ export interface GetUserResponseData {
 		picture_4: string,
 		picture_5: string,
 		tags: string[],
+		fame_rating: number,
 		you_blocked_he: boolean,
 		he_blocked_you: boolean,
 		you_reported_he: boolean,

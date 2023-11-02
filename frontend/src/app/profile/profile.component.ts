@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   displayList = false;
   displayListTitle = "Views";
   list: ElementListData[] = [];
+  fameRating = 0;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -77,6 +78,7 @@ export class ProfileComponent implements OnInit {
           if (this.you_reported_he) {
             this.reportButtonMessage = "Unreport";
           }
+          this.fameRating = this.userInfos.fame_rating;
           this.relationService.getCheckLike(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
             (response) => {
               console.log('get getCheckLike successful:', response);
@@ -113,7 +115,16 @@ export class ProfileComponent implements OnInit {
             }
           );
           if (!this.personalProfil && !this.he_blocked_you && !this.you_blocked_he) {
-            this.relationService.createView(this.localStorageService.getItem('id'), this.userInfos.id);
+            this.relationService.createView(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
+              (response) => {
+                  console.log('post createView successful:', response);
+                  if (response.message == "View created") {
+                    this.fameRating++;
+                  }
+              },
+              (error) => {
+                  console.error('post createView failed:', error);
+              })
           }
           this.img.splice(0, this.img.length)
           if (this.userInfos.picture_1) {
@@ -156,6 +167,7 @@ export class ProfileComponent implements OnInit {
           this.likeIcon = "favorite_outlined";
           this.match = false;
           this.likeWaiting = false;
+          this.fameRating = this.fameRating - 10;
         },
         (error) => {
           console.error('get deleteLike failed:', error);
@@ -169,6 +181,7 @@ export class ProfileComponent implements OnInit {
           console.log('get createLike successful:', response);
           this.likeIcon = "favorite";
           this.likeWaiting = false;
+          this.fameRating = this.fameRating + 10;
           this.relationService.getCheckMatch(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
             (response) => {
               console.log('get getCheckMatch successful:', response);
