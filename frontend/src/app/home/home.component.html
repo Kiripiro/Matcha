@@ -8,6 +8,7 @@
         </div>
         <div class="homeButtonAction">
             <button mat-button [routerLink]="['profile/' + userDisplayed.username]">Profil</button>
+            <p>Fame rating: {{userDisplayed.fame_rating}}</p>
             <button mat-button (click)="newUserGenerate()">Next</button>
         </div>
         <div class="dropdownDiv">

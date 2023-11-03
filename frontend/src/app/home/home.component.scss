@@ -147,6 +147,21 @@ app-profil {
         button:hover {
             transform: scale(1.1);
         }
+
+        p {
+            font-size: 1.0rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            border-radius: 15px;
+            width: auto;
+            background-color: $surfaceAlt;
+            color: $onSurface;
+            text-align: center;
+        }
     }
 }
 

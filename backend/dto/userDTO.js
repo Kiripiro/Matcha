@@ -129,6 +129,13 @@ class UserDTO extends baseValidator {
         return this.isValid();
     }
 
+    getFameRating(id) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
+
+        return this.isValid();
+    }
+
     getUserById(id) {
         super.fieldIsRequired('id', id);
         super.validatePositiveInteger('id', id);

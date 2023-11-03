@@ -118,6 +118,14 @@ router.get('/interesting', auth, user.getInterestingUsersValidation, async (req,
     }
 });
 
+router.get('/famerating/:id', auth, user.getFameRatingValidation, async (req, res) => {
+    try {
+        await UserController.getFameRating(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 // app.get('/users', async (req, res) => {
 //     try {
 //         await UserController.getAllUsers(req, res);

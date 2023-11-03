@@ -111,6 +111,7 @@ export interface HomeUserData {
 	picture_4: string,
 	picture_5: string,
 	tags: string[],
+	fame_rating: number,
 	you_blocked_he: boolean,
 	he_blocked_you: boolean,
 	you_reported_he: boolean,
@@ -258,7 +259,8 @@ export interface UserSimplified {
 	age: number,
 	tags: UserTags[],
 	latitude: number,
-	longitude: number
+	longitude: number,
+	fameRating: number
 }
 
 export interface UserTags {
@@ -270,16 +272,22 @@ export interface GetInterestingUsersResponseData {
 	users: UserSimplified[]
 }
 
+export interface GetFameRatingResponseData {
+	fameRating: number
+}
+
 export const sortSelectType = {
 	Location: "Location",
 	Age: "Age",
-	Tags: "Tags"
+	Tags: "Tags",
+	FameRating: "Fame rating"
 }
 
 export const filterSelectType = {
 	Location: "to less than 20km",
 	Age: "+/- 5 years",
-	Tags: "3 common tags minimum"
+	Tags: "3 common tags minimum",
+	FameRating: "Fame rating"
 }
 
 /* Settings */

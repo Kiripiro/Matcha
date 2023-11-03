@@ -168,6 +168,20 @@ getInterestingUsersValidation = (req, res, next) => {
     }
 };
 
+getFameRatingValidation = (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.getFameRating(userId);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 module.exports = {
     createUserValidation,
     loginValidation,
@@ -180,5 +194,6 @@ module.exports = {
     resetPasswordRequestValidation,
     resetPasswordValidation,
     getUserByUsernameValidation,
-    getInterestingUsersValidation
+    getInterestingUsersValidation,
+    getFameRatingValidation
 };

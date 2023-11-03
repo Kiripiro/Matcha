@@ -426,7 +426,6 @@ class UserController extends BaseController {
             const userIdReturn = await this.model.update(user.id, data);
         } catch (error) {
             console.log('_updateFameRating error = ' + error);
-            throw error;
         }
     }
 
@@ -545,6 +544,18 @@ class UserController extends BaseController {
             // const usersListSimplified = this._usersListSimplified(newUserList);
             // const userListSimplifiedSuffled = this._shuffleArray(usersListSimplified);
             res.status(200).json({ users: newUserList });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getFameRating(req, res) {
+        try {
+            console.log("getFameRating");
+            const user = await this.model.findById(req.params.id);
+            const fameRating = user.fame_rating;
+            res.status(200).json({ fameRating: fameRating });
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Internal Server Error' });

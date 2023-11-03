@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
-import { LocalStorageService } from './local-storage.service';
+import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
-import { GetInterestingUsersResponseData, GetUserResponseData, UserTags } from '../models/models';
+import { GetFameRatingResponseData, GetInterestingUsersResponseData, GetUserResponseData, UserTags } from '../models/models';
 
 
 @Injectable({
@@ -25,6 +25,11 @@ export class HomeService {
   getInterestingUsers(): Observable<GetInterestingUsersResponseData> {
     console.log("getInterestingUsers")
     return this.http.get<GetInterestingUsersResponseData>('http://localhost:3000/users/interesting', { withCredentials: true });
+  }
+
+  getPersonnalFameRating(): Observable<GetFameRatingResponseData> {
+    console.log("getPersonnalFameRating")
+    return this.http.get<GetFameRatingResponseData>('http://localhost:3000/users/famerating/' + this.localStorageService.getItem(localStorageName.id), { withCredentials: true });
   }
 
   positionToDistance(originalLatitude: number, originalLongitude: number, newLatitude: number, newLongitude: number): number {

@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
     sortSelectType.Age,
     sortSelectType.Location,
     sortSelectType.Tags,
+    sortSelectType.FameRating
   ];
 
   filterSelected = "";
@@ -30,11 +31,14 @@ export class HomeComponent implements OnInit {
     filterSelectType.Age,
     filterSelectType.Location,
     filterSelectType.Tags,
+    sortSelectType.FameRating
   ];
 
   loading = true;
   error = false;
   notConnected = true;
+
+  personalFameRating = 0;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -65,6 +69,16 @@ export class HomeComponent implements OnInit {
         if (this.interestingUsers.length <= 0) {
           this.error = true;
         } else {
+          this.homeService.getPersonnalFameRating().subscribe(
+            (response) => {
+              console.log('getPersonnalFameRating successful:', response);
+              this.personalFameRating = response.fameRating;
+            },
+            (error) => {
+              console.error('getPersonnalFameRating failed:', error);
+              this.error = true;
+            }
+          );
           this.newUserGenerate();
         }
       },
@@ -138,6 +152,10 @@ export class HomeComponent implements OnInit {
         return this.homeService.nbCommonTags(tags, b.tags) -
           this.homeService.nbCommonTags(tags, a.tags);
       });
+    } else if (this.sortSelected == sortSelectType.FameRating) {
+      this.interestingUsers = this.interestingUsers.sort((a, b) => {
+        return a.fameRating - b.fameRating;
+      });
     }
   }
 
@@ -152,6 +170,11 @@ export class HomeComponent implements OnInit {
     } else if (this.filterSelected == filterSelectType.Tags) {
       const tags = this.localStorageService.getItem(localStorageName.tags);
       this.interestingUsers = this.interestingUsers.filter(it => this.homeService.nbCommonTags(tags, it.tags) >= 3);
+    } else if (this.filterSelected == filterSelectType.FameRating) {
+      const tags = this.localStorageService.getItem(localStorageName.tags);
+      this.interestingUsers = this.interestingUsers.filter(it => {
+        return this.personalFameRating + 30 > it.fameRating && this.personalFameRating - 30 < this.personalFameRating
+      });
     }
   }
 
