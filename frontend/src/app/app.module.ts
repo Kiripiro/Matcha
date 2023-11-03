@@ -28,6 +28,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
+import {MatBadgeModule} from '@angular/material/badge';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NavBarComponent } from './nav-bar/nav-bar.component';
@@ -48,6 +50,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ResetComponent } from './reset/reset.component';
 import { SearchComponent } from './search/search.component';
 import { SearchService } from 'src/services/search.service';
+import { NotificationsComponent } from './notifications/notifications.component';
+import { NotificationsService } from 'src/services/notifications.service';
 
 @NgModule({
   declarations: [
@@ -62,7 +66,8 @@ import { SearchService } from 'src/services/search.service';
     SettingsComponent,
     WaitComponent,
     ResetComponent,
-    SearchComponent
+    SearchComponent,
+    NotificationsComponent
   ],
   imports: [
     BrowserModule,
@@ -89,7 +94,8 @@ import { SearchService } from 'src/services/search.service';
     MatChipsModule,
     ReactiveFormsModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatBadgeModule
   ],
   providers: [
     {
@@ -109,7 +115,8 @@ import { SearchService } from 'src/services/search.service';
     SocketioService,
     RelationService,
     HomeService,
-    SearchService
+    SearchService,
+    NotificationsService
   ],
   bootstrap: [AppComponent]
 })

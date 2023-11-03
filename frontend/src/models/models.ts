@@ -359,3 +359,13 @@ export interface ElementListData {
 	authorLastName: string,
 	recipient_id: number
 }
+
+/* Notifications */
+
+export interface Notification {
+	id: number,
+	type: string,
+	strong?:string,
+	title?: string,
+	message: string,
+}

@@ -41,9 +41,10 @@ export class SettingsService {
 				this.localStorageService.setMultipleItems(
 					{ key: localStorageName.latitude, value: latitude },
 					{ key: localStorageName.longitude, value: longitude },
-					{ key: localStorageName.city, value: city || "" }
+					{ key: localStorageName.city, value: city || "" },
+					{ key: localStorageName.locationPermission, value: true}
 				);
-
+				console.log('localStorage', localStorageName.locationPermission);
 				return city;
 			})
 		);

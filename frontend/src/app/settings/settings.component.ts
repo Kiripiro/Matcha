@@ -63,6 +63,7 @@ export class SettingsComponent implements OnInit {
       fileStatus: false,
       latitude: null,
       longitude: null,
+      location_permission: null,
       city: ''
     });
     this.getUser();
@@ -96,6 +97,7 @@ export class SettingsComponent implements OnInit {
         }
         this.user.latitude = this.localStorageService.getItem('latitude');
         this.user.longitude = this.localStorageService.getItem('longitude');
+        this.localStorageService.setItem('location_permission', this.user.location_permission);
       }
     });
   }
@@ -208,13 +210,15 @@ export class SettingsComponent implements OnInit {
       "sexual_preferences",
       "latitude",
       "longitude",
+      "location_permission",
       "city"
     ];
 
     const updatedFields: Partial<UserSettings> = {};
 
     fieldsToCheck.forEach((field) => {
-      if (formValues[field] !== this.user?.[field as keyof UserSettings] && formValues[field] !== "") {
+      if (formValues[field] !== this.user?.[field as keyof UserSettings] && formValues[field] !== "" && formValues[field] !== null) {
+        console.log(formValues[field]);
         updatedFields[field as keyof UserSettings] = formValues[field];
       }
     });
@@ -227,6 +231,9 @@ export class SettingsComponent implements OnInit {
           if (response) {
             this.updateForm.get('city')?.setValue(response);
             updatedFields.city = response;
+            updatedFields.location_permission = true;
+            this.localStorageService.setItem('location_permission', true);
+            this.updateForm.get('location_permisson')?.setValue(true);
           }
           return of(updatedFields);
         }),

@@ -256,7 +256,11 @@ export class AuthService {
   }
 
   getLocation() {
-    if ('geolocation' in navigator) {
+    if (this.localStorageService.getItem('location_permission') == true) {
+      console.log('location_permission');
+      return ;
+    }
+    else if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;

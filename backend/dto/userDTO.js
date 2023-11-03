@@ -151,7 +151,7 @@ class UserDTO extends baseValidator {
         return this.isValid();
     }
 
-    settingsUpdateInfos(id, username, first_name, last_name, email, password, gender, sexual_preferences, biography, latitude, longitude, city, files, tags) {
+    settingsUpdateInfos(id, username, first_name, last_name, email, password, gender, sexual_preferences, biography, latitude, longitude, city, location_permission, files, tags) {
         super.fieldIsRequired('id', id);
         super.validatePositiveInteger('id', id);
 
@@ -193,6 +193,10 @@ class UserDTO extends baseValidator {
 
         if (city !== undefined && city !== null) {
             super.validateString('city', city, 0, 100, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/ ]+$/);
+        }
+
+        if (location_permission != undefined && location_permission != null) {
+            super.validateBoolean('location_permission', location_permission);
         }
 
         if (files !== undefined && files !== null) {

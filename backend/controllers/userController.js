@@ -100,7 +100,7 @@ class UserController extends BaseController {
                 "last_name": userData.last_name,
                 "age": userData.age,
                 "email_checked": 0,
-                "location_permission": 0,
+                "location_permission": false,
                 "latitude": 0,
                 "longitude": 0
             };
@@ -311,6 +311,10 @@ class UserController extends BaseController {
                 "longitude": userData.longitude,
                 "city": userData.city
             };
+            if (await UserModel.checkLocationPermission(userId)) {
+                res.status(400).json({ error: 'User location has been updated manually'});
+                return ;
+            }
             if (await this.checkById(userId)) {
                 const userIdReturn = await this.model.update(userId, data);
                 res.status(200).json({ message: 'User updated', user: data });
@@ -497,6 +501,7 @@ class UserController extends BaseController {
                     "you_blocked_he": await BlocksModel.check([req.user.userId, user.id]),
                     "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
                     "you_reported_he": await ReportsModel.check([req.user.userId, user.id]),
+                    "location_permission": user.location_permission,
                     "city": user.city
                 }
                 res.json({ user: userReturn });
@@ -562,6 +567,7 @@ class UserController extends BaseController {
         try {
             const userId = req.user.userId;
             const userData = req.body.user;
+            console.log(userData);
             const files = req.body.files;
             if (!userData || !files) {
                 res.status(400).json({ error: 'Missing data' });
@@ -607,7 +613,6 @@ class UserController extends BaseController {
                 const hashedPassword = await bcrypt.hash(userData.password, 10);
                 userData.password = hashedPassword;
             }
-
             if (hasOtherFields) {
                 await this.model.update(userId, userData);
                 return res.status(200).json({ message: 'User updated' });

@@ -171,10 +171,11 @@ getInterestingUsersValidation = (req, res, next) => {
 settingsUpdateInfos = (req, res, next) => {
     try {
         const userId = req.user.userId;
-        const { username, first_name, last_name, gender, sexual_preferences, biography, tags, latitude, longitude, city } = req.body;
+        const { username, first_name, last_name, gender, sexual_preferences, biography, tags, latitude, longitude, city, location_permission } = req.body;
         const files = req.files;
         const userDTO = new UserDTO();
-        const isValid = userDTO.settingsUpdateInfos(userId, username, first_name, last_name, gender, sexual_preferences, biography, latitude, longitude, city, files, tags);
+        console.log(location_permission);
+        const isValid = userDTO.settingsUpdateInfos(userId, username, first_name, last_name, gender, sexual_preferences, biography, latitude, longitude, city, location_permission, files, tags);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }

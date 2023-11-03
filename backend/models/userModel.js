@@ -35,6 +35,11 @@ class UserModel extends BaseModel {
         const user = await super.findOne('token', token);
         return user;
     }
+
+    async checkLocationPermission(userId) {
+        const user = await super.findOne('id', userId);
+        return user.location_permission;
+    }
     // Add more model-specific methods here,like update, delete...
 }
 module.exports = new UserModel();
