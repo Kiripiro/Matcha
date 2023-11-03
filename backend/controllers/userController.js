@@ -586,6 +586,11 @@ class UserController extends BaseController {
             }
             hasOtherFields = Object.keys(userData).length > 0;
 
+            if (userData.password) {
+                const hashedPassword = await bcrypt.hash(userData.password, 10);
+                userData.password = hashedPassword;
+            }
+
             if (hasOtherFields) {
                 await this.model.update(userId, userData);
                 return res.status(200).json({ message: 'User updated' });

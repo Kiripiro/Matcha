@@ -22,6 +22,10 @@
 					<mat-form-field>
 						<input matInput formControlName="password" type="password" placeholder="Password">
 					</mat-form-field>
+					<mat-form-field>
+						<input matInput formControlName="confirm_password" type="password"
+							placeholder="Confirm password">
+					</mat-form-field>
 				</div>
 
 				<!-- Profile Pictures -->
@@ -59,14 +63,14 @@
 
 				<!-- Gender -->
 				<div class="gender">
-					<mat-label>Gender</mat-label>
-					<mat-form-field>
-						<mat-select formControlName="gender" [value]="user.gender">
-							<mat-option value="male">Male</mat-option>
-							<mat-option value="female">Female</mat-option>
-							<mat-option value="other">Other</mat-option>
-						</mat-select>
-					</mat-form-field>
+					<div class="radioButtonsDiv">
+						<mat-label>Gender</mat-label>
+						<mat-radio-group formControlName="gender">
+							<mat-radio-button value="male">Male</mat-radio-button>
+							<mat-radio-button value="female">Female</mat-radio-button>
+							<mat-radio-button value="other">Other</mat-radio-button>
+						</mat-radio-group>
+					</div>
 				</div>
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, KeyValueDiffers, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, concatMap, of } from 'rxjs';
@@ -47,11 +47,12 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateForm = this.fb.group({
-      username: '',
-      first_name: '',
-      last_name: '',
-      email: ['', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")],
-      password: '',
+      username: ['', [Validators.pattern("^[a-zA-Z0-9]*$")]],
+      first_name: ['', [Validators.pattern("^[a-zA-Z]")]],
+      last_name: ['', [Validators.pattern("^[a-zA-Z]")]],
+      email: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
+      password: ['', Validators.minLength(8)],
+      confirm_password: ['', Validators.minLength(8)],
       gender: '',
       biography: '',
       maleSexualPreference: false,
@@ -76,6 +77,7 @@ export class SettingsComponent implements OnInit {
           maleSexualPreference: this.user.sexual_preferences.includes('Male'),
           femaleSexualPreference: this.user.sexual_preferences.includes('Female'),
           otherSexualPreference: this.user.sexual_preferences.includes('Other'),
+          gender: this.user.gender,
         });
         if (this.user.picture_1) {
           this.actualImg.push("data:image/jpeg;base64," + this.user.picture_1);
@@ -141,7 +143,7 @@ export class SettingsComponent implements OnInit {
           next: (response) => {
             console.log(response);
             if (response.message === "User deleted") {
-              // this.router.navigate(['auth/login']);
+              this.router.navigate(['auth/login']);
               console.log('post deleteUser successful:', response);
             }
           },
@@ -200,6 +202,7 @@ export class SettingsComponent implements OnInit {
       "first_name",
       "email",
       "password",
+      "confirm_password",
       "gender",
       "biography",
       "sexual_preferences",
@@ -243,6 +246,20 @@ export class SettingsComponent implements OnInit {
         const data = {
           title: 'Error',
           text: 'You must change at least one field.',
+          text_yes_button: "Ok",
+          yes_callback: () => { },
+          reload: false
+        };
+        this.dialogService.openDialog(data);
+        return;
+      }
+
+      if (updatedFieldsAfterLocationUpdate.password === updatedFieldsAfterLocationUpdate.confirm_password) {
+        delete updatedFieldsAfterLocationUpdate.confirm_password;
+      } else {
+        const data = {
+          title: 'Error',
+          text: 'Passwords do not match.',
           text_yes_button: "Ok",
           yes_callback: () => { },
           reload: false

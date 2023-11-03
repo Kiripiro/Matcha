@@ -297,6 +297,7 @@ export interface UserSettings {
 	last_name: string;
 	email: string;
 	password: string;
+	confirm_password: string;
 	gender: string;
 	sexual_preferences: string;
 	biography: string;
