@@ -33,6 +33,22 @@ var mailOptions = {
     text: ''
 };
 
+const ageGap = {
+	_18_25: "18-25",
+	_26_35: "26-35",
+	_36_50: "36-50",
+	_51: "+51"
+}
+
+const fameRatingGap = {
+	_30: "-30",
+	_31_60: "31-60",
+	_61_100: "61-100",
+	_101_150: "101-150",
+	_151_250: "151-250",
+	_251: "+251"
+}
+
 class UserController extends BaseController {
     constructor() {
         super(UserModel);
@@ -161,6 +177,7 @@ class UserController extends BaseController {
                 "picture_3": user.picture_3,
                 "picture_4": user.picture_4,
                 "picture_5": user.picture_5,
+                "tags": await TagsModel.getAllUserTags(user.id),
                 "fame_rating": user.fame_rating,
                 "location_permission": user.location_permission,
                 "last_connection": user.last_connection,
@@ -555,11 +572,153 @@ class UserController extends BaseController {
             console.log("getFameRating");
             const user = await this.model.findById(req.params.id);
             const fameRating = user.fame_rating;
-            res.status(200).json({ fameRating: fameRating });
+            res.status(200).json({ fame_rating: fameRating });
         } catch (error) {
             console.log(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
+    }
+
+    async getCities(req, res) {
+        try {
+            console.log("getCities");
+            const all = await this.model.findAll();
+            const allUsers = all[0];
+            var citiesReturn = [];
+            for (var i = 0; i < allUsers.length; i++) {
+                const city = allUsers[i].city;
+                console.log(allUsers[i])
+                if (citiesReturn.find((it) => it == city) == undefined || !citiesReturn.find((it) => it == city)) {
+                    citiesReturn.push(city);
+                }
+            }
+            res.status(200).json({ cities: citiesReturn });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async getSearchResultUsers(req, res) {
+        try {
+            console.log("getSearchResultUsers");
+            const userId = req.user.userId;
+            const age = req.params.age;
+            const fameRating = req.params.fameRating;
+            const location = req.params.location;
+            const tags = req.params.tags;
+            const all = await this.model.findAll();
+            var allUsers = all[0];
+            allUsers = this._ageFilter(allUsers, age);
+            allUsers = this._fameRatingFilter(allUsers, fameRating);
+            allUsers = this._locationFilter(allUsers, location);
+            allUsers = await this._tagFilter(allUsers, tags);
+            const simplifiedUsers = await this._usersListSimplified(allUsers, userId)
+            res.status(200).json({ users: simplifiedUsers });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    _ageFilter(users, ageFilter) {
+        const filter = ageFilter.split(',');
+        if (!filter || filter.length <= 0 || filter[0] == 'none')
+            return users;
+        var usersRet = [];
+        for (var i = 0; i < users.length; i++) {
+            for (var y = 0; y < filter.length; y++) {
+                if (filter[y] == ageGap._18_25 && users[i].age >= 18 && users[i].age <= 25) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == ageGap._26_35 && users[i].age >= 26 && users[i].age <= 35) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == ageGap._36_50 && users[i].age >= 36 && users[i].age <= 50) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == ageGap._51 && users[i].age >= 51) {
+                    usersRet.push(users[i]);
+                    break ;
+                }
+            }
+        }
+        return usersRet;
+    }
+
+    _fameRatingFilter(users, fameRatingFilter) {
+        const filter = fameRatingFilter.split(',');
+        if (!filter || filter.length <= 0 || filter[0] == 'none')
+            return users;
+        var usersRet = [];
+        for (var i = 0; i < users.length; i++) {
+            for (var y = 0; y < filter.length; y++) {
+                if (filter[y] == fameRatingGap._30 && users[i].fame_rating <= 30) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == fameRatingGap._31_60 && users[i].fame_rating >= 31 && users[i].fame_rating <= 60) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == fameRatingGap._61_100 && users[i].fame_rating >= 61 && users[i].fame_rating <= 100) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == fameRatingGap._101_150 && users[i].fame_rating >= 101 && users[i].fame_rating <= 150) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == fameRatingGap._151_250 && users[i].fame_rating >= 151 && users[i].fame_rating <= 250) {
+                    usersRet.push(users[i]);
+                    break ;
+                } else if (filter[y] == fameRatingGap._251 && users[i].fame_rating >= 251) {
+                    usersRet.push(users[i]);
+                    break ;
+                }
+            }
+        }
+        return usersRet;
+    }
+
+    _locationFilter(users, locationFilter) {
+        const filter = locationFilter.split(',');
+        if (!filter || filter.length <= 0 || filter[0] == 'none')
+            return users;
+        var usersRet = [];
+        for (var i = 0; i < users.length; i++) {
+            for (var y = 0; y < filter.length; y++) {
+                if (filter[y] == users[i].city) {
+                    usersRet.push(users[i]);
+                    break ;
+                }
+            }
+        }
+        return usersRet;
+    }
+
+    async _tagFilter(users, tagFilter) {
+        const filter = tagFilter.split(',');
+        if (!filter || filter.length <= 0 || filter[0] == 'none')
+            return users;
+        var usersRet = [];
+        for (var i = 0; i < users.length; i++) {
+            const tags = await TagsModel.getAllUserTags(users[i].id);
+            for (var y = 0; y < filter.length; y++) {
+                if (tags.includes(filter[y])) {
+                    usersRet.push({
+                        id: users[i].id,
+                        username: users[i].username,
+                        age: users[i].age,
+                        tags: tags,
+                        latitude: users[i].latitude,
+                        longitude: users[i].longitude,
+                        fame_rating: users[i].fame_rating,
+                        first_name: users[i].first_name,
+                        last_name: users[i].last_name,
+                        city: users[i].city
+                    });
+                    break ;
+                }
+            }
+        }
+        return usersRet;
     }
 
     _firstFilterUsers(user, allUsers) {
@@ -579,14 +738,16 @@ class UserController extends BaseController {
             const tags = await TagsModel.getAllUserTags(allUsers[i].id);
             const commonTags = this._nbCommonElements(userTags, tags);
             if (commonTags >= COMMON_TAGS_MINIMUM_FILTER) {
-                newUserList.push(
-                    {
-                        id: allUsers[i].id, username: allUsers[i].username,
-                        age: allUsers[i].age, tags: tags,
-                        latitude: allUsers[i].latitude, longitude: allUsers[i].longitude,
-                        fameRating: allUsers[i].fame_rating
-                    }
-                );
+                if (user.id != allUsers[i].id) {
+                    newUserList.push(
+                        {
+                            id: allUsers[i].id, username: allUsers[i].username,
+                            age: allUsers[i].age, tags: tags,
+                            latitude: allUsers[i].latitude, longitude: allUsers[i].longitude,
+                            fame_rating: allUsers[i].fame_rating
+                        }
+                    );
+                }
             }
         }
         return newUserList;
@@ -603,14 +764,27 @@ class UserController extends BaseController {
         return count;
     }
 
-    _usersListSimplified(usersList) {
+    async _usersListSimplified(usersList, userId) {
         var list = [];
         for (var i = 0; i < usersList.length; i++) {
-            list.push({
-                id: usersList[i].id, username: usersList[i].username,
-                age: usersList[i].age, tags: usersList[i].tags,
-                latitude: usersList[i].latitude, longitude: usersList[i].longitude
-            })
+            var tags = usersList[i].tags;
+            if (!tags || tags == undefined) {
+                tags = await TagsModel.getAllUserTags(usersList[i].id);
+            }
+            if (usersList[i].id != userId) {
+                list.push({
+                    id: usersList[i].id,
+                    username: usersList[i].username,
+                    age: usersList[i].age,
+                    tags: tags,
+                    latitude: usersList[i].latitude,
+                    longitude: usersList[i].longitude,
+                    first_name: usersList[i].first_name,
+                    last_name: usersList[i].last_name,
+                    city: usersList[i].city,
+                    fame_rating: usersList[i].fame_rating
+                })
+            }
         }
         return list;
     }

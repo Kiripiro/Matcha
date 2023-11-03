@@ -146,6 +146,7 @@ export class AuthService {
             { key: localStorageName.picture3, value: response.user.picture_3 || "" },
             { key: localStorageName.picture4, value: response.user.picture_4 || "" },
             { key: localStorageName.picture5, value: response.user.picture_5 || "" },
+            { key: localStorageName.tags, value: response.user.tags || [] },
             { key: localStorageName.locationPermission, value: response.user.location_permission || false },
             { key: localStorageName.createdAt, value: response.user.created_at || "" },
           );

@@ -8,6 +8,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { SettingsComponent } from './settings/settings.component';
 import { WaitComponent } from './wait/wait.component';
 import { ResetComponent } from './reset/reset.component';
+import { SearchComponent } from './search/search.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'auth', loadChildren: () => AuthModule },
   { path: 'chat', component: ChatComponent },
   { path: 'settings', component: SettingsComponent },
+  { path: 'search', component: SearchComponent },
   { path: 'verification/:type/:token', component: WaitComponent },
   { path: 'resetpassword', component: ResetComponent },
   { path: 'notFound', component: NotFoundComponent },

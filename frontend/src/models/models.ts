@@ -62,6 +62,7 @@ export interface LoginResponseData {
 		picture_3: string,
 		picture_4: string,
 		picture_5: string,
+		tags: UserTags[],
 		location_permission: boolean,
 		created_at: string
 	};
@@ -260,7 +261,10 @@ export interface UserSimplified {
 	tags: UserTags[],
 	latitude: number,
 	longitude: number,
-	fameRating: number
+	fame_rating: number,
+	first_name: string,
+	last_name: string,
+	city: string
 }
 
 export interface UserTags {
@@ -273,7 +277,7 @@ export interface GetInterestingUsersResponseData {
 }
 
 export interface GetFameRatingResponseData {
-	fameRating: number
+	fame_rating: number
 }
 
 export const sortSelectType = {
@@ -288,6 +292,32 @@ export const filterSelectType = {
 	Age: "+/- 5 years",
 	Tags: "3 common tags minimum",
 	FameRating: "Fame rating"
+}
+
+/* Search */
+
+export const ageGapType = {
+	_18_25: "18-25",
+	_26_35: "26-35",
+	_36_50: "36-50",
+	_51: "+51"
+}
+
+export const fameRatingGapType = {
+	_30: "-30",
+	_31_60: "31-60",
+	_61_100: "61-100",
+	_101_150: "101-150",
+	_151_250: "151-250",
+	_251: "+251"
+}
+
+export interface GetCitiesResponseData {
+	cities: string[]
+}
+
+export interface GetSearchResultResponseData {
+	users: UserSimplified[]
 }
 
 /* Settings */

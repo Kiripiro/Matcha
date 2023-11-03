@@ -72,7 +72,7 @@ export class HomeComponent implements OnInit {
           this.homeService.getPersonnalFameRating().subscribe(
             (response) => {
               console.log('getPersonnalFameRating successful:', response);
-              this.personalFameRating = response.fameRating;
+              this.personalFameRating = response.fame_rating;
             },
             (error) => {
               console.error('getPersonnalFameRating failed:', error);
@@ -154,7 +154,7 @@ export class HomeComponent implements OnInit {
       });
     } else if (this.sortSelected == sortSelectType.FameRating) {
       this.interestingUsers = this.interestingUsers.sort((a, b) => {
-        return a.fameRating - b.fameRating;
+        return a.fame_rating - b.fame_rating;
       });
     }
   }
@@ -173,7 +173,7 @@ export class HomeComponent implements OnInit {
     } else if (this.filterSelected == filterSelectType.FameRating) {
       const tags = this.localStorageService.getItem(localStorageName.tags);
       this.interestingUsers = this.interestingUsers.filter(it => {
-        return this.personalFameRating + 30 > it.fameRating && this.personalFameRating - 30 < this.personalFameRating
+        return this.personalFameRating + 30 > it.fame_rating && this.personalFameRating - 30 < this.personalFameRating
       });
     }
   }

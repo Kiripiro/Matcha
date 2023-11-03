@@ -126,6 +126,22 @@ router.get('/famerating/:id', auth, user.getFameRatingValidation, async (req, re
     }
 });
 
+router.get('/cities', auth, user.getCities, async (req, res) => {
+    try {
+        await UserController.getCities(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.get('/search/:age/:fameRating/:location/:tags', auth, user.getSearchResultUsers, async (req, res) => {
+    try {
+        await UserController.getSearchResultUsers(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 // app.get('/users', async (req, res) => {
 //     try {
 //         await UserController.getAllUsers(req, res);

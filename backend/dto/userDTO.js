@@ -149,6 +149,31 @@ class UserDTO extends baseValidator {
 
         return this.isValid();
     }
+
+    getCities(id) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
+
+        return this.isValid();
+    }
+
+    getSearchResultUsersValidation(id, age, fameRating, location, tags) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
+        super.fieldIsRequired('age', age);
+        super.fieldIsRequired('fameRating', fameRating);
+        super.fieldIsRequired('location', location);
+        super.fieldIsRequired('tags', tags);
+
+        if (this.isValid()) {
+            super.validateString('age', age, 1, 100, /^[0-9a-zA-Z~`\-!@#$%^&*()+=_-{}[\]|:;"',.?/ ]+$/);
+            super.validateString('fameRating', fameRating, 1, 100, /^[0-9a-zA-Z~`\-!@#$%^&*()+=_-{}[\]|:;"',.?/ ]+$/);
+            super.validateString('location', location, 1, 100, /^[0-9a-zA-Z~`\-!@#$%^&*()+=_-{}[\]|:;"',.?/ ]+$/);
+            super.validateString('tags', tags, 1, 100, /^[0-9a-zA-Z~`\-!@#$%^&*()+=_-{}[\]|:;"',.?/ ]+$/);
+        }
+
+        return this.isValid();
+    }
 }
 
 module.exports = UserDTO;
