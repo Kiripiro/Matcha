@@ -33,4 +33,27 @@
         background-color: $onPrimary;
         color: white;
     }
+
+    .notification-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%; /* Added to ensure full width */
+    }
+
+    .delete-button {
+        background-color: transparent;
+        color: $error;
+        margin-left: auto;
+    }
+}
+::ng-deep {
+    .mat-mdc-menu-panel {
+        max-width: unset !important;
+    }
+    .mat-mdc-menu-item-text {
+        display: flex;
+        align-items: center;
+        justify-content: space-between !important;
+    }
 }

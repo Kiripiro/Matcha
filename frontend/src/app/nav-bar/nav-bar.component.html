@@ -7,13 +7,26 @@
     </div>
     <div *ngIf="isLoggedIn">
       <button mat-button class="primaryButton" [routerLink]="['search']">Search</button>
-      <button mat-icon-button class="primaryButton" (click)="showNotifications()">
-        <mat-icon>notifications</mat-icon>
-        <mat-badge [matBadge]="notificationCount" matBadgeColor="warn" matBadgeSize="small"></mat-badge>
-      </button>
+
       <button mat-button class="primaryButton" [routerLink]="['chat']">Chat</button>
       <button mat-button class="primaryButton" [routerLink]="['profile/' + username]">Profile</button>
       <button mat-button class="primaryButton" [routerLink]="['settings']">Settings</button>
+      <button mat-button [matMenuTriggerFor]="menu" [disabled]="!notificationCount">
+        <mat-icon>notifications</mat-icon>
+        <mat-badge [matBadge]="notificationCount" matBadgeColor="warn" matBadgeSize="small"></mat-badge>
+      </button>
+      <mat-menu #menu="matMenu">
+        <div *ngFor="let notification of notifications">
+          <button mat-menu-item>
+            <div class="notification-item">
+              <span>{{ notification.message }}</span>
+              <button mat-mini-fab (click)="notificationsService.removeNotification(notification)" class="delete-button">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </button>
+        </div>
+      </mat-menu>
       <button mat-button class="secondaryButton" (click)="logOut()">Log out</button>
     </div>
 </div>

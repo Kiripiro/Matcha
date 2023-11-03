@@ -95,7 +95,7 @@ import { NotificationsService } from 'src/services/notifications.service';
     ReactiveFormsModule,
     MatRadioModule,
     MatCheckboxModule,
-    MatBadgeModule
+    MatBadgeModule,
   ],
   providers: [
     {

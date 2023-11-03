@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService, localStorageName } from 'src/services/local-storage.service';
 import { NotificationsService } from 'src/services/notifications.service';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { Notification } from 'src/models/models';
 
 @Component({
   selector: 'app-nav-bar',
@@ -15,8 +17,10 @@ export class NavBarComponent implements OnInit {
   isLoggedIn: boolean | undefined;
 
   username = "";
-  notificationCount: number = 0;
 
+  notifications: Notification[] = [];
+  notificationCount: number = 0;
+  @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -34,11 +38,12 @@ export class NavBarComponent implements OnInit {
       }
     });
   }
-
   ngOnInit(): void {
     this.authService.checkLogAndLogout();
+    this.notificationsService.notifications$.subscribe((notifications) => {
+      this.notifications = notifications;
+    });
     this.notificationsService.notificationsCount$.subscribe((notifications) => {
-      console.log(notifications);
       this.notificationCount = notifications;
     });
   }
@@ -53,9 +58,5 @@ export class NavBarComponent implements OnInit {
 
   profile() {
     this.router.navigate(['profile/' + this.localStorageService.getItem('username')]);
-  }
-
-  showNotifications() {
-    this.notificationsService.showNotifications();
   }
 }
