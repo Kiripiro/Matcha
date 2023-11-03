@@ -217,6 +217,38 @@ getFameRatingValidation = (req, res, next) => {
     }
 };
 
+getCities = (req, res, next) => {
+    try {
+        const userId = req.user.userId;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.getCities(userId);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
+getSearchResultUsers = (req, res, next) => {
+    try {
+        const userId = req.user.userId;
+        const age = req.params.age;
+        const fameRating = req.params.fameRating;
+        const location = req.params.location;
+        const tags = req.params.tags;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.getSearchResultUsersValidation(userId, age, fameRating, location, tags);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 module.exports = {
     createUserValidation,
     loginValidation,
@@ -232,5 +264,7 @@ module.exports = {
     getInterestingUsersValidation,
     settingsUpdateInfos,
     deleteUser,
-    getFameRatingValidation
+    getFameRatingValidation,
+    getCities,
+    getSearchResultUsers
 };

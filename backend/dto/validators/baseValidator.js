@@ -96,6 +96,12 @@ class BaseValidator {
         }
     }
 
+    validateStringArray(propName, value, minLength, maxLength, regex) {
+        for (var i = 0; i < value.length; i++) {
+            this.validateString(propName + i, value[i], minLength, maxLength, regex);
+        }
+    }
+
     validateObject(propName, value) {
         if (typeof value !== 'object') {
             this.errors.push(`${propName} must be an object.`);

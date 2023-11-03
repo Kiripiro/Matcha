@@ -46,6 +46,8 @@ import { HomeService } from 'src/services/home.service';
 import { WaitComponent } from './wait/wait.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ResetComponent } from './reset/reset.component';
+import { SearchComponent } from './search/search.component';
+import { SearchService } from 'src/services/search.service';
 
 @NgModule({
   declarations: [
@@ -59,7 +61,8 @@ import { ResetComponent } from './reset/reset.component';
     ChatComponent,
     SettingsComponent,
     WaitComponent,
-    ResetComponent
+    ResetComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
@@ -105,7 +108,8 @@ import { ResetComponent } from './reset/reset.component';
     ChatService,
     SocketioService,
     RelationService,
-    HomeService
+    HomeService,
+    SearchService
   ],
   bootstrap: [AppComponent]
 })
