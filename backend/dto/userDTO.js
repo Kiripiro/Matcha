@@ -1,3 +1,4 @@
+const { deleteUser } = require("../controllers/userController");
 const baseValidator = require("./validators/baseValidator");
 
 class UserDTO extends baseValidator {
@@ -146,6 +147,84 @@ class UserDTO extends baseValidator {
     getUserByUsername(username) {
         super.fieldIsRequired('username', username);
         super.validateString('username', username, 3, 25, /^[a-zA-Z0-9_-]+$/);
+
+        return this.isValid();
+    }
+
+    settingsUpdateInfos(id, username, first_name, last_name, email, password, gender, sexual_preferences, biography, latitude, longitude, city, files, tags) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
+
+        if (username !== undefined && username !== null) {
+            super.validateString('username', username, 3, 25, /^[a-zA-Z0-9_-]+$/);
+        }
+        if (first_name !== undefined && first_name !== null) {
+            super.validateString('first_name', first_name, 3, 25, /^[a-zA-Z- ]+$/);
+        }
+        if (last_name !== undefined && last_name !== null) {
+            super.validateString('last_name', last_name, 3, 25, /^[a-zA-Z- ]+$/);
+        }
+        if (gender !== undefined && gender !== null) {
+            super.validateString('gender', gender, 1, 10, /^[0-9a-zA-Z+ ]+$/);
+        }
+
+        if (sexual_preferences !== undefined && sexual_preferences !== null) {
+            super.validateString('sexual_preferences', sexual_preferences, 1, 10, /^[0-9a-zA-Z+ ]+$/);
+        }
+
+        if (biography !== undefined && biography !== null) {
+            super.validateString('biography', biography, 0, 400, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/ ]+$/);
+        }
+        if (email !== undefined && email !== null) {
+            super.validateEmail('email', email);
+        }
+
+        if (password !== undefined && password !== null) {
+            super.validateString('password', password, 8, 25);
+        }
+
+        if (latitude !== undefined && latitude !== null) {
+            super.validateFloatLatitude('latitude', latitude);
+        }
+
+        if (longitude !== undefined && longitude !== null) {
+            super.validateFloatLongitude('longitude', longitude);
+        }
+
+        if (city !== undefined && city !== null) {
+            super.validateString('city', city, 0, 100, /^[0-9a-zA-Z~`!@#$%^&*()+=_-{}[\]|:;"'><,.?/ ]+$/);
+        }
+
+        if (files !== undefined && files !== null) {
+            if (!Array.isArray(files)) {
+                this.errors.push('Files must be an array');
+            } else {
+                if (files.length < 0 || files.length > 5) {
+                    this.errors.push('Incorrect image number');
+                }
+
+                for (let i = 0; i < files.length; i++) {
+                    super.validateImageFile(files[i]);
+                }
+            }
+        }
+
+        if (tags !== undefined && tags !== null) {
+            if (!Array.isArray(tags)) {
+                this.errors.push('Tags must be an array');
+            } else {
+                for (let y = 0; y < tags.length; y++) {
+                    super.validateString('tag ' + tags[y], tags[y], 1, 20, /^[0-9a-zA-Z+ ]+$/);
+                }
+            }
+        }
+
+        return this.isValid();
+    }
+
+    deleteUser(id) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
 
         return this.isValid();
     }

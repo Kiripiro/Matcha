@@ -17,6 +17,7 @@ const MAX_RADIUS_LOCATION_FILTER = 35;
 const COMMON_TAGS_MINIMUM_FILTER = 1;
 
 var nodemailer = require('nodemailer');
+const { update } = require('../models/invalidTokensModel');
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -261,8 +262,6 @@ class UserController extends BaseController {
             if (await this.checkById(userId)) {
                 const userIdReturn = await this.model.update(userId, data);
                 const userTags = userData.tags;
-                console.log("updateInfos userTags = ");
-                console.log(userTags);
                 const tagsReturn = await TagsModel.addUserTags(userTags, userId);
                 const dataReturn = {
                     "complete_register": true,
@@ -308,17 +307,13 @@ class UserController extends BaseController {
     }
 
     async deleteUser(req, res) {
+        console.log("deleteUser");
         try {
-            const userData = req.body;
-            const userId = this._checkPositiveInteger(userData.id || '');
-            if (userId < 0) {
-                res.status(400).json({ error: 'User id is incorrect' });
-                return;
-            }
+            const userId = req.user.userId;
+            console.log("deleteUser userId = " + userId);
             if (!await this.checkById(userId)) {
                 res.status(400).json({ error: 'User id is incorrect' });
                 return;
-
             }
             if (await MessagesModel.deleteUserMessages(userId) == null ||
                 await BlocksModel.deleteUserBlocks(userId) == null ||
@@ -335,6 +330,8 @@ class UserController extends BaseController {
             this._removePicture("picture_4_" + userId);
             this._removePicture("picture_5_" + userId);
             const userIdReturn = await this.model.delete(userId);
+            res.clearCookie('accessToken');
+            res.clearCookie('refreshToken');
             res.status(201).json({ message: 'User deleted', userIdReturn });
             return;
 
@@ -463,8 +460,6 @@ class UserController extends BaseController {
                 return;
             } else {
                 const tags = await TagsModel.getAllUserTags(user.id);
-                console.log("getUserById tags = ");
-                console.log(tags);
                 const userReturn = {
                     "id": user.id || -1,
                     "username": user.username || '',
@@ -496,15 +491,12 @@ class UserController extends BaseController {
 
     async getUserByUsername(req, res) {
         try {
-            console.log("getUserByUsername");
             const user = await this.model.findByUsername(req.body.username);
             if (!user) {
                 res.status(404).json({ error: 'User not found' })
                 return;
             } else {
                 const tags = await TagsModel.getAllUserTags(user.id);
-                console.log("getUserByUsername tags = ");
-                console.log(tags);
                 const userReturn = {
                     "id": user.id || -1,
                     "username": user.username || '',
@@ -536,7 +528,6 @@ class UserController extends BaseController {
 
     async getInterestingUsers(req, res) {
         try {
-            console.log("getInterestingUsers");
             const user = await this.model.findById(req.user.userId);
             const allUsers = await this.model.findAll();
             const usersList = this._firstFilterUsers(user, allUsers[0]);
@@ -549,6 +540,63 @@ class UserController extends BaseController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
+    async settingsUpdateInfos(req, res) {
+        try {
+            const userId = req.user.userId;
+            const userData = req.body.user;
+            const files = req.body.files;
+            if (!userData || !files) {
+                res.status(400).json({ error: 'Missing data' });
+                return;
+            }
+
+            if (userData.username && await this.model.findByUsername(userData.username) != null) {
+                res.status(400).json({ error: 'Username already in use' });
+                return;
+            }
+            if (userData.email && await this.model.findByEmail(userData.email) != null) {
+                res.status(400).json({ error: 'Email already in use' });
+                return;
+            }
+
+            var pictures = [];
+            if (files.length > 0) {
+                pictures = await this._savePictures(files, userId);
+                for (var i = 0; i < pictures.length; i++) {
+                    if (pictures[i] != null) {
+                        userData["picture_" + (i + 1)] = pictures[i];
+                    }
+                }
+                for (var i = pictures.length; i < 5; i++) {
+                    userData["picture_" + (i + 1)] = null;
+                }
+            }
+
+            let hasOtherFields = null;
+            const newTags = userData.tags;
+            if (newTags) {
+                delete userData.tags;
+                hasOtherFields = Object.keys(userData).length > 0;
+                await TagsModel.deleteUserTags(userId);
+                await TagsModel.addUserTags(newTags, userId);
+                if (!hasOtherFields) {
+                    return res.status(200).json({ message: 'User updated' });
+                }
+            }
+            hasOtherFields = Object.keys(userData).length > 0;
+
+            if (hasOtherFields) {
+                await this.model.update(userId, userData);
+                return res.status(200).json({ message: 'User updated' });
+            } else
+                return res.status(400).json({ error: 'Missing data' });
+        } catch (error) {
+            console.log('error = ' + error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
 
     async getFameRating(req, res) {
         try {
@@ -761,7 +809,6 @@ class UserController extends BaseController {
             const fileToRemove = files.find((file) =>
                 file.startsWith(filename)
             );
-            console.log("filetoremove = " + fileToRemove);
             if (fileToRemove && fileToRemove.length > 0) {
                 const pathToRemove = "/app/imagesSaved/" + fileToRemove;
                 fs.unlink(pathToRemove, (error) => {

@@ -7,8 +7,8 @@ module.exports = (req, res, next) => {
         const cookiesSplit = cookiesString.split('; ');
         const cookies = new Map();
         cookiesSplit.forEach(pair => {
-        const [key, value] = pair.split('=');
-        cookies.set(key, value);
+            const [key, value] = pair.split('=');
+            cookies.set(key, value);
         });
 
         const accessToken = cookies.get("accessToken");

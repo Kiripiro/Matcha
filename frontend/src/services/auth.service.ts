@@ -7,7 +7,7 @@ import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
 import { GetUserResponseData, LoginResponseData, RegisterResponseData, CompleteRegisterResponseData, IpApiResponseData, LocationIQApiResponseData, UpdateLocationResponseData, EmailValidationResponseData, PasswordResetRequestResponseData, PasswordResetValidationResponseData } from '../models/models';
-import { environment } from 'src/environments/environment.template';
+import { environment } from '../environments/environment.template';
 
 
 @Injectable({
@@ -37,6 +37,7 @@ export class AuthService {
 
   getUserInfosById(id: number): Observable<GetUserResponseData> {
     console.log("getUserInfosById")
+    console.log(id);
     return this.http.post<GetUserResponseData>('http://localhost:3000/users/id', { id }, { withCredentials: true });
   }
 
@@ -115,7 +116,7 @@ export class AuthService {
             text_yes_button: "",
             text_no_button: "Close",
             yes_callback: () => { },
-            no_callback: () => {this.router.navigate(['/auth/login']); },
+            no_callback: () => { this.router.navigate(['/auth/login']); },
             reload: false
           };
           this.dialogService.openDialog(dialogData);

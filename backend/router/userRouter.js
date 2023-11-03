@@ -69,8 +69,9 @@ router.post('/id', auth, user.postUserByIdValidation, async (req, res) => {
     }
 });
 
-router.post('/delete', auth, async (req, res) => {
+router.post('/delete', auth, user.deleteUser, async (req, res) => {
     try {
+        console.log("user route delete");
         await UserController.deleteUser(req, res);
     } catch (error) {
         console.error(error);
@@ -126,6 +127,21 @@ router.get('/famerating/:id', auth, user.getFameRatingValidation, async (req, re
     }
 });
 
+router.get('/famerating/:id', auth, user.getFameRatingValidation, async (req, res) => {
+    try {
+        await UserController.getFameRating(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+router.post('/settingsUpdate', auth, user.settingsUpdateInfos, async (req, res) => {
+    try {
+        await UserController.settingsUpdateInfos(req, res);
+    } catch (error) {
+        console.error(error);
+    }
+});
 // app.get('/users', async (req, res) => {
 //     try {
 //         await UserController.getAllUsers(req, res);

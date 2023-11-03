@@ -1,71 +1,93 @@
-<div class="settings-container" *ngIf="user">
-	<mat-card>
-		<mat-card-header>
-			<mat-card-title>Settings</mat-card-title>
-		</mat-card-header>
-		<mat-card-content>
+<div class="centerDiv">
+	<div class="formCard">
+		<div class="settings-container" *ngIf="user">
+			<p class="title">Settings</p>
 			<form (ngSubmit)="onSubmit()" [formGroup]="updateForm">
-				<!-- Name and First Name -->
-				<mat-form-field>
-					<input matInput placeholder="{{user.username}}" name="username">
-				</mat-form-field>
-				<mat-form-field>
-					<input matInput placeholder="{{user.last_name}}" name="name">
-				</mat-form-field>
-				<mat-form-field>
-					<input matInput placeholder="{{user.first_name}}" name="firstName">
-				</mat-form-field>
-
-				<!-- Email -->
-				<mat-form-field>
-					<input matInput placeholder="Email" name="email">
-				</mat-form-field>
-
-				<!-- Password -->
-				<mat-form-field>
-					<input matInput type="password" placeholder="Password" name="password">
-				</mat-form-field>
+				<div class="userInfos">
+					<mat-label>Username</mat-label>
+					<mat-form-field>
+						<input matInput formControlName="username" placeholder="{{user.username}}">
+					</mat-form-field>
+					<mat-label>Last name</mat-label>
+					<mat-form-field>
+						<input matInput formControlName="last_name" placeholder="{{user.last_name}}">
+					</mat-form-field>
+					<mat-label>First name</mat-label>
+					<mat-form-field>
+						<input matInput formControlName="first_name" placeholder="{{user.first_name}}">
+					</mat-form-field>
+					<mat-form-field>
+						<input matInput formControlName="email" placeholder="Email" type="email">
+					</mat-form-field>
+					<mat-form-field>
+						<input matInput formControlName="password" type="password" placeholder="Password">
+					</mat-form-field>
+				</div>
 
 				<!-- Profile Pictures -->
 				<div class="profile-pictures">
-					<label for="profilePictures">Profile Pictures (up to 5)</label>
-					<input type="file" id="profilePictures" name="profilePictures" multiple>
+					<mat-label>Profile Pictures</mat-label>
+					<div class="pictures-container current-pictures">
+						<div class="profile-picture" *ngFor="let picture of actualImg">
+							<img [src]="picture" alt="Profile Picture">
+						</div>
+					</div>
+				</div>
+				<div class="inputDiv">
+					<label for="inputPictures">Upload your new pictures !</label>
+					<input id="inputPictures" type="file" class="fileInput" multiple
+						(change)="onChangeFileInput($event)" accept=".png, .jpeg, .jpg" />
+				</div>
+				<div class="profile-pictures" *ngIf="newImg && newImg.length > 0">
+					<mat-label>New Profile Pictures</mat-label>
+					<div class="pictures-container new-pictures">
+						<div class="profile-picture" *ngFor="let picture of newImg">
+							<img [src]="picture" alt="New Profile Picture">
+						</div>
+					</div>
 				</div>
 
 				<!-- Biography -->
-				<mat-form-field>
-					<textarea matInput placeholder="{{user.biography}}" name="biography"></textarea>
-				</mat-form-field>
+				<div class="biography">
+					<mat-label>Biography</mat-label>
+					<mat-form-field>
+						<textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+							cdkAutosizeMaxRows="5" maxlength="400" formControlName="biography"
+							placeholder="{{user.biography}}"></textarea>
+					</mat-form-field>
+				</div>
 
 				<!-- Gender -->
-				<mat-form-field>
+				<div class="gender">
 					<mat-label>Gender</mat-label>
-					<mat-select name="gender" [(value)]="user.gender">
-						<mat-option value="male">Male</mat-option>
-						<mat-option value="female">Female</mat-option>
-						<mat-option value="other">Other</mat-option>
-					</mat-select>
-				</mat-form-field>
+					<mat-form-field>
+						<mat-select formControlName="gender" [value]="user.gender">
+							<mat-option value="male">Male</mat-option>
+							<mat-option value="female">Female</mat-option>
+							<mat-option value="other">Other</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
 
-				<!-- Sexual Preferences -->
+
 				<div class="checkBoxDiv">
 					<mat-label>Sexual preferences</mat-label>
 					<div class="checkBoxGroup">
 						<mat-checkbox formControlName="maleSexualPreference"
-							(change)="sexualPreferenceChange()">Male</mat-checkbox>
+							(change)="sexualPreferenceChange('Male')">Male</mat-checkbox>
 						<mat-checkbox formControlName="femaleSexualPreference"
-							(change)="sexualPreferenceChange()">Female</mat-checkbox>
+							(change)="sexualPreferenceChange('Female')">Female</mat-checkbox>
 						<mat-checkbox formControlName="otherSexualPreference"
-							(change)="sexualPreferenceChange()">Other</mat-checkbox>
+							(change)="sexualPreferenceChange('Other')">Other</mat-checkbox>
 					</div>
 				</div>
 
 				<!-- List of Interests (Tags) -->
 				<div class="tagsDiv">
-					<mat-label>Tags</mat-label>
+					<mat-label>Available tags</mat-label>
 					<div class="tagsAvailable">
 						<span *ngFor="let tag of tagsService.availableTags" (click)="addTag(tag)">{{tag}}</span>
-						<p class="tagsInfos" *ngIf="tagsService.availableTags.length <= 0">All tags are selected !</p>
+						<p class="tagsInfos" *ngIf="tagsService.availableTags.length <= 0">All tags are selected!</p>
 					</div>
 					<mat-label>Your Tags</mat-label>
 					<div class="tagsSelected">
@@ -75,14 +97,29 @@
 							</button>
 							<p>{{tag}}</p>
 						</div>
-						<p class="tagsInfos" *ngIf="userTags.length <= 0">Select tags above !</p>
+						<p class="tagsInfos" *ngIf="userTags.length <= 0">Select tags above!</p>
 					</div>
 				</div>
 
-				<!-- Delete Account -->
-				<button mat-raised-button color="warn" (click)="deleteAccount()">Delete Account</button>
-				<button type="submit" color="primary" [disabled]="updateForm.invalid" mat-raised-button>Update</button>
+				<div class="location">
+					<mat-label>Location</mat-label>
+					<mat-form-field>
+						<p>Latitude</p>
+						<input matInput type="number" formControlName="latitude" placeholder="{{user.latitude}}">
+					</mat-form-field>
+					<mat-form-field>
+						<p>Longitude</p>
+						<input matInput type="number" formControlName="longitude" placeholder="{{user.longitude}}">
+					</mat-form-field>
+				</div>
+
+				<button type="submit" [disabled]="updateForm.invalid" mat-raised-button>Update</button>
 			</form>
-		</mat-card-content>
-	</mat-card>
+			<!-- Delete Account -->
+			<div class="delete">
+				<mat-label>Delete Account</mat-label>
+				<button class="delete-button" mat-raised-button (click)="deleteAccount()">Delete Account</button>
+			</div>
+		</div>
+	</div>
 </div>

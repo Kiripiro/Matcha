@@ -63,7 +63,7 @@ class BaseValidator {
     }
 
     validateEmail(propName, value) {
-        if (typeof value !== 'string' || !value.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/)) {
+        if (typeof value !== 'string' || !value.match(/^\S+@\S+\.\S+$/)) {
             this.errors.push(`${propName} must be a valid email address.`);
         }
     }

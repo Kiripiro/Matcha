@@ -295,6 +295,8 @@ export interface UserSettings {
 	username: string;
 	first_name: string;
 	last_name: string;
+	email: string;
+	password: string;
 	gender: string;
 	sexual_preferences: string;
 	biography: string;
@@ -304,6 +306,9 @@ export interface UserSettings {
 	picture_4: string;
 	picture_5: string;
 	tags: string[];
+	latitude: number;
+	longitude: number;
+	city: string;
 	location_permission: boolean;
 }
 

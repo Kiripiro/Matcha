@@ -168,6 +168,41 @@ getInterestingUsersValidation = (req, res, next) => {
     }
 };
 
+settingsUpdateInfos = (req, res, next) => {
+    try {
+        const userId = req.user.userId;
+        const { username, first_name, last_name, gender, sexual_preferences, biography, tags, latitude, longitude, city } = req.body;
+        const files = req.files;
+        const userDTO = new UserDTO();
+        const isValid = userDTO.settingsUpdateInfos(userId, username, first_name, last_name, gender, sexual_preferences, biography, latitude, longitude, city, files, tags);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Invalid parameters");
+    }
+}
+
+deleteUser = (req, res, next) => {
+    console.log("user middleware delete");
+    try {
+        const userId = req.user.userId;
+        console.log(userId);
+        const userDTO = new UserDTO();
+        const isValid = userDTO.deleteUser(userId);
+        console.log(isValid);
+        if (!isValid) {
+            return res.status(400).json(userDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        console.log("error + ", error)
+        res.status(400).send("Invalid parameters");
+    }
+}
+
 getFameRatingValidation = (req, res, next) => {
     try {
         const userId = req.params.id;
@@ -195,5 +230,7 @@ module.exports = {
     resetPasswordValidation,
     getUserByUsernameValidation,
     getInterestingUsersValidation,
+    settingsUpdateInfos,
+    deleteUser,
     getFameRatingValidation
 };
