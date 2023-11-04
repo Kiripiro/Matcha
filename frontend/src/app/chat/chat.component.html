@@ -11,9 +11,11 @@
                             <div class=" chat-list-match-icon">
                                 <mat-icon mat-list-icon>person</mat-icon>
                             </div>
-                            <div class="chat-list-match-infos">
-                                {{ user.first_name }} {{ user.last_name }} - {{ user.username }}
-                            </div>
+                            <p> {{ user.first_name }} {{ user.last_name }} - {{ user.username }}</p>
+                            <mat-badge class="badge" matBadgePosition="before" matBadgeOverlap="false"
+                                *ngIf="user.notificationCount" [matBadge]="user.notificationCount" matBadgeColor="warn"
+                                matBadgeSize="small">
+                            </mat-badge>
                         </div>
                     </mat-list>
                 </mat-tab>

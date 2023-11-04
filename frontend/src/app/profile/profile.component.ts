@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RelationService } from 'src/services/relation.service';
 import { ElementListData, User } from 'src/models/models';
 import { DialogService } from 'src/services/dialog.service';
+import { SocketioService } from 'src/services/socketio.service';
 
 @Component({
   selector: 'app-profile',
@@ -33,15 +34,18 @@ export class ProfileComponent implements OnInit {
   displayListTitle = "Views";
   list: ElementListData[] = [];
   fameRating = 0;
+  private id: number;
 
   constructor(
     private localStorageService: LocalStorageService,
     private authService: AuthService,
     private relationService: RelationService,
     private dialogService: DialogService,
+    private socketService: SocketioService,
     private router: Router,
     private route: ActivatedRoute
   ) {
+    this.id = this.localStorageService.getItem(localStorageName.id);
     if (!this.authService.checkLog()) {
       this.router.navigate(['auth/login']);
       return;
@@ -79,7 +83,7 @@ export class ProfileComponent implements OnInit {
             this.reportButtonMessage = "Unreport";
           }
           this.fameRating = this.userInfos.fame_rating;
-          this.relationService.getCheckLike(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
+          this.relationService.getCheckLike(this.id, this.userInfos.id).subscribe(
             (response) => {
               console.log('get getCheckLike successful:', response);
               if (response != null) {
@@ -97,7 +101,7 @@ export class ProfileComponent implements OnInit {
               this.error = true;
             }
           );
-          this.relationService.getCheckMatch(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
+          this.relationService.getCheckMatch(this.id, this.userInfos.id).subscribe(
             (response) => {
               console.log('get getCheckMatch successful:', response);
               if (response != null) {
@@ -115,15 +119,16 @@ export class ProfileComponent implements OnInit {
             }
           );
           if (!this.personalProfil && !this.he_blocked_you && !this.you_blocked_he) {
-            this.relationService.createView(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
+            this.relationService.createView(this.id, this.userInfos.id).subscribe(
               (response) => {
-                  console.log('post createView successful:', response);
-                  if (response.message == "View created") {
-                    this.fameRating++;
-                  }
+                console.log('post createView successful:', response);
+                if (response.message == "View created") {
+                  this.socketService.emitView(this.id, this.userInfos.id);
+                  this.fameRating++;
+                }
               },
               (error) => {
-                  console.error('post createView failed:', error);
+                console.error('post createView failed:', error);
               })
           }
           this.img.splice(0, this.img.length)
@@ -161,8 +166,11 @@ export class ProfileComponent implements OnInit {
   like() {
     this.likeWaiting = true;
     if (this.likeIcon == "favorite") {
-      this.relationService.deleteLike(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
+      this.relationService.deleteLike(this.id, this.userInfos.id).subscribe(
         (response) => {
+          if (response.message == "Like deleted") {
+            this.socketService.emitUnlike(this.id, this.userInfos.id);
+          }
           console.log('get deleteLike successful:', response);
           this.likeIcon = "favorite_outlined";
           this.match = false;
@@ -176,17 +184,22 @@ export class ProfileComponent implements OnInit {
       )
     }
     else {
-      this.relationService.createLike(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
+      this.relationService.createLike(this.id, this.userInfos.id).subscribe(
         (response) => {
+          if (response.message == "Like created") {
+            this.socketService.emitLike(this.id, this.userInfos.id);
+          }
           console.log('get createLike successful:', response);
           this.likeIcon = "favorite";
           this.likeWaiting = false;
           this.fameRating = this.fameRating + 10;
-          this.relationService.getCheckMatch(this.localStorageService.getItem('id'), this.userInfos.id).subscribe(
+          this.relationService.getCheckMatch(this.id, this.userInfos.id).subscribe(
             (response) => {
               console.log('get getCheckMatch successful:', response);
               if (response != null) {
                 if (response.exist) {
+                  this.socketService.emitMatch(this.id, this.userInfos.id);
+                  this.socketService.emitMatch(this.userInfos.id, this.id);
                   this.match = true;
                 } else {
                   this.match = false;
@@ -205,7 +218,7 @@ export class ProfileComponent implements OnInit {
           this.likeWaiting = false;
         }
       )
-    }
+    };
   }
 
   blockCallback() {

@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Notification } from '../../models/models';
 import { NotificationsService } from 'src/services/notifications.service';
+import { SocketioService } from 'src/services/socketio.service';
+import { AuthService } from 'src/services/auth.service';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-notifications',
@@ -11,9 +14,12 @@ export class NotificationsComponent implements OnInit {
   @Input()
   public notifications: Array<Notification> = [];
   public displayNotifications: boolean = false;
-  public closedNotifications: Notification[] = [];
 
-  constructor(private notificationsService: NotificationsService) {}
+  constructor(
+    private notificationsService: NotificationsService,
+    private socketioService: SocketioService,
+    private authService: AuthService,
+  ) { }
 
   ngOnInit() {
     this.notificationsService.notifications$.subscribe((notifications) => {
@@ -25,27 +31,39 @@ export class NotificationsComponent implements OnInit {
     this.notificationsService.displayNotifications$.subscribe((display) => {
       this.displayNotifications = display;
     });
-
-    this.closedNotifications = this.notificationsService.getClosedNotifications();
-
-    this.addRandomNotifications();
+    this.subscribeToNotifications();
   }
 
-  private addRandomNotifications() {
-    for (let i = 0; i < 3; i++) {
-      const randomId = Math.floor(Math.random() * 1000);
-      const notificationTypes = ['success', 'info', 'warning', 'danger'];
-      const randomType = notificationTypes[Math.floor(Math.random() * notificationTypes.length)];
-
-      const newNotification: Notification = {
-        id: randomId,
-        type: randomType,
-        strong: 'New Notification',
-        message: `This is a ${randomType} notification.`,
-      };
-
-      this.notificationsService.addNotification(newNotification);
-    }
+  public subscribeToNotifications() {
+    this.socketioService.getNotifications().subscribe({
+      next: (response) => {
+        if (response.author_id || response.recipient_id) {
+          const idToFetch = response.author_id ? response.author_id : response.recipient_id;
+          if (idToFetch)
+            this.authService.getUserInfosById(idToFetch).pipe(
+              switchMap((userResponse) => {
+                console.log(userResponse);
+                const notification: Notification = {
+                  author_id: response.author_id ? userResponse.user.id : undefined,
+                  recipient_id: response.recipient_id ? userResponse.user.id : undefined,
+                  type: response.type,
+                  strong: userResponse.user.username,
+                  message: response.message,
+                };
+                return of(notification);
+              })
+            ).subscribe({
+              next: (notification) => {
+                console.log(notification);
+                this.notificationsService.addNotification(notification);
+              },
+              error: (error) => {
+                console.log(error);
+              }
+            });
+        }
+      }
+    });
   }
 
   public closeNotification(notification: Notification) {

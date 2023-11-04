@@ -7,6 +7,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: space-between;
+    position: relative;
 
     img {
         width: 300px;
@@ -34,26 +35,20 @@
         color: white;
     }
 
-    .notification-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%; /* Added to ensure full width */
+    .menu {
+        position: absolute !important;
     }
 
-    .delete-button {
-        background-color: transparent;
-        color: $error;
-        margin-left: auto;
+    .notification-card {
+        margin: 1rem;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: flex-end;
     }
 }
-::ng-deep {
-    .mat-mdc-menu-panel {
-        max-width: unset !important;
-    }
-    .mat-mdc-menu-item-text {
-        display: flex;
-        align-items: center;
-        justify-content: space-between !important;
-    }
+
+::ng-deep .mat-mdc-menu-panel {
+    max-height: 35vh !important;
 }

@@ -35,19 +35,19 @@ var mailOptions = {
 };
 
 const ageGap = {
-	_18_25: "18-25",
-	_26_35: "26-35",
-	_36_50: "36-50",
-	_51: "+51"
+    _18_25: "18-25",
+    _26_35: "26-35",
+    _36_50: "36-50",
+    _51: "+51"
 }
 
 const fameRatingGap = {
-	_30: "-30",
-	_31_60: "31-60",
-	_61_100: "61-100",
-	_101_150: "101-150",
-	_151_250: "151-250",
-	_251: "+251"
+    _30: "-30",
+    _31_60: "31-60",
+    _61_100: "61-100",
+    _101_150: "101-150",
+    _151_250: "151-250",
+    _251: "+251"
 }
 
 class UserController extends BaseController {
@@ -312,8 +312,8 @@ class UserController extends BaseController {
                 "city": userData.city
             };
             if (await UserModel.checkLocationPermission(userId)) {
-                res.status(400).json({ error: 'User location has been updated manually'});
-                return ;
+                res.status(400).json({ error: 'User location has been updated manually' });
+                return;
             }
             if (await this.checkById(userId)) {
                 const userIdReturn = await this.model.update(userId, data);
@@ -504,7 +504,7 @@ class UserController extends BaseController {
                     "location_permission": user.location_permission,
                     "city": user.city
                 }
-                res.json({ user: userReturn });
+                res.status(200).json({ user: userReturn });
             }
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
@@ -688,16 +688,16 @@ class UserController extends BaseController {
             for (var y = 0; y < filter.length; y++) {
                 if (filter[y] == ageGap._18_25 && users[i].age >= 18 && users[i].age <= 25) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == ageGap._26_35 && users[i].age >= 26 && users[i].age <= 35) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == ageGap._36_50 && users[i].age >= 36 && users[i].age <= 50) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == ageGap._51 && users[i].age >= 51) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 }
             }
         }
@@ -713,22 +713,22 @@ class UserController extends BaseController {
             for (var y = 0; y < filter.length; y++) {
                 if (filter[y] == fameRatingGap._30 && users[i].fame_rating <= 30) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == fameRatingGap._31_60 && users[i].fame_rating >= 31 && users[i].fame_rating <= 60) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == fameRatingGap._61_100 && users[i].fame_rating >= 61 && users[i].fame_rating <= 100) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == fameRatingGap._101_150 && users[i].fame_rating >= 101 && users[i].fame_rating <= 150) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == fameRatingGap._151_250 && users[i].fame_rating >= 151 && users[i].fame_rating <= 250) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 } else if (filter[y] == fameRatingGap._251 && users[i].fame_rating >= 251) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 }
             }
         }
@@ -744,7 +744,7 @@ class UserController extends BaseController {
             for (var y = 0; y < filter.length; y++) {
                 if (filter[y] == users[i].city) {
                     usersRet.push(users[i]);
-                    break ;
+                    break;
                 }
             }
         }
@@ -772,7 +772,7 @@ class UserController extends BaseController {
                         last_name: users[i].last_name,
                         city: users[i].city
                     });
-                    break ;
+                    break;
                 }
             }
         }

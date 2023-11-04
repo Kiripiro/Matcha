@@ -5,6 +5,9 @@ import { ChatService } from 'src/services/chat.service';
 import { User, Message, StatusData } from 'src/models/models';
 import { DialogService } from 'src/services/dialog.service';
 import { AuthService } from 'src/services/auth.service';
+import { NotificationsService } from 'src/services/notifications.service';
+import { Subscription } from 'rxjs';
+import { Notification } from 'src/models/models';
 
 @Component({
   selector: 'app-chat',
@@ -16,6 +19,7 @@ export class ChatComponent {
   users: User[] = [];
   selectedConversation: User | null = null;
   selectedConversationMessages: Message[] = [];
+  private notificationSubscription: Subscription | null = null;
 
   @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
   @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
@@ -26,6 +30,7 @@ export class ChatComponent {
     private chatService: ChatService,
     private changeDetectorRef: ChangeDetectorRef,
     private authService: AuthService,
+    private notificationsService: NotificationsService,
     private router: Router,
     private dialogService: DialogService
   ) {
@@ -45,6 +50,23 @@ export class ChatComponent {
     this.subscribeToStatusUpdates();
     this.subscribeToMessages();
     this.subscribeToBlockEvents();
+    this.notificationSubscription = this.notificationsService.subscribeToNotifications().subscribe((notifications) => {
+      this.handleNotifications(notifications);
+    });
+  }
+
+  ngOnDestroy() {
+    this.selectedConversation = null;
+  }
+
+  handleNotifications(notifications: Notification[]) {
+    notifications.forEach((notification) => {
+      if (this.selectedConversation && this.selectedConversation.id) {
+        if (notification.author_id === this.selectedConversation.id && notification.type === 'message') {
+          this.notificationsService.removeNotification(notification);
+        }
+      }
+    });
   }
 
   subscribeToStatusUpdates() {
@@ -134,6 +156,7 @@ export class ChatComponent {
 
   getMatches() {
     this.chatService.getMatches().subscribe(users => {
+      console.log(users);
       this.users = users.map(user => ({
         id: user.id,
         username: user.username,
@@ -143,9 +166,18 @@ export class ChatComponent {
         status: user.status,
         block: user.block
       }));
+      this.users.forEach(user => {
+        this.notificationSubscription = this.notificationsService.getNotificationCountByAuthorId(user.id).subscribe({
+          next: (count: number) => {
+            user.notificationCount = count;
+          },
+          error: (err: any) => {
+            console.log(err);
+          }
+        });
+      });
     });
   }
-
 
   sendMessage(recipient_id: number | null) {
     if (!this.message || !recipient_id || recipient_id == null || !this.selectedConversation || !this.selectedConversation.id) {
@@ -171,6 +203,14 @@ export class ChatComponent {
 
   selectUser(user: User) {
     this.selectedConversation = user;
+    if (this.notificationSubscription) {
+      this.notificationSubscription.unsubscribe();
+      this.notificationSubscription = null;
+      user.notificationCount = 0;
+    }
+    this.notificationsService.notifications$.subscribe((notifications: Notification[]) => {
+      this.handleNotifications(notifications);
+    });
     this.chatService.isUserBlocked(user).subscribe({
       next: (res: any) => {
         if (res && res.exist) {

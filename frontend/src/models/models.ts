@@ -14,6 +14,7 @@ export interface User {
 	picture_1: string;
 	status: string;
 	block: Block;
+	notificationCount?: number;
 }
 
 export interface Message {
@@ -253,7 +254,6 @@ export interface GetAllProfileLikesResponseData {
 }
 
 /* Home */
-
 export interface UserSimplified {
 	id: number,
 	username: string,
@@ -351,7 +351,6 @@ export interface Tag {
 }
 
 /* Profile */
-
 export interface ElementListData {
 	author_id: number,
 	authorUsername: string,
@@ -361,11 +360,10 @@ export interface ElementListData {
 }
 
 /* Notifications */
-
 export interface Notification {
-	id: number,
+	author_id?: number,
+	recipient_id?: number,
 	type: string,
-	strong?:string,
-	title?: string,
+	strong?: string,
 	message: string,
 }

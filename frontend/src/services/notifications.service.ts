@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
 import { Notification } from 'src/models/models';
 
 @Injectable({
@@ -10,16 +10,22 @@ export class NotificationsService {
   public notifications$ = this.notificationsSubject.asObservable();
   public displayNotifications$ = new BehaviorSubject<boolean>(false);
   public notificationsCount$ = new BehaviorSubject<number>(0);
-  private closedNotifications: Notification[] = [];
 
-  constructor() {}
+  constructor() { }
+
+  subscribeToNotifications(): Observable<Notification[]> {
+    return this.notifications$;
+  }
+
+  getValues(): Notification[] {
+    return this.notificationsSubject.getValue();
+  }
 
   addNotification(notification: Notification) {
     const currentNotifications = this.notificationsSubject.getValue();
-    currentNotifications.push(notification);
+    currentNotifications.unshift(notification);
     this.notificationsSubject.next(currentNotifications);
-
-    this.updateNotificationCount(1);
+    this.updateNotificationCount();
   }
 
   removeNotification(notification: Notification) {
@@ -28,15 +34,8 @@ export class NotificationsService {
     if (index !== -1) {
       currentNotifications.splice(index, 1);
       this.notificationsSubject.next(currentNotifications);
-
-      this.closedNotifications.push(notification);
-
-      this.updateNotificationCount(-1);
+      this.updateNotificationCount();
     }
-  }
-
-  getClosedNotifications(): Notification[] {
-    return this.closedNotifications;
   }
 
   showNotifications() {
@@ -44,11 +43,25 @@ export class NotificationsService {
   }
 
   getNotificationCount(): Observable<number> {
+    console.log(this.notificationsSubject);
     return this.notificationsCount$.asObservable();
   }
 
-  private updateNotificationCount(change: number) {
-    const currentCount = this.notificationsCount$.value;
-    this.notificationsCount$.next(currentCount + change);
+  getNotificationCountByAuthorId(authorId: number): Observable<number> {
+    return this.notifications$.pipe(
+      map((notifications) => {
+        const count = notifications.filter(
+          (notification) =>
+            notification.author_id === authorId && notification.type === 'message'
+        ).length;
+        return count;
+      })
+    );
+  }
+
+  private updateNotificationCount() {
+    const currentNotifications = this.notificationsSubject.value;
+    const newCount = currentNotifications.length;
+    this.notificationsCount$.next(newCount);
   }
 }

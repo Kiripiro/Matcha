@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService, localStorageName } from 'src/services/local-storage.service';
@@ -13,13 +12,11 @@ import { Notification } from 'src/models/models';
   styleUrls: ['./nav-bar.component.scss', '../app.component.scss'],
 })
 export class NavBarComponent implements OnInit {
-
   isLoggedIn: boolean | undefined;
-
   username = "";
-
   notifications: Notification[] = [];
   notificationCount: number = 0;
+
   @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
   constructor(
     private router: Router,

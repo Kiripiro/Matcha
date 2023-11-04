@@ -62,6 +62,7 @@ router.post('/username', auth, user.getUserByUsernameValidation, async (req, res
 });
 
 router.post('/id', auth, user.postUserByIdValidation, async (req, res) => {
+    console.log("user route id", req.body.id);
     try {
         await UserController.getUserById(req, res);
     } catch (error) {

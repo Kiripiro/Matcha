@@ -42,11 +42,16 @@ module.exports = (io) => {
 
         socket.on('new-message', (msg) => {
             io.emit('new-message', msg);
-
             const recipientSocketId = users[msg.recipient_id]?.socketId;
             if (recipientSocketId) {
                 io.to(recipientSocketId).emit('refresh', msg);
             }
+            const notification = {
+                author_id: msg.author_id,
+                type: 'message',
+                message: `You have received a new message from`,
+            };
+            io.to(recipientSocketId).emit('new-notification', notification);
         });
 
         socket.on('check-status', (usersIds) => {
@@ -93,5 +98,52 @@ module.exports = (io) => {
                 io.to(recipientSocketId).emit('user-unblocked', { blockId: blockId, author_id: author_id, recipient_id: recipient_id });
             }
         })
+
+        socket.on('new-like', (data) => {
+            console.log('new-like', data);
+            const recipientSocketId = users[data.recipient_id]?.socketId;
+            const notification = {
+                author_id: data.author_id,
+                type: 'like',
+                message: `You have received a new like from`,
+            };
+            io.to(recipientSocketId).emit('new-notification', notification);
+        });
+
+        socket.on('delete-like', (data) => {
+            console.log('delete-like', data);
+            const recipientSocketId = users[data.recipient_id]?.socketId;
+            const notification = {
+                author_id: data.author_id,
+                type: 'unlike',
+                message: `You have received a new unlike from`,
+            };
+            io.to(recipientSocketId).emit('new-notification', notification);
+        });
+
+        socket.on('new-match', (data) => {
+            console.log('new-match', data);
+            const recipientSocketId = users[data.recipient_id]?.socketId;
+            const notificationRecipient = {
+                author_id: data.author_id,
+                type: 'match',
+                message: `You have matched with`,
+            };
+
+            if (recipientSocketId) {
+                io.to(recipientSocketId).emit('new-notification', notificationRecipient);
+            }
+        });
+
+        socket.on('new-view', (data) => {
+            console.log('new-visit', data);
+            const recipientSocketId = users[data.recipient_id]?.socketId;
+            const notification = {
+                author_id: data.author_id,
+                type: 'visit',
+                message: `You have received a new visit from`,
+            };
+            io.to(recipientSocketId).emit('new-notification', notification);
+        });
     });
 }

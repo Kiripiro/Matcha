@@ -1,9 +1,10 @@
-import { Observable, catchError, forkJoin, map, of, switchMap } from 'rxjs';
+import { Observable, forkJoin, map, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
 import { SocketioService } from './socketio.service';
-import { User, Message } from '../models/models';
+import { User, Message, GetUserResponseData } from '../models/models';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -11,12 +12,12 @@ import { User, Message } from '../models/models';
 export class ChatService {
     private url = 'http://localhost:3000';
     private id: number;
-    private matchesInfos: User[] = [];
 
     constructor(
         private http: HttpClient,
         private localStorageService: LocalStorageService,
-        private socketService: SocketioService
+        private socketService: SocketioService,
+        private authService: AuthService
     ) {
         this.id = this.localStorageService.getItem('id');
     }
@@ -28,27 +29,28 @@ export class ChatService {
     getMatches(): Observable<User[]> {
         return this.http.get<any[]>(this.url + '/likes/matches/' + this.id, { withCredentials: true }).pipe(
             switchMap(matches => {
-                const userObservables: Observable<User | null>[] = [];
-
+                const userObservables: Observable<User>[] = [];
                 for (const match of matches) {
-                    const userObservable = this.http.get<any>(this.url + '/users/' + match, { withCredentials: true }).pipe(
-                        map(user => ({
-                            id: match,
-                            username: user.username,
-                            first_name: user.first_name,
-                            last_name: user.last_name,
-                            picture_1: 'data:image/jpeg;base64,' + user.picture_1,
-                            status: "Offline",
-                            block: {
-                                id: -1,
-                                author_id: -1,
-                                blocked_user_id: -1,
-                                isBlocked: false
-                            }
-                        } as User)),
-                        catchError(error => of(null))
-                    );
-                    userObservables.push(userObservable);
+                    userObservables.push(this.authService.getUserInfosById(match).pipe(
+                        map((response: GetUserResponseData) => {
+                            const user: User = {
+                                id: response.user.id,
+                                username: response.user.username,
+                                first_name: response.user.first_name,
+                                last_name: response.user.last_name,
+                                picture_1: 'data:image/jpeg;base64,' + response.user.picture_1,
+                                status: 'Offline',
+                                block: {
+                                    id: -1,
+                                    author_id: -1,
+                                    blocked_user_id: -1,
+                                    isBlocked: false
+                                },
+                                notificationCount: 0
+                            };
+                            return user;
+                        })
+                    ));
                 }
                 return forkJoin(userObservables).pipe(
                     map(users => users.filter(user => user !== null) as User[])
@@ -57,7 +59,7 @@ export class ChatService {
         );
     }
 
-    public sendMessage(message: string, recipient_id: number): Observable<any> {
+    sendMessage(message: string, recipient_id: number): Observable<any> {
         this.socketService.sendMessage(message, recipient_id);
         return this.http.post(this.url + '/messages/create', { message: message, author_id: this.id, recipient_id: recipient_id }, { withCredentials: true });
     }

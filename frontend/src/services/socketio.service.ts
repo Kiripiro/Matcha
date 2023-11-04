@@ -3,6 +3,7 @@ import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { StatusData, User } from 'src/models/models';
+import { Notification } from 'src/models/models';
 
 @Injectable({
     providedIn: 'root'
@@ -30,20 +31,17 @@ export class SocketioService {
 
     public initSocket(): void {
         if (this.id !== null && this.socketExists()) {
-            console.log("initSocket");
             this.socket.emit('init', this.id);
             this.sendUserStatus('Online');
         }
     }
 
     public disconnect(): void {
-        console.log("disconnect");
         this.sendUserStatus('Offline'); //voir si utile
         this.socket.disconnect();
     }
 
     public userConnect(userId: number): void {
-        console.log("userConnected"); //"connect" is a reserved event name
         this.socket.emit('userConnected', userId);
     }
 
@@ -68,7 +66,6 @@ export class SocketioService {
     }
 
     private sendUserStatus(status: string): void {
-        console.log("sendUserStatus", status)
         this.socket.emit('user-status', { userId: this.id, status });
     }
 
@@ -76,7 +73,6 @@ export class SocketioService {
         return new Observable((observer) => {
             this.socket.emit('check-status', { senderId: this.id, recipientId: recipient.id })
             this.socket.on('status', (statusData: StatusData) => {
-                console.log("status", statusData);
                 observer.next(statusData);
             });
         });
@@ -112,5 +108,29 @@ export class SocketioService {
                 observer.next(userIds);
             })
         })
+    }
+
+    public getNotifications(): Observable<Notification> {
+        return new Observable((observer) => {
+            this.socket.on('new-notification', (notification: Notification) => {
+                observer.next(notification);
+            });
+        });
+    }
+
+    public emitLike(author_id: number, recipient_id: number) {
+        this.socket.emit('new-like', { author_id: author_id, recipient_id: recipient_id });
+    }
+
+    public emitUnlike(author_id: number, recipient_id: number) {
+        this.socket.emit('delete-like', { author_id: author_id, recipient_id: recipient_id });
+    }
+
+    public emitMatch(author_id: number, recipient_id: number) {
+        this.socket.emit('new-match', { author_id: author_id, recipient_id: recipient_id });
+    }
+
+    public emitView(author_id: number, recipient_id: number) {
+        this.socket.emit('new-view', { author_id: author_id, recipient_id: recipient_id });
     }
 }
