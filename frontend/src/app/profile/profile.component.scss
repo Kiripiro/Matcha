@@ -1,7 +1,21 @@
-@import '../app.component.scss';
+$background: #FAFAFA;
+$primary: #FDBABA;
+$surface: #3E2266;
+$surfaceAlt: #6DB1BF;
+$surfaceAltDark: #2e7280;
+$onPrimary: #3E2266;
+$onSurface: white;
+$onPrimaryAlt: #6DB1BF;
+$greyInfos: #9a9fa3;
+$greyInfosDark: #333435;
+$error: red;
 
-app-profil {
-    height: 100%;
+* {
+    font-family: Poppins;
+}
+
+p {
+    color: $onPrimary;
 }
 
 .centerDivCustom {
@@ -14,7 +28,7 @@ app-profil {
 }
 
 .profileCard {
-    width: auto;
+    width: 35vw;
     height: auto;
     border-radius: 20px;
     padding: 0.5rem;
@@ -27,19 +41,19 @@ app-profil {
     margin-bottom: 1rem;
 
     .carouselDiv {
-        height: 700px;
-        width: 700px;
+        height: 55vh;
+        width: 35vw;
     }
 
     .mainDivProfil {
         width: 100%;
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-around;
         align-items: center;
 
         #nameAge {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 600;
             margin-top: 1rem;
             padding-top: 1rem;
@@ -51,77 +65,78 @@ app-profil {
             background-color: $surface;
             color: $onSurface;
             text-align: center;
-            margin-left: 2rem;
-            margin-right: 2rem;
+            margin: 1rem 0;
         }
 
         button {
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 0.5rem 1rem;
         }
     }
 
     #biography {
-        width: 650px;
+        width: 60%;
         color: $onPrimary;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 400;
         margin-top: 0.5rem;
-        // padding-left: 1rem;
-        // padding-right: 1rem;
+        overflow-wrap: break-word;
     }
 
     #detailsDiv {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-between;
-        width: 650px;
+        width: 60%;
 
         p {
-            font-size: 1.0rem;
+            font-size: 0.9rem;
             font-weight: 500;
             margin-top: 0.5rem;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
+            padding: 0.5rem;
             border-radius: 15px;
             width: auto;
             background-color: $surfaceAlt;
             color: $onSurface;
             text-align: center;
+            margin: 0.5rem 0;
         }
     }
 
     .tagsDiv {
-        width: 650px;
+        width: 100%;
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
-        align-items: center;
+        align-content: center;
 
         .tagsAvailable {
+            display: flex;
+            justify-content: center;
+            align-content: stretch;
 
             span {
                 background-color: $surface;
+                font-size: 0.9rem;
+                border-radius: 15px;
             }
         }
     }
 
     .fameRatingDiv {
         display: flex;
-        flex-direction: row;
-        justify-content: center;
-        width: 650px;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 60%;
+        margin-bottom: 10px;
 
         p {
-            font-size: 1.0rem;
+            font-size: 0.9rem;
             font-weight: 500;
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
+            margin: 0.5rem;
+            padding: 0.5rem;
             border-radius: 15px;
             width: auto;
             background-color: $surfaceAlt;
@@ -131,37 +146,37 @@ app-profil {
     }
 
     .blockAndReportDiv {
-        width: 650px;
+        width: 100%;
         display: flex;
-        justify-content: space-between;
+        flex-direction: row;
+        justify-content: space-around;
 
         button {
             background-color: $greyInfos;
             color: $greyInfosDark;
             font-weight: 500;
-            padding-left: 2rem;
-            padding-right: 2rem;
+            padding: 0.5rem 1rem;
         }
     }
 
     .viewsLikesListsButtonDiv {
-        width: 650px;
+        width: 100%;
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
+        margin: 1rem 0;
 
         button {
             background-color: $surface;
             color: $onSurface;
             font-weight: 500;
-            padding-left: 2rem;
-            padding-right: 2rem;
+            padding: 0.5rem 1rem;
         }
     }
 }
 
 .listCard {
-    width: 300px;
-    height: 500px;
+    width: 100%;
+    height: auto;
     max-height: 500px;
     border-radius: 20px;
     padding: 2rem;
@@ -180,9 +195,9 @@ app-profil {
 
         p {
             text-align: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 0;
+            margin: 0;
         }
 
         button {
@@ -191,7 +206,7 @@ app-profil {
     }
 
     .listCardList {
-        height: 100%;
+        height: auto;
         overflow: scroll;
         overflow-x: hidden;
 
@@ -207,8 +222,8 @@ app-profil {
 }
 
 .errorCard {
-    width: 300px;
-    height: 100px;
+    width: 100%;
+    height: auto;
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 5px 5px 15px rgba(70, 70, 70, 0.12), -1px -1px 50px rgba(70, 70, 70, 0.12);
@@ -221,14 +236,14 @@ app-profil {
         height: 100%;
         text-align: center;
         line-height: 100px;
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 700;
     }
 }
 
 .loadingCard {
-    width: 500px;
-    height: 100px;
+    width: 100%;
+    height: auto;
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 5px 5px 15px rgba(70, 70, 70, 0.12), -1px -1px 50px rgba(70, 70, 70, 0.12);
@@ -241,8 +256,188 @@ app-profil {
     p {
         width: 100%;
         text-align: center;
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 700;
-        margin-bottom: 2rem;
+        margin: 2rem 0;
+    }
+}
+
+@media (max-width: 1024px) {
+    .profileCard {
+        width: 60vw;
+        height: auto;
+
+        .carouselDiv {
+            height: 60vh;
+            width: 60vw;
+        }
+
+        .mainDivProfil {
+            #nameAge {
+                font-size: 1.2rem;
+                margin: 0.5rem;
+            }
+
+            button {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        #biography {
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        #detailsDiv {
+            p {
+                font-size: 0.9rem;
+                margin: 0.3rem;
+                padding: 0.3rem;
+            }
+        }
+
+        .tagsDiv {
+            .tagsAvailable {
+                span {
+                    font-size: 0.9rem;
+                    margin: 0.1rem;
+                }
+            }
+        }
+
+        .fameRatingDiv {
+            p {
+                font-size: 0.9rem;
+                margin: 0.3rem;
+                padding: 0.3rem;
+            }
+        }
+
+        .blockAndReportDiv {
+            button {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        .viewsLikesListsButtonDiv {
+            button {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    }
+
+    .listCard {
+        .listCardHeader {
+            p {
+                font-size: 1.2rem;
+                margin: 0.3rem;
+            }
+        }
+
+        .listCardList {
+            mat-list-item {
+                span {
+                    font-size: 0.9rem;
+                }
+            }
+        }
+    }
+
+    .errorCard,
+    .loadingCard {
+        p {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+    }
+}
+
+@media (max-width: 760px) {
+    .profileCard {
+        width: 95vw;
+        height: auto;
+
+        .carouselDiv {
+            height: 60vh;
+            width: 95vw;
+        }
+
+        .mainDivProfil {
+            #nameAge {
+                font-size: 1.2rem;
+                margin: 0.5rem;
+            }
+
+            button {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        #biography {
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        #detailsDiv {
+            p {
+                font-size: 0.9rem;
+                margin: 0.3rem;
+                padding: 0.3rem;
+            }
+        }
+
+        .tagsDiv {
+            .tagsAvailable {
+                span {
+                    font-size: 0.9rem;
+                    margin: 0.1rem;
+                }
+            }
+        }
+
+        .fameRatingDiv {
+            p {
+                font-size: 0.9rem;
+                margin: 0.3rem;
+                padding: 0.3rem;
+            }
+        }
+
+        .blockAndReportDiv {
+            button {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        .viewsLikesListsButtonDiv {
+            button {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    }
+
+    .listCard {
+        .listCardHeader {
+            p {
+                font-size: 1.2rem;
+                margin: 0.3rem;
+            }
+        }
+
+        .listCardList {
+            mat-list-item {
+                span {
+                    font-size: 0.9rem;
+                }
+            }
+        }
+    }
+
+    .errorCard,
+    .loadingCard {
+        p {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
     }
 }

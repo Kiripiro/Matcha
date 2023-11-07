@@ -7,7 +7,7 @@
             <p id="nameAge">{{userDisplayed.first_name}} {{userDisplayed.last_name}} - {{userDisplayed.age}} years</p>
         </div>
         <div class="homeButtonAction">
-            <button mat-button [routerLink]="['profile/' + userDisplayed.username]">Profil</button>
+            <button mat-button [routerLink]="['profile/' + userDisplayed.username]">Profile</button>
             <p>Fame rating: {{userDisplayed.fame_rating}}</p>
             <button mat-button (click)="newUserGenerate()">Next</button>
         </div>
