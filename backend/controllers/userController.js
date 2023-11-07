@@ -645,7 +645,6 @@ class UserController extends BaseController {
             var citiesReturn = [];
             for (var i = 0; i < allUsers.length; i++) {
                 const city = allUsers[i].city;
-                console.log(allUsers[i])
                 if (citiesReturn.find((it) => it == city) == undefined || !citiesReturn.find((it) => it == city)) {
                     citiesReturn.push(city);
                 }

@@ -254,6 +254,8 @@ class UserDTO extends baseValidator {
             super.validateString('location', location, 1, 100, /^[0-9a-zA-Z~`\-!@#$%^&*()+=_-{}[\]|:;"',.?/ ]+$/);
             super.validateString('tags', tags, 1, 100, /^[0-9a-zA-Z~`\-!@#$%^&*()+=_-{}[\]|:;"',.?/ ]+$/);
         }
+
+        return this.isValid();
     }
 }
 

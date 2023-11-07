@@ -20,7 +20,7 @@ export class SearchService {
   }
 
   getSearchResult(age: string, fameRating: string, location: string, tags: string): Observable<GetSearchResultResponseData> {
-    console.log("getCities")
+    console.log("getSearchResult")
     return this.http.get<GetSearchResultResponseData>('http://localhost:3000/users/search/' + age + "/" + fameRating + "/" + location + "/" + tags, { withCredentials: true });
   }
 
