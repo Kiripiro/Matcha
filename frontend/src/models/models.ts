@@ -362,7 +362,6 @@ export interface ElementListData {
 /* Notifications */
 export interface Notification {
 	author_id?: number,
-	recipient_id?: number,
 	type: string,
 	strong?: string,
 	message: string,

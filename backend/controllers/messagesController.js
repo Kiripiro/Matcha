@@ -2,6 +2,7 @@ const BaseController = require('./baseController');
 const MessagesModel = require('../models/messagesModel');
 const UserController = require('../controllers/userController');
 const BlocksController = require('../controllers/blocksController');
+const LikesController = require('../controllers/likesController');
 
 class MessagesController extends BaseController {
     constructor() {
@@ -155,6 +156,15 @@ class MessagesController extends BaseController {
                 return;
             } else if (checkBlock != false) {
                 console.log('error = ' + checkBlock);
+                res.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+            const checkLike = await LikesController._checkLike(authorId, recipientId);
+            if (checkLike == false) {
+                res.status(400).json({ error: "Match doesn't exist" });
+                return;
+            } else if (checkLike != true) {
+                console.log('error = ' + checkLike);
                 res.status(500).json({ error: 'Internal Server Error' });
                 return;
             }

@@ -1,17 +1,20 @@
-<mat-sidenav-container class="chat-container">
-    <mat-sidenav class="chat-list-matches-left" mode="side" opened>
+<div class="chat-container">
+    <div class=" chat-list-matches-left" [ngClass]="{ 'hidden': !showMatches }">
         <mat-card>
             <mat-tab-group>
                 <mat-tab>
-                    <ng-template mat-tab-label>
-                        <mat-icon matListIcon>forum</mat-icon>
+                    <ng-template mat-tab-label class="matches">
+                        <mat-icon>people</mat-icon>
+                        <span>Matches</span>
                     </ng-template>
                     <mat-list>
                         <div class="chat-list-matches-item" *ngFor="let user of users" (click)="selectUser(user)">
                             <div class=" chat-list-match-icon">
-                                <mat-icon mat-list-icon>person</mat-icon>
+                                <img class="avatar" [src]="user.picture_1" alt="User Avatar">
                             </div>
-                            <p> {{ user.first_name }} {{ user.last_name }} - {{ user.username }}</p>
+                            <div class="user-infos">
+                                <p>{{ user.username }}</p>
+                            </div>
                             <mat-badge class="badge" matBadgePosition="before" matBadgeOverlap="false"
                                 *ngIf="user.notificationCount" [matBadge]="user.notificationCount" matBadgeColor="warn"
                                 matBadgeSize="small">
@@ -21,12 +24,12 @@
                 </mat-tab>
             </mat-tab-group>
         </mat-card>
-    </mat-sidenav>
-    <mat-sidenav-content class="right">
+    </div>
+    <div class="right">
         <div class="chat-center-container">
             <ng-container *ngIf="!selectedConversation">
                 <div class="empty-view">
-                    Please select a conversation from the left side.
+                    Please select a conversation.
                 </div>
             </ng-container>
             <ng-container *ngIf="selectedConversation">
@@ -43,7 +46,7 @@
                                     [ngClass]="{'online': selectedConversation.status === 'Online', 'offline': selectedConversation.status === 'Offline'}">
                                 </div>
                                 <div class="status-text">
-                                    {{ selectedConversation.status }}
+                                    <p>{{ selectedConversation.status }}</p>
                                 </div>
                             </div>
                         </div>
@@ -95,5 +98,4 @@
                 </button>
             </div>
         </div>
-    </mat-sidenav-content>
-</mat-sidenav-container>
+    </div>

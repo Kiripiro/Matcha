@@ -80,6 +80,10 @@ export class ChatService {
         return this.socketService.getStatus(recipient);
     }
 
+    public getCheckBlock(recipient: User): Observable<any> {
+        return this.http.get(this.url + '/blocks/' + this.id + "/" + recipient.id, { withCredentials: true });
+    }
+
     public handleDisconnect(): Observable<any> {
         return this.socketService.handleDisconnect();
     }

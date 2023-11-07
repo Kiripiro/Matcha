@@ -31,13 +31,10 @@ export class AuthService {
   }
 
   getUserInfos(username: string): Observable<GetUserResponseData> {
-    console.log("getUserInfos")
     return this.http.post<GetUserResponseData>('http://localhost:3000/users/username', { username }, { withCredentials: true });
   }
 
   getUserInfosById(id: number): Observable<GetUserResponseData> {
-    console.log("getUserInfosById")
-    console.log(id);
     return this.http.post<GetUserResponseData>('http://localhost:3000/users/id', { id }, { withCredentials: true });
   }
 
@@ -95,21 +92,6 @@ export class AuthService {
     this.http.post<RegisterResponseData>('http://localhost:3000/users/register', { username, first_name, last_name, age, email, password }, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          // this.localStorageService.setMultipleItems(
-          //   { key: localStorageName.id, value: response.user.id || -1 },
-          //   { key: localStorageName.username, value: response.user.username || "" },
-          //   { key: localStorageName.firstName, value: response.user.first_name || "" },
-          //   { key: localStorageName.lastName, value: response.user.last_name || "" },
-          //   { key: localStorageName.age, value: response.user.age || -1 },
-          //   { key: localStorageName.emailChecked, value: response.user.email_checked || false },
-          //   { key: localStorageName.locationPermission, value: response.user.location_permission || false }
-          // );
-          // if (!this.socketService.socketExists()) {
-          //   this.socketService.initSocket();
-          // }
-          // this.router.navigate(['']);
-          // location.reload();
-          // this.logEmitChange(true);
           const dialogData = {
             title: 'Check yours emails',
             text: "An email has been sent to you for check your email address",
@@ -258,7 +240,7 @@ export class AuthService {
   getLocation() {
     if (this.localStorageService.getItem('location_permission') == true) {
       console.log('location_permission');
-      return ;
+      return;
     }
     else if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {

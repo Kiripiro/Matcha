@@ -12,7 +12,7 @@ import { Notification } from 'src/models/models';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss']
+  styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent {
   message!: string;
@@ -20,6 +20,7 @@ export class ChatComponent {
   selectedConversation: User | null = null;
   selectedConversationMessages: Message[] = [];
   private notificationSubscription: Subscription | null = null;
+  showMatches: boolean = true;
 
   @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
   @ViewChild('chatMessagesContainer') private myScrollContainer!: ElementRef;
@@ -53,6 +54,9 @@ export class ChatComponent {
     this.notificationSubscription = this.notificationsService.subscribeToNotifications().subscribe((notifications) => {
       this.handleNotifications(notifications);
     });
+    if (window.innerWidth < 786) {
+      this.showMatches = false;
+    }
   }
 
   ngOnDestroy() {
@@ -195,13 +199,55 @@ export class ChatComponent {
         this.scrollToBottom();
       },
       error: (err: any) => {
-        console.log(err);
+        if (err.error === "Match doesn't exist") {
+          this.users = this.users.filter(user => user.id !== recipient_id);
+          const dialogData = {
+            title: 'Match deleted',
+            text: 'This match has been deleted. The other user might have unliked you.',
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => { },
+            no_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(dialogData);
+          this.selectedConversation = null;
+        }
+        else
+          console.log(err);
       }
     });
     this.message = '';
   }
 
   selectUser(user: User) {
+    this.chatService.getCheckBlock(user).subscribe({
+      next: (res: any) => {
+        if (res && res.exist) {
+          user.block = {
+            id: res.data[0].id,
+            author_id: res.data[0].author_id,
+            blocked_user_id: res.data[0].recipient_id,
+            isBlocked: true
+          }
+          this.updateInputState(true);
+          const data = {
+            title: 'User blocked',
+            text: 'You have been blocked.',
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => { },
+            no_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(data);
+        }
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+    this.selectedConversationMessages = [];
     this.selectedConversation = user;
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
@@ -254,6 +300,7 @@ export class ChatComponent {
       error: (err: any) => {
         if (err.status === 404) {
           this.selectedConversationMessages = [];
+          this.message = '';
         } else {
           console.log(err);
         }

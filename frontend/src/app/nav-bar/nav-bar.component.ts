@@ -5,17 +5,30 @@ import { LocalStorageService, localStorageName } from 'src/services/local-storag
 import { NotificationsService } from 'src/services/notifications.service';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Notification } from 'src/models/models';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss', '../app.component.scss'],
+  animations: [
+    trigger("slideInOut", [
+      transition(":enter", [
+        style({ transform: "translateX(-100%)" }),
+        animate("100ms", style({ transform: "translateX(0)" }))
+      ]),
+      transition(":leave", [
+        animate("100ms", style({ transform: "translateX(-100%)" }))
+      ])
+    ])
+  ]
 })
 export class NavBarComponent implements OnInit {
   isLoggedIn: boolean | undefined;
   username = "";
   notifications: Notification[] = [];
   notificationCount: number = 0;
+  sideNavOpened = false;
 
   @ViewChild(MatMenuTrigger) private menuTrigger!: MatMenuTrigger;
   constructor(
@@ -55,5 +68,9 @@ export class NavBarComponent implements OnInit {
 
   profile() {
     this.router.navigate(['profile/' + this.localStorageService.getItem('username')]);
+  }
+
+  sideNavToggle() {
+    this.sideNavOpened = !this.sideNavOpened;
   }
 }

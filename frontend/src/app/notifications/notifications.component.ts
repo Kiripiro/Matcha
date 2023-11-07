@@ -37,30 +37,27 @@ export class NotificationsComponent implements OnInit {
   public subscribeToNotifications() {
     this.socketioService.getNotifications().subscribe({
       next: (response) => {
-        if (response.author_id || response.recipient_id) {
-          const idToFetch = response.author_id ? response.author_id : response.recipient_id;
-          if (idToFetch)
-            this.authService.getUserInfosById(idToFetch).pipe(
-              switchMap((userResponse) => {
-                console.log(userResponse);
-                const notification: Notification = {
-                  author_id: response.author_id ? userResponse.user.id : undefined,
-                  recipient_id: response.recipient_id ? userResponse.user.id : undefined,
-                  type: response.type,
-                  strong: userResponse.user.username,
-                  message: response.message,
-                };
-                return of(notification);
-              })
-            ).subscribe({
-              next: (notification) => {
-                console.log(notification);
-                this.notificationsService.addNotification(notification);
-              },
-              error: (error) => {
-                console.log(error);
-              }
-            });
+        if (response.author_id) {
+          this.authService.getUserInfosById(response.author_id).pipe(
+            switchMap((userResponse) => {
+              console.log(userResponse);
+              const notification: Notification = {
+                author_id: response.author_id,
+                type: response.type,
+                strong: userResponse.user.username,
+                message: response.message,
+              };
+              return of(notification);
+            })
+          ).subscribe({
+            next: (notification) => {
+              console.log(notification);
+              this.notificationsService.addNotification(notification);
+            },
+            error: (error) => {
+              console.log(error);
+            }
+          });
         }
       }
     });
