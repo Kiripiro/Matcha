@@ -65,12 +65,11 @@
             position: sticky;
             top: 0;
             width: auto;
-            height: 15vh;
+            height: 20vh;
             display: flex;
             align-items: center;
             background-color: white;
             justify-content: space-between;
-            padding-bottom: 10px;
             border-top: 1px solid #e0e0e0;
             border-bottom: 1px solid #e0e0e0;
 
@@ -216,7 +215,7 @@
             display: flex !important;
             flex-direction: row !important;
             align-items: center;
-            justify-content: start;
+            justify-content: flex-start;
             overflow-y: scroll !important;
             overflow-x: auto;
             padding-inline: 10px;
@@ -274,7 +273,7 @@
             }
 
             .chat-messages {
-                height: 40vh;
+                height: 45vh;
             }
 
             .chat-input-container {
@@ -282,7 +281,5 @@
 
             }
         }
-
-        /* Take up full width */
     }
 }
