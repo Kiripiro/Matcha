@@ -139,24 +139,6 @@ export class CompleteRegisterComponent implements OnInit {
     return mimeTypes[hexString];
   }
 
-  getMimeType(uint8Array: Uint8Array): string {
-    const bytes = [];
-    for (let i = 0; i < uint8Array.length; i++) {
-      bytes.push(uint8Array[i].toString(16));
-    }
-
-    const hexString = bytes.join('').toUpperCase();
-
-    const mimeTypes: Record<string, string> = {
-      '89504E47': 'image/png',
-      'FFD8FFDB': 'image/jpeg',
-      'FFD8FFE0': 'image/jpeg',
-      'FFD8FFE1': 'image/jpeg',
-    };
-
-    return mimeTypes[hexString] || 'unknown';
-  }
-
   ngOnInit(): void {
     this.completeRegisterForm = this.fb.group({
       gender: ['', Validators.required],
