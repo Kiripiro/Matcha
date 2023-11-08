@@ -23,12 +23,10 @@ export class HomeService {
   }
 
   getInterestingUsers(): Observable<GetInterestingUsersResponseData> {
-    console.log("getInterestingUsers")
     return this.http.get<GetInterestingUsersResponseData>('http://localhost:3000/users/interesting', { withCredentials: true });
   }
 
   getPersonnalFameRating(): Observable<GetFameRatingResponseData> {
-    console.log("getPersonnalFameRating")
     return this.http.get<GetFameRatingResponseData>('http://localhost:3000/users/famerating/' + this.localStorageService.getItem(localStorageName.id), { withCredentials: true });
   }
 
@@ -36,7 +34,7 @@ export class HomeService {
     const earthRadiusInKm = 6371;
     const differenceLatitude = this._toRadians(newLatitude - originalLatitude);
     const differenceLongitude = this._toRadians(newLongitude - originalLongitude);
-    //haversine formula
+
     const a =
       Math.sin(differenceLatitude / 2) * Math.sin(differenceLatitude / 2) +
       Math.cos(this._toRadians(originalLatitude)) * Math.cos(this._toRadians(newLatitude)) *

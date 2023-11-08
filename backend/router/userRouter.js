@@ -62,7 +62,6 @@ router.post('/username', auth, user.getUserByUsernameValidation, async (req, res
 });
 
 router.post('/id', auth, user.postUserByIdValidation, async (req, res) => {
-    console.log("user route id", req.body.id);
     try {
         await UserController.getUserById(req, res);
     } catch (error) {
@@ -72,7 +71,6 @@ router.post('/id', auth, user.postUserByIdValidation, async (req, res) => {
 
 router.post('/delete', auth, user.deleteUser, async (req, res) => {
     try {
-        console.log("user route delete");
         await UserController.deleteUser(req, res);
     } catch (error) {
         console.error(error);
@@ -113,7 +111,6 @@ router.get('/id', auth, user.getUserByIdValidation, async (req, res) => {
 
 router.get('/interesting', auth, user.getInterestingUsersValidation, async (req, res) => {
     try {
-        console.log("user route interesting")
         await UserController.getInterestingUsers(req, res);
     } catch (error) {
         console.error(error);

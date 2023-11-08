@@ -143,10 +143,8 @@ export class SettingsComponent implements OnInit {
       yes_callback: () => {
         this.settingsService.deleteUser().subscribe({
           next: (response) => {
-            console.log(response);
             if (response.message === "User deleted") {
               this.router.navigate(['auth/login']);
-              console.log('post deleteUser successful:', response);
             }
           },
           error: (error) => {
@@ -285,7 +283,6 @@ export class SettingsComponent implements OnInit {
 
     fieldsToCheck.forEach((field) => {
       if (formValues[field] !== this.user?.[field as keyof UserSettings] && formValues[field] !== "" && formValues[field] !== null) {
-        console.log(formValues[field]);
         updatedFields[field as keyof UserSettings] = formValues[field];
       }
     });

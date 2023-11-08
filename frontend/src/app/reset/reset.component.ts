@@ -44,7 +44,6 @@ export class ResetComponent implements OnInit {
       const { email } = this.resetForm.value;
       this.authService.sendPasswordResetRequest(email).subscribe({
         next: (response) => {
-          console.log('sendPasswordResetRequest successful:', response);
           this.sent = true;
           this.title = "Reset password request sent";
           this.textButton = "Log in";

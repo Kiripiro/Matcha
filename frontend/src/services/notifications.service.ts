@@ -43,7 +43,6 @@ export class NotificationsService {
   }
 
   getNotificationCount(): Observable<number> {
-    console.log(this.notificationsSubject);
     return this.notificationsCount$.asObservable();
   }
 

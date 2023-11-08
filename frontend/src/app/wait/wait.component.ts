@@ -92,7 +92,6 @@ export class WaitComponent implements OnInit {
       }
       this.authService.passwordResetValidation(this.token, password).subscribe(
         (response) => {
-          console.log('emailValidation successful:', response);
           this.text = "Your password has been reset !";
           this.emailValid = true;
           this.resetPassword = false;

@@ -2,12 +2,9 @@ module.exports = (io) => {
     const users = {};
 
     io.on('connection', (socket) => {
-        console.log('CONNECTION a user connected', socket.id);
-        console.log('CONNECTION users', users);
 
-        socket.on('userConnected', (userId) => { //"connect" is a reserved event name
+        socket.on('userConnected', (userId) => {
             users[userId] = { socketId: socket.id, status: 'Online' };
-            console.log("USERCONNECTED users = ", users)
             const status = 'Online';
             io.emit('all-users-status-events', { userId: userId, status: status }, {
                 broadcast: true,
@@ -16,11 +13,9 @@ module.exports = (io) => {
 
         socket.on('disconnect', () => {
             const userId = Object.keys(users).find(key => users[key].socketId === socket.id);
-            console.log('DISCONNECT userId = ', userId);
             if (userId) {
                 users[userId].status = 'Offline';
                 io.emit('user-disconnected', userId); //voir si utile
-                console.log(users);
 
                 const status = 'Offline';
                 io.emit('all-users-status-events', { userId: userId, status: status }, {
@@ -37,7 +32,6 @@ module.exports = (io) => {
             });
 
             io.emit('user-connected', userId); //voir si utile
-            console.log('INIT user connected', users);
         });
 
         socket.on('new-message', (msg) => {
@@ -60,15 +54,12 @@ module.exports = (io) => {
             const recipientSocketId = users[usersIds.recipientId]?.socketId;
             const senderSocketId = users[usersIds.senderId]?.socketId;
             if (recipientSocketId && userId) {
-                console.log('check-status', userId, recipientId, users[recipientId].status);
-                // io.to(senderSocketId).emit('status', users[recipientId].status);
                 const status = users[recipientId].status;
                 io.to(senderSocketId).emit('status', { userId: recipientId, status: status });
             }
         });
 
         socket.on('user-status', ({ userId, status }) => {
-            console.log('user-status', userId, status);
             if (!users[userId] || status) {
                 return;
             }
@@ -88,7 +79,6 @@ module.exports = (io) => {
         });
 
         socket.on('unblock-user', (data) => {
-            console.log('unblock', data);
             const blockId = data.blockId;
             const author_id = data.author_id;
             const recipient_id = data.recipient_id;
@@ -100,7 +90,6 @@ module.exports = (io) => {
         })
 
         socket.on('new-like', (data) => {
-            console.log('new-like', data);
             const recipientSocketId = users[data.recipient_id]?.socketId;
             const notification = {
                 author_id: data.author_id,
@@ -111,7 +100,6 @@ module.exports = (io) => {
         });
 
         socket.on('delete-like', (data) => {
-            console.log('delete-like', data);
             const recipientSocketId = users[data.recipient_id]?.socketId;
             const notification = {
                 author_id: data.author_id,
@@ -122,7 +110,6 @@ module.exports = (io) => {
         });
 
         socket.on('new-match', (data) => {
-            console.log('new-match', data);
             const recipientSocketId = users[data.recipient_id]?.socketId;
             const notificationRecipient = {
                 author_id: data.author_id,
@@ -136,7 +123,6 @@ module.exports = (io) => {
         });
 
         socket.on('new-view', (data) => {
-            console.log('new-visit', data);
             const recipientSocketId = users[data.recipient_id]?.socketId;
             const notification = {
                 author_id: data.author_id,

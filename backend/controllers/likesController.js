@@ -45,9 +45,8 @@ class LikesController extends BaseController {
                 var likesReturnData = [];
                 for (var i = 0; i < likesFind.length; i++) {
                     const user = await UserController.model.findById(likesFind[i].author_id);
-                    console.log(user);
                     if (user) {
-                        likesReturnData.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: likesFind[i].recipient_id});
+                        likesReturnData.push({ authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: likesFind[i].recipient_id });
                     }
                 }
                 res.status(200).json({ data: likesReturnData });
@@ -152,7 +151,6 @@ class LikesController extends BaseController {
             const likeData = req.body;
             const authorId = likeData.authorId;
             const recipientId = likeData.recipientId;
-            console.log("createLike authorId = " + authorId + ", recipientId = " + recipientId)
             if (authorId == recipientId) {
                 res.status(400).json({ error: "Author id  and recipient id is equal" });
                 return;
@@ -216,7 +214,6 @@ class LikesController extends BaseController {
             const likeData = req.body;
             const authorId = likeData.authorId;
             const recipientId = likeData.recipientId;
-            console.log("deletelike authorId = " + authorId + ", recipientId = " + recipientId)
             const count = await this.model.deleteLike(authorId, recipientId);
             const deleted = (count > 0) ? true : false
             await UserController._updateFameRating(-LIKE_FAME_RATING_VALUE, recipientId);
@@ -224,6 +221,20 @@ class LikesController extends BaseController {
         } catch (error) {
             console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    async _checkLike(authorId, recipientId) {
+        try {
+            if (await this.model.check([authorId, recipientId])) {
+                return true;
+            } else if (await this.model.check([recipientId, authorId])) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            return error;
         }
     }
 }

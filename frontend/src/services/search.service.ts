@@ -15,12 +15,10 @@ export class SearchService {
   }
 
   getCities(): Observable<GetCitiesResponseData> {
-    console.log("getCities")
     return this.http.get<GetCitiesResponseData>('http://localhost:3000/users/cities', { withCredentials: true });
   }
 
   getSearchResult(age: string, fameRating: string, location: string, tags: string): Observable<GetSearchResultResponseData> {
-    console.log("getSearchResult")
     return this.http.get<GetSearchResultResponseData>('http://localhost:3000/users/search/' + age + "/" + fameRating + "/" + location + "/" + tags, { withCredentials: true });
   }
 

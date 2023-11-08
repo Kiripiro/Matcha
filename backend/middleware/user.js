@@ -187,13 +187,10 @@ settingsUpdateInfos = (req, res, next) => {
 }
 
 deleteUser = (req, res, next) => {
-    console.log("user middleware delete");
     try {
         const userId = req.user.userId;
-        console.log(userId);
         const userDTO = new UserDTO();
         const isValid = userDTO.deleteUser(userId);
-        console.log(isValid);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());
         }

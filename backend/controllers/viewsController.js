@@ -21,9 +21,8 @@ class ViewsController extends BaseController {
             var viewsReturn = [];
             views.find((row) => row).forEach(element => {
                 const user = UserController.model.findById(element.author_id);
-                console.log(user);
                 if (user) {
-                    viewsReturn.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: element.recipient_id});
+                    viewsReturn.push({ authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: element.recipient_id });
                 }
             });
             res.json(viewsReturn);
@@ -39,11 +38,9 @@ class ViewsController extends BaseController {
             if (views) {
                 var viewsReturn = [];
                 views.find((row) => row).forEach(element => {
-                    console.log(element.author_id);
                     const user = UserController.model.findById(element.author_id);
-                    console.log(user);
                     if (user) {
-                        viewsReturn.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: element.recipient_id});
+                        viewsReturn.push({ authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: element.recipient_id });
                     }
                 });
                 res.status(200).json({ data: viewsReturn });
@@ -67,7 +64,7 @@ class ViewsController extends BaseController {
                 for (var i = 0; i < viewsFind.length; i++) {
                     const user = await UserController.model.findById(viewsFind[i].author_id);
                     if (user) {
-                        viewsReturnData.push({authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: viewsFind[i].recipient_id});
+                        viewsReturnData.push({ authorId: user.id, authorUsername: user.username, authorFirstName: user.first_name, authorLastName: user.last_name, recipientId: viewsFind[i].recipient_id });
                     }
                 }
                 res.status(200).json({ data: viewsReturnData });
@@ -145,7 +142,6 @@ class ViewsController extends BaseController {
                 res.status(400).json({ error: "Relationship is blocked" });
                 return;
             } else if (checkBlock != false) {
-                console.log('error = ' + checkBlock);
                 res.status(500).json({ error: 'Internal Server Error' });
                 return;
             }
@@ -158,7 +154,6 @@ class ViewsController extends BaseController {
                 "recipient_id": recipientId
             };
             const viewId = await this.model.create(data);
-            console.log("createView = " + viewId)
             await UserController._updateFameRating(VIEW_FAME_RATING_VALUE, recipientId);
             res.status(201).json({ message: 'View created' });
         } catch (error) {

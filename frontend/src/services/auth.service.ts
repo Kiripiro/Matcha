@@ -58,7 +58,6 @@ export class AuthService {
     }
     this.http.get<GetUserResponseData>('http://localhost:3000/users/id', { withCredentials: true }).subscribe({
       next: (response) => {
-        console.log(response)
         this.localStorageService.setMultipleItems(
           { key: localStorageName.id, value: response.user.id || -1 },
           { key: localStorageName.username, value: response.user.username || "" },
@@ -122,7 +121,6 @@ export class AuthService {
     this.http.post<LoginResponseData>('http://localhost:3000/users/login', { username, password }, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          console.log('Login successful:', response);
           this.localStorageService.setMultipleItems(
             { key: localStorageName.id, value: response.user.id || -1 },
             { key: localStorageName.username, value: response.user.username || "" },
@@ -170,7 +168,6 @@ export class AuthService {
     this.http.post('http://localhost:3000/users/logout', {}, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          console.log('Registration successful:', response);
         },
         error: (error) => {
           console.error('Registration failed:', error);
@@ -182,11 +179,9 @@ export class AuthService {
   }
 
   completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[], tags: string[]): any {
-    console.log(files);
     this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexual_preferences, biography, files, tags }, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          console.log('CompleteRegister success:', response);
           this.localStorageService.setMultipleItems(
             { key: localStorageName.completeRegister, value: true },
             { key: localStorageName.gender, value: response.user.gender || "" },
@@ -223,7 +218,6 @@ export class AuthService {
     this.http.get('http://localhost:3000/users/1', { withCredentials: true })
       .subscribe({
         next: (response) => {
-          console.log('get successful:', response);
         },
         error: (error) => {
           console.error('get failed:', error);
@@ -257,14 +251,12 @@ export class AuthService {
 
   getLocation() {
     if (this.localStorageService.getItem('location_permission') == true) {
-      console.log('location_permission');
       return;
     }
     else if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
         const latitudeSaved = this.localStorageService.getItem(localStorageName.latitude);
         const longitudeSaved = this.localStorageService.getItem(localStorageName.longitude);
         if (!latitudeSaved || !longitudeSaved || !this._isInsideRadius(latitudeSaved, longitudeSaved, latitude, longitude, 30)) {
@@ -276,7 +268,6 @@ export class AuthService {
           this.getLocationWithIp();
         });
     } else {
-      console.log('Location not available with this browser.');
       this.getLocationWithIp();
     }
   }
@@ -308,7 +299,6 @@ export class AuthService {
       this.http.post<UpdateLocationResponseData>('http://localhost:3000/users/updateLocation', { latitude, longitude, city }, { withCredentials: true })
         .subscribe({
           next: (response) => {
-            console.log('updateLocation successful:', response);
             this.localStorageService.setMultipleItems(
               { key: localStorageName.latitude, value: latitude },
               { key: localStorageName.longitude, value: longitude },

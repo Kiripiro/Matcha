@@ -121,7 +121,6 @@ class UserController extends BaseController {
         }
     }
 
-    // Don't forget to implement send email verification
     async login(req, res) {
         try {
             const { username, password } = req.body;
@@ -328,10 +327,8 @@ class UserController extends BaseController {
     }
 
     async deleteUser(req, res) {
-        console.log("deleteUser");
         try {
             const userId = req.user.userId;
-            console.log("deleteUser userId = " + userId);
             if (!await this.checkById(userId)) {
                 res.status(400).json({ error: 'User id is incorrect' });
                 return;
@@ -443,7 +440,7 @@ class UserController extends BaseController {
             };
             const userIdReturn = await this.model.update(user.id, data);
         } catch (error) {
-            console.log('_updateFameRating error = ' + error);
+            console.log('error = ' + error);
         }
     }
 
@@ -574,7 +571,6 @@ class UserController extends BaseController {
         try {
             const userId = req.user.userId;
             const userData = req.body.user;
-            console.log(userData);
             const files = req.body.files;
             if (!userData || !files) {
                 res.status(400).json({ error: 'Missing data' });
@@ -634,7 +630,6 @@ class UserController extends BaseController {
 
     async getFameRating(req, res) {
         try {
-            console.log("getFameRating");
             const user = await this.model.findById(req.params.id);
             const fameRating = user.fame_rating;
             res.status(200).json({ fame_rating: fameRating });
@@ -646,7 +641,6 @@ class UserController extends BaseController {
 
     async getCities(req, res) {
         try {
-            console.log("getCities");
             const all = await this.model.findAll();
             const allUsers = all[0];
             var citiesReturn = [];
@@ -665,7 +659,6 @@ class UserController extends BaseController {
 
     async getSearchResultUsers(req, res) {
         try {
-            console.log("getSearchResultUsers");
             const userId = req.user.userId;
             const age = req.params.age;
             const fameRating = req.params.fameRating;
@@ -836,7 +829,6 @@ class UserController extends BaseController {
                 tags = await TagsModel.getAllUserTags(usersList[i].id);
             }
             if (usersList[i].id != userId) {
-                console.log("usersList[i].id = " + usersList[i]);
                 list.push({
                     id: usersList[i].id,
                     username: usersList[i].username,

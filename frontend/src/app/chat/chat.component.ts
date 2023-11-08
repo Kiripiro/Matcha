@@ -248,11 +248,6 @@ export class ChatComponent {
     });
     this.selectedConversationMessages = [];
     this.selectedConversation = user;
-    if (this.notificationSubscription) {
-      this.notificationSubscription.unsubscribe();
-      this.notificationSubscription = null;
-      user.notificationCount = 0;
-    }
     this.notificationsService.notifications$.subscribe((notifications: Notification[]) => {
       this.handleNotifications(notifications);
     });
