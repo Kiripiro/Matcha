@@ -3,12 +3,13 @@ import { Injectable } from "@angular/core";
 import { LocalStorageService } from "./local-storage.service";
 import { Observable } from "rxjs";
 import { Tag } from "src/app/models/models";
+import { environment } from "src/environments/environment.template";
 
 @Injectable({
     providedIn: "root"
 })
 export class TagsService {
-    private url = 'http://localhost:3000';
+    url: string;
     availableTags: string[] = [
         "Sport",
         "Music",
@@ -25,7 +26,9 @@ export class TagsService {
     constructor(
         private http: HttpClient,
         private localStorageService: LocalStorageService
-    ) { }
+    ) {
+        this.url = environment.backendUrl || "http://localhost:3000";
+    }
 
     public getTags(): string[] {
         return this.availableTags;
