@@ -45,16 +45,14 @@ export class WaitComponent implements OnInit {
           this.text = "Wait...";
           this.authService.emailValidation(this.token).subscribe(
             (response) => {
-              console.log('emailValidation successful:', response);
-              this.text = "Your email has been validate !";
+              this.text = "Your email has been verified !";
               this.emailValid = true;
             },
             (error) => {
-              console.error('emailValidation failed:', error);
               this.text = "Error";
               const dialogData = {
-                title: 'Email verification',
-                text: error,
+                title: 'Email verification error',
+                text: error.error,
                 text_yes_button: "",
                 text_no_button: "Close",
                 yes_callback: () => { },
@@ -90,7 +88,7 @@ export class WaitComponent implements OnInit {
           reload: false
         };
         this.dialogService.openDialog(dialogData);
-        return ;
+        return;
       }
       this.authService.passwordResetValidation(this.token, password).subscribe(
         (response) => {

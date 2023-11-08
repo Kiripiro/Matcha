@@ -35,9 +35,12 @@
     </div>
   </div>
   <div class="mobile">
-    <button mat-button class="menu-burger" (click)="sideNavToggle()">
+    <button mat-button *ngIf="isLoggedIn" class="menu-burger-login" (click)="sideNavToggle()">
       <mat-icon>menu</mat-icon>
       <mat-badge [matBadge]="notificationCount" matBadgeColor="warn" matBadgeSize="small"></mat-badge>
+    </button>
+    <button mat-button *ngIf="!isLoggedIn" class="menu-burger" (click)="sideNavToggle()">
+      <mat-icon>menu</mat-icon>
     </button>
   </div>
 </mat-toolbar>

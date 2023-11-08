@@ -16,13 +16,13 @@
 
     button {
         border-radius: 8px;
-        margin-left: 1.5rem;
+        // margin-left: 1.5rem;
         font-size: 1.3rem;
         font-weight: 600;
         padding-top: 1.5rem;
         padding-bottom: 1.5rem;
         padding-left: 1.0rem;
-        padding-right: 1.0rem;
+        margin-right: 1.0rem;
     }
 
     .primaryButton {
@@ -53,6 +53,9 @@
             display: none;
         }
 
+        button {
+            margin-right: 0.5rem;
+        }
 
         .mobile {
             display: flex;
@@ -65,8 +68,6 @@
                 justify-content: center !important;
                 align-items: center !important;
             }
-
-
         }
     }
 
@@ -80,6 +81,10 @@
             cursor: pointer;
         }
 
+        button {
+            margin-right: 1.5rem;
+        }
+
         .desktop {
             display: flex;
             justify-content: flex-end;
@@ -91,6 +96,13 @@
     @media only screen and (max-width: 600px) {
         img {
             width: 250px;
+            cursor: pointer;
+        }
+    }
+
+    @media only screen and (max-width: 300px) {
+        img {
+            width: 150px;
             cursor: pointer;
         }
     }
