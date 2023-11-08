@@ -143,18 +143,14 @@ export class ChatComponent {
   }
 
   scrollToBottom(): void {
-    try {
-      this.changeDetectorRef.detectChanges();
-      const container = this.myScrollContainer.nativeElement as HTMLElement;
-      const lastMessage = container.lastElementChild as HTMLElement;
-      const inputContainer = this.inputContainer.nativeElement as HTMLElement;
+    this.changeDetectorRef.detectChanges();
+    const container = this.myScrollContainer?.nativeElement as HTMLElement;
+    const lastMessage = container?.lastElementChild as HTMLElement;
+    const inputContainer = this.inputContainer?.nativeElement as HTMLElement;
 
-      if (lastMessage && container && inputContainer) {
-        const scrollPosition = lastMessage.offsetTop - container.clientHeight + lastMessage.clientHeight + inputContainer.clientHeight;
-        container.scrollTop = scrollPosition;
-      }
-    } catch (err) {
-      console.log(err);
+    if (lastMessage && container && inputContainer) {
+      const scrollPosition = lastMessage.offsetTop - container.clientHeight + lastMessage.clientHeight + inputContainer.clientHeight;
+      container.scrollTop = scrollPosition;
     }
   }
 

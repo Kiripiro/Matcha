@@ -12,13 +12,16 @@
                             <div class=" chat-list-match-icon">
                                 <img class="avatar" [src]="user.picture_1" alt="User Avatar">
                             </div>
-                            <div class="user-infos">
-                                <p>{{ user.username }}</p>
-                            </div>
-                            <mat-badge class="badge" matBadgePosition="before" matBadgeOverlap="false"
+                            <div class="badge" matBadgePosition="after" matBadgeOverlap="false"
                                 *ngIf="user.notificationCount" [matBadge]="user.notificationCount" matBadgeColor="warn"
                                 matBadgeSize="small">
-                            </mat-badge>
+                                <div class="user-infos">
+                                    <p>{{ user.username }}</p>
+                                </div>
+                            </div>
+                            <div *ngIf="!user.notificationCount" class="user-infos">
+                                <p>{{ user.username }}</p>
+                            </div>
                         </div>
                     </mat-list>
                 </mat-tab>
