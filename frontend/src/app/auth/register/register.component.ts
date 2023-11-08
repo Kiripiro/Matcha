@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-import { AuthService } from '../../../services/auth.service';
-import { SocketioService } from 'src/services/socketio.service';
-import { DialogService } from 'src/services/dialog.service';
+import { AuthService } from '../../services/auth.service';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-register',
@@ -19,9 +17,7 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private dialogService: DialogService
-  ) {
-
-  }
+  ) { }
 
   ngOnInit(): void {
     if (this.authService.checkLog()) {

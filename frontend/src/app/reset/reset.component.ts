@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'src/services/dialog.service';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-profile',
@@ -35,7 +35,7 @@ export class ResetComponent implements OnInit {
       }
     }
     this.resetForm = this.fb.group({
-      email: ['cgangaro42@protonmail.com', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 

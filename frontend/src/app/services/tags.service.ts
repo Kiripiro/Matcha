@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { LocalStorageService } from "./local-storage.service";
 import { Observable } from "rxjs";
-import { Tag } from "src/models/models";
+import { Tag } from "src/app/models/models";
 
 @Injectable({
     providedIn: "root"

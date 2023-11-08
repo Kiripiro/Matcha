@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-
-import { AuthService } from '../../../services/auth.service';
-import { SocketioService } from 'src/services/socketio.service';
-import { DialogService } from 'src/services/dialog.service';
+import { AuthService } from '../../services/auth.service';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-completeRegister',
@@ -36,7 +30,6 @@ export class CompleteRegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private socketService: SocketioService,
     private dialogService: DialogService
   ) {
     this.authService.getLocation();

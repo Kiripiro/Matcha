@@ -7,13 +7,14 @@ import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
 import { GetUserResponseData, LoginResponseData, RegisterResponseData, CompleteRegisterResponseData, IpApiResponseData, LocationIQApiResponseData, UpdateLocationResponseData, EmailValidationResponseData, PasswordResetRequestResponseData, PasswordResetValidationResponseData } from '../models/models';
-import { environment } from '../environments/environment.template';
+import { environment } from '../../environments/environment.template';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  url: string;
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -22,6 +23,7 @@ export class AuthService {
     private socketService: SocketioService
   ) {
     this.socketService.initSocket();
+    this.url = environment.backendUrl || 'http://localhost:3000';
   }
 
   private isLogged = new Subject<boolean>();
@@ -31,11 +33,11 @@ export class AuthService {
   }
 
   getUserInfos(username: string): Observable<GetUserResponseData> {
-    return this.http.post<GetUserResponseData>('http://localhost:3000/users/username', { username }, { withCredentials: true });
+    return this.http.post<GetUserResponseData>(this.url + '/users/username', { username }, { withCredentials: true });
   }
 
   getUserInfosById(id: number): Observable<GetUserResponseData> {
-    return this.http.post<GetUserResponseData>('http://localhost:3000/users/id', { id }, { withCredentials: true });
+    return this.http.post<GetUserResponseData>(this.url + '/users/id', { id }, { withCredentials: true });
   }
 
   checkLog() {
@@ -56,7 +58,7 @@ export class AuthService {
     if (!this.checkLog()) {
       return;
     }
-    this.http.get<GetUserResponseData>('http://localhost:3000/users/id', { withCredentials: true }).subscribe({
+    this.http.get<GetUserResponseData>(this.url + '/users/id', { withCredentials: true }).subscribe({
       next: (response) => {
         this.localStorageService.setMultipleItems(
           { key: localStorageName.id, value: response.user.id || -1 },
@@ -88,7 +90,7 @@ export class AuthService {
   }
 
   register(username: string, first_name: string, last_name: string, age: number, email: string, password: string): any {
-    this.http.post<RegisterResponseData>('http://localhost:3000/users/register', { username, first_name, last_name, age, email, password }, { withCredentials: true })
+    this.http.post<RegisterResponseData>(this.url + '/users/register', { username, first_name, last_name, age, email, password }, { withCredentials: true })
       .subscribe({
         next: (response) => {
           const dialogData = {
@@ -118,7 +120,7 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    this.http.post<LoginResponseData>('http://localhost:3000/users/login', { username, password }, { withCredentials: true })
+    this.http.post<LoginResponseData>(this.url + '/users/login', { username, password }, { withCredentials: true })
       .subscribe({
         next: (response) => {
           this.localStorageService.setMultipleItems(
@@ -165,7 +167,7 @@ export class AuthService {
 
   logout() {
     this.socketService.disconnect();
-    this.http.post('http://localhost:3000/users/logout', {}, { withCredentials: true })
+    this.http.post(this.url + '/users/logout', {}, { withCredentials: true })
       .subscribe({
         next: (response) => {
         },
@@ -179,7 +181,7 @@ export class AuthService {
   }
 
   completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[], tags: string[]): any {
-    this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexual_preferences, biography, files, tags }, { withCredentials: true })
+    this.http.post<CompleteRegisterResponseData>(this.url + '/users/updateInfos', { gender, sexual_preferences, biography, files, tags }, { withCredentials: true })
       .subscribe({
         next: (response) => {
           this.localStorageService.setMultipleItems(
@@ -203,28 +205,15 @@ export class AuthService {
   }
 
   emailValidation(token: string): Observable<EmailValidationResponseData> {
-    return this.http.post<EmailValidationResponseData>('http://localhost:3000/users/emailvalidation', { token }, { withCredentials: true });
+    return this.http.post<EmailValidationResponseData>(this.url + '/users/emailvalidation', { token }, { withCredentials: true });
   }
 
   sendPasswordResetRequest(email: string): Observable<PasswordResetRequestResponseData> {
-    return this.http.post<PasswordResetRequestResponseData>('http://localhost:3000/users/resetpasswordrequest', { email }, { withCredentials: true });
+    return this.http.post<PasswordResetRequestResponseData>(this.url + '/users/resetpasswordrequest', { email }, { withCredentials: true });
   }
 
   passwordResetValidation(token: string, password: string): Observable<PasswordResetValidationResponseData> {
-    return this.http.post<PasswordResetValidationResponseData>('http://localhost:3000/users/resetpasswordvalidation', { token, password }, { withCredentials: true });
-  }
-
-  _getUserInfosBack() {
-    this.http.get('http://localhost:3000/users/1', { withCredentials: true })
-      .subscribe({
-        next: (response) => {
-        },
-        error: (error) => {
-          console.error('get failed:', error);
-        },
-        complete: () => {
-        }
-      });
+    return this.http.post<PasswordResetValidationResponseData>(this.url + '/users/resetpasswordvalidation', { token, password }, { withCredentials: true });
   }
 
   _frontLogOut(error: string) {
@@ -246,7 +235,7 @@ export class AuthService {
   }
 
   refreshToken(): Observable<any> {
-    return this.http.post('http://localhost:3000/users/refreshToken', {}, { withCredentials: true });
+    return this.http.post(this.url + '/users/refreshToken', {}, { withCredentials: true });
   }
 
   getLocation() {
@@ -296,7 +285,7 @@ export class AuthService {
       } else if (locationApiData.address.city) {
         city = locationApiData.address.city;
       }
-      this.http.post<UpdateLocationResponseData>('http://localhost:3000/users/updateLocation', { latitude, longitude, city }, { withCredentials: true })
+      this.http.post<UpdateLocationResponseData>(this.url + '/users/updateLocation', { latitude, longitude, city }, { withCredentials: true })
         .subscribe({
           next: (response) => {
             this.localStorageService.setMultipleItems(

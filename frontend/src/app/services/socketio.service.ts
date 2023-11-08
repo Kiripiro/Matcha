@@ -2,20 +2,22 @@ import { Socket, io } from 'socket.io-client';
 import { LocalStorageService } from './local-storage.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { StatusData, User } from 'src/models/models';
-import { Notification } from 'src/models/models';
+import { StatusData, User } from 'src/app/models/models';
+import { Notification } from 'src/app/models/models';
+import { environment } from 'src/environments/environment.template';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SocketioService {
-    private url = 'http://localhost:3000';
+    url: string;
     private socket: Socket;
     private id: number;
 
     constructor(
         private localStorageService: LocalStorageService,
     ) {
+        this.url = environment.backendUrl || 'http://localhost:3000';
         this.id = this.localStorageService.getItem('id');
         this.socket = io(this.url, {
             query: { userId: this.id },

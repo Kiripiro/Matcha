@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Notification } from '../../models/models';
-import { NotificationsService } from 'src/services/notifications.service';
-import { SocketioService } from 'src/services/socketio.service';
-import { AuthService } from 'src/services/auth.service';
+import { Notification } from '../models/models';
+import { NotificationsService } from 'src/app/services/notifications.service';
+import { SocketioService } from 'src/app/services/socketio.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { of, switchMap } from 'rxjs';
-import { DialogService } from 'src/services/dialog.service';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-notifications',

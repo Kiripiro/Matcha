@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { LocalStorageService, localStorageName } from 'src/services/local-storage.service';
-import { NotificationsService } from 'src/services/notifications.service';
+import { AuthService } from '../services/auth.service';
+import { LocalStorageService, localStorageName } from 'src/app/services/local-storage.service';
+import { NotificationsService } from 'src/app/services/notifications.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { Notification } from 'src/models/models';
+import { Notification } from 'src/app/models/models';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({

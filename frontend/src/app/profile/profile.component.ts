@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService, localStorageName } from '../../services/local-storage.service';
-import { AuthService } from '../../services/auth.service';
+import { LocalStorageService, localStorageName } from '../services/local-storage.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { RelationService } from 'src/services/relation.service';
-import { ElementListData, User } from 'src/models/models';
-import { DialogService } from 'src/services/dialog.service';
-import { SocketioService } from 'src/services/socketio.service';
+import { RelationService } from 'src/app/services/relation.service';
+import { ElementListData, User } from 'src/app/models/models';
+import { DialogService } from 'src/app/services/dialog.service';
+import { SocketioService } from 'src/app/services/socketio.service';
 
 @Component({
   selector: 'app-profile',

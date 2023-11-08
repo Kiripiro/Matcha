@@ -1,8 +1,8 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthService } from '../services/auth.service';
-import { HttpRequestInterceptor } from '../services/http.interceptor';
+import { AuthService } from './services/auth.service';
+import { HttpRequestInterceptor } from './services/http.interceptor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,30 +28,30 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
-import { DialogService } from 'src/services/dialog.service';
-import { initializeApp } from 'src/services/app-initializer';
+import { DialogService } from 'src/app/services/dialog.service';
+import { initializeApp } from 'src/app/services/app-initializer';
 import { CarouselComponent } from './utils/carousel/carousel.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ChatComponent } from './chat/chat.component';
-import { ChatService } from 'src/services/chat.service';
-import { SocketioService } from 'src/services/socketio.service';
-import { RelationService } from 'src/services/relation.service';
+import { ChatService } from 'src/app/services/chat.service';
+import { SocketioService } from 'src/app/services/socketio.service';
+import { RelationService } from 'src/app/services/relation.service';
 import { SettingsComponent } from './settings/settings.component';
 import { MatRadioModule } from '@angular/material/radio';
-import { HomeService } from 'src/services/home.service';
+import { HomeService } from 'src/app/services/home.service';
 import { WaitComponent } from './wait/wait.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ResetComponent } from './reset/reset.component';
 import { SearchComponent } from './search/search.component';
-import { SearchService } from 'src/services/search.service';
+import { SearchService } from 'src/app/services/search.service';
 import { NotificationsComponent } from './notifications/notifications.component';
-import { NotificationsService } from 'src/services/notifications.service';
+import { NotificationsService } from 'src/app/services/notifications.service';
 
 @NgModule({
   declarations: [

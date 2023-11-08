@@ -2,17 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-
 import { LocalStorageService, localStorageName } from './local-storage.service';
 import { DialogService } from './dialog.service';
 import { SocketioService } from './socketio.service';
 import { GetFameRatingResponseData, GetInterestingUsersResponseData, GetUserResponseData, UserTags } from '../models/models';
+import { environment } from 'src/environments/environment.template';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeService {
+  url: string;
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -20,14 +21,15 @@ export class HomeService {
     private dialogService: DialogService,
     private socketService: SocketioService
   ) {
+    this.url = environment.backendUrl || 'http://localhost:3000';
   }
 
   getInterestingUsers(): Observable<GetInterestingUsersResponseData> {
-    return this.http.get<GetInterestingUsersResponseData>('http://localhost:3000/users/interesting', { withCredentials: true });
+    return this.http.get<GetInterestingUsersResponseData>(this.url + '/users/interesting', { withCredentials: true });
   }
 
   getPersonnalFameRating(): Observable<GetFameRatingResponseData> {
-    return this.http.get<GetFameRatingResponseData>('http://localhost:3000/users/famerating/' + this.localStorageService.getItem(localStorageName.id), { withCredentials: true });
+    return this.http.get<GetFameRatingResponseData>(this.url + '/users/famerating/' + this.localStorageService.getItem(localStorageName.id), { withCredentials: true });
   }
 
   positionToDistance(originalLatitude: number, originalLongitude: number, newLatitude: number, newLongitude: number): number {

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService, localStorageName } from '../../services/local-storage.service';
-import { AuthService } from '../../services/auth.service';
+import { LocalStorageService, localStorageName } from '../services/local-storage.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { HomeService } from 'src/services/home.service';
-import { User, UserSimplified, ageGapType, fameRatingGapType, filterSelectType, sortSelectType } from 'src/models/models';
-import { SearchService } from 'src/services/search.service';
+import { HomeService } from 'src/app/services/home.service';
+import { UserSimplified, ageGapType, fameRatingGapType, filterSelectType, sortSelectType } from 'src/app/models/models';
+import { SearchService } from 'src/app/services/search.service';
 import { FormControl } from '@angular/forms';
 
 @Component({

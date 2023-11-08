@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService, localStorageName } from '../../services/local-storage.service';
-import { AuthService } from '../../services/auth.service';
+import { LocalStorageService, localStorageName } from '../services/local-storage.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { HomeService } from 'src/services/home.service';
-import { HomeUserData, UserSimplified, filterSelectType, sortSelectType } from 'src/models/models';
-import { DialogService } from 'src/services/dialog.service';
+import { HomeService } from 'src/app/services/home.service';
+import { HomeUserData, UserSimplified, filterSelectType, sortSelectType } from 'src/app/models/models';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-home',
@@ -199,9 +199,4 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
 
   }
-
-  getInfosBack() {
-    this.authService._getUserInfosBack();
-  }
-
 }

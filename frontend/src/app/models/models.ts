@@ -233,6 +233,10 @@ export interface DeleteReportResponseData {
 	message: string;
 }
 
+export interface CreateViewResponseData {
+	message: string;
+}
+
 export interface GetAllProfileViewsResponseData {
 	data: {
 		author_id: number,

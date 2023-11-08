@@ -1,13 +1,13 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
-import { ChatService } from 'src/services/chat.service';
-import { User, Message, StatusData } from 'src/models/models';
-import { DialogService } from 'src/services/dialog.service';
-import { AuthService } from 'src/services/auth.service';
-import { NotificationsService } from 'src/services/notifications.service';
+import { ChatService } from 'src/app/services/chat.service';
+import { User, Message, StatusData } from 'src/app/models/models';
+import { DialogService } from 'src/app/services/dialog.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { NotificationsService } from 'src/app/services/notifications.service';
 import { Subscription } from 'rxjs';
-import { Notification } from 'src/models/models';
+import { Notification } from 'src/app/models/models';
 
 @Component({
   selector: 'app-chat',

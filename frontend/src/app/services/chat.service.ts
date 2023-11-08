@@ -5,12 +5,13 @@ import { Injectable } from '@angular/core';
 import { SocketioService } from './socketio.service';
 import { User, Message, GetUserResponseData } from '../models/models';
 import { AuthService } from './auth.service';
+import { environment } from 'src/environments/environment.template';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ChatService {
-    private url = 'http://localhost:3000';
+    private url = environment.backendUrl;
     private id: number;
 
     constructor(

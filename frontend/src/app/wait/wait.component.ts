@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { AuthService } from '../../services/auth.service';
+import { LocalStorageService } from '../services/local-storage.service';
+import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DialogService } from 'src/services/dialog.service';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-profile',

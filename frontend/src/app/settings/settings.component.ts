@@ -1,13 +1,13 @@
-import { Component, KeyValueDiffers, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, concatMap, of } from 'rxjs';
-import { UserSettings } from 'src/models/models';
-import { AuthService } from 'src/services/auth.service';
-import { DialogService } from 'src/services/dialog.service';
-import { LocalStorageService } from 'src/services/local-storage.service';
-import { SettingsService } from 'src/services/settings.service';
-import { TagsService } from 'src/services/tags.service';
+import { UserSettings } from 'src/app/models/models';
+import { AuthService } from 'src/app/services/auth.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { SettingsService } from 'src/app/services/settings.service';
+import { TagsService } from 'src/app/services/tags.service';
 
 @Component({
   selector: 'app-settings',
