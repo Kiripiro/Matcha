@@ -59,7 +59,6 @@ export class ProfileComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.username = params['username'];
       if (this.username == "") {
-        console.log("username vide");
         this.error = true;
       }
       this.authService.getUserInfos(this.username).subscribe(

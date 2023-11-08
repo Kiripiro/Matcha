@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { HomeService } from 'src/services/home.service';
 import { HomeUserData, UserSimplified, filterSelectType, sortSelectType } from 'src/models/models';
+import { DialogService } from 'src/services/dialog.service';
 
 @Component({
   selector: 'app-home',
@@ -44,6 +45,7 @@ export class HomeComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private authService: AuthService,
     private homeService: HomeService,
+    private dialogService: DialogService,
     private router: Router,
   ) {
     if (!this.authService.checkLog()) {
@@ -64,18 +66,26 @@ export class HomeComponent implements OnInit {
     this.error = false;
     this.homeService.getInterestingUsers().subscribe(
       (response) => {
-        console.log('get getInterestingUsers successful:', response);
         this.interestingUsers = response.users;
         if (this.interestingUsers.length <= 0) {
           this.error = true;
         } else {
           this.homeService.getPersonnalFameRating().subscribe(
             (response) => {
-              console.log('getPersonnalFameRating successful:', response);
               this.personalFameRating = response.fame_rating;
             },
             (error) => {
               console.error('getPersonnalFameRating failed:', error);
+              const dialogData = {
+                title: 'Error',
+                text: error.error,
+                text_yes_button: "",
+                text_no_button: "Close",
+                yes_callback: () => { },
+                no_callback: () => { },
+                reload: false
+              };
+              this.dialogService.openDialog(dialogData);
               this.error = true;
             }
           );
@@ -83,7 +93,16 @@ export class HomeComponent implements OnInit {
         }
       },
       (error) => {
-        console.error('get getInterestingUsers failed:', error);
+        const dialogData = {
+          title: 'Error',
+          text: error.error,
+          text_yes_button: "",
+          text_no_button: "Close",
+          yes_callback: () => { },
+          no_callback: () => { },
+          reload: false
+        };
+        this.dialogService.openDialog(dialogData);
         this.error = true;
       }
     );
@@ -94,7 +113,6 @@ export class HomeComponent implements OnInit {
     this.img.splice(0, this.img.length);
     this.authService.getUserInfosById(this.interestingUsers[this.userIndex].id).subscribe(
       (response) => {
-        console.log('get getUserInfosById successful:', response);
         this.userDisplayed = response.user;
         if (this.userDisplayed.picture_1) {
           this.img.push("data:image/jpeg;base64," + this.userDisplayed.picture_1);

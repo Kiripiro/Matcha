@@ -160,7 +160,6 @@ export class ChatComponent {
 
   getMatches() {
     this.chatService.getMatches().subscribe(users => {
-      console.log(users);
       this.users = users.map(user => ({
         id: user.id,
         username: user.username,
@@ -349,8 +348,6 @@ export class ChatComponent {
               isBlocked: false
             };
           }
-          console.log(this.selectedConversation);
-          console.log(this.selectedConversation?.id, this.selectedConversation?.block.author_id);
           this.updateInputState(false);
         }
       },
@@ -364,7 +361,6 @@ export class ChatComponent {
     this.chatService.reportUser(user).subscribe({
       next: (res: any) => {
         if (res && res.message == "Report created") {
-          console.log("User reported");
           const dialogData = {
             title: 'User reported',
             text: 'The user has been reported.',

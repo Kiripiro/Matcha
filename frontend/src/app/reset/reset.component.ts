@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DialogService } from 'src/services/dialog.service';
 
 @Component({
   selector: 'app-profile',
@@ -19,6 +20,7 @@ export class ResetComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private dialogService: DialogService,
     private router: Router
   ) {
 
@@ -40,20 +42,27 @@ export class ResetComponent implements OnInit {
   onSubmit(): void {
     if (this.resetForm.valid) {
       const { email } = this.resetForm.value;
-      this.authService.sendPasswordResetRequest(email).subscribe(
-        (response) => {
+      this.authService.sendPasswordResetRequest(email).subscribe({
+        next: (response) => {
           console.log('sendPasswordResetRequest successful:', response);
           this.sent = true;
           this.title = "Reset password request sent";
           this.textButton = "Log in";
         },
-        (error) => {
+        error: (error) => {
           console.error('sendPasswordResetRequest failed:', error);
-          this.sent = true;
-          this.title = "Reset password request sent";
-          this.textButton = "Log in";
+          const dialogData = {
+            title: 'Error',
+            text: error.error,
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => { },
+            no_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(dialogData);
         }
-      );
+      });
     }
   }
 }

@@ -64,18 +64,14 @@ class BaseValidator {
 
     validateEmail(propName, value) {
         if (typeof value !== 'string' || !value.match(/^\S+@\S+\.\S+$/)) {
-            this.errors.push(`${propName} must be a valid email address.`);
+            this.errors.push(`Email must be a valid email address.`);
         }
     }
 
     validatePassword(propName, value) {
-        if (typeof value !== 'string') {
-            this.errors.push(`${propName} must be a valid. Containing at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.`);
+        if (typeof value !== 'string' || !value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/)) {
+            this.errors.push(`Password must be a valid. Containing at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.`);
         }
-        //commented for tests
-        // if (typeof value !== 'string' || !value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/)) {
-        //     this.errors.push(`${propName} must be a valid. Containing at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.`);
-        // }
     }
 
     validateDate(propName, value) {
@@ -87,7 +83,7 @@ class BaseValidator {
     validateBoolean(propName, value) {
         if (typeof value !== 'boolean') {
             this.errors.push(`${propName} must be a boolean.`);
-        }
+        } x
     }
 
     validateArray(propName, value) {

@@ -4,6 +4,7 @@ import { NotificationsService } from 'src/services/notifications.service';
 import { SocketioService } from 'src/services/socketio.service';
 import { AuthService } from 'src/services/auth.service';
 import { of, switchMap } from 'rxjs';
+import { DialogService } from 'src/services/dialog.service';
 
 @Component({
   selector: 'app-notifications',
@@ -19,6 +20,7 @@ export class NotificationsComponent implements OnInit {
     private notificationsService: NotificationsService,
     private socketioService: SocketioService,
     private authService: AuthService,
+    private dialogService: DialogService
   ) { }
 
   ngOnInit() {
@@ -40,7 +42,6 @@ export class NotificationsComponent implements OnInit {
         if (response.author_id) {
           this.authService.getUserInfosById(response.author_id).pipe(
             switchMap((userResponse) => {
-              console.log(userResponse);
               const notification: Notification = {
                 author_id: response.author_id,
                 type: response.type,
@@ -51,11 +52,18 @@ export class NotificationsComponent implements OnInit {
             })
           ).subscribe({
             next: (notification) => {
-              console.log(notification);
               this.notificationsService.addNotification(notification);
             },
             error: (error) => {
-              console.log(error);
+              const dialogData = {
+                title: 'Error',
+                text: error.error,
+                text_yes_button: "",
+                text_no_button: "Close",
+                yes_callback: () => { },
+                no_callback: () => { },
+              };
+              this.dialogService.openDialog(dialogData);
             }
           });
         }

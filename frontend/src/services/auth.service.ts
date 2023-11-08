@@ -104,7 +104,16 @@ export class AuthService {
           this.dialogService.openDialog(dialogData);
         },
         error: (error) => {
-          console.error('Registration failed:', error);
+          const dialogData = {
+            title: 'Registration failed',
+            text: error.error,
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => { },
+            no_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(dialogData);
         }
       });
   }
@@ -142,7 +151,16 @@ export class AuthService {
           this.logEmitChange(true);
         },
         error: (error) => {
-          console.error('Login failed:', error);
+          const dialogData = {
+            title: 'Login failed',
+            text: error.error,
+            text_yes_button: "",
+            text_no_button: "Close",
+            yes_callback: () => { },
+            no_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(dialogData);
         }
       });
   }
@@ -164,6 +182,7 @@ export class AuthService {
   }
 
   completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[], tags: string[]): any {
+    console.log(files);
     this.http.post<CompleteRegisterResponseData>('http://localhost:3000/users/updateInfos', { gender, sexual_preferences, biography, files, tags }, { withCredentials: true })
       .subscribe({
         next: (response) => {
@@ -181,7 +200,6 @@ export class AuthService {
             { key: localStorageName.tags, value: response.user.tags || [] },
           );
           this.router.navigate(['']);
-
         },
         error: (error) => {
           console.error('CompleteRegister failed:', error);
@@ -308,7 +326,6 @@ export class AuthService {
     const earthRadiusInKm = 6371;
     const differenceLatitude = this._toRadians(newLatitude - originalLatitude);
     const differenceLongitude = this._toRadians(newLongitude - originalLongitude);
-    //haversine formula
     const a =
       Math.sin(differenceLatitude / 2) * Math.sin(differenceLatitude / 2) +
       Math.cos(this._toRadians(originalLatitude)) * Math.cos(this._toRadians(newLatitude)) *
@@ -323,5 +340,4 @@ export class AuthService {
   _toRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
   }
-
 }

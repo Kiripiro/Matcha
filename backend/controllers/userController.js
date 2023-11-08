@@ -554,6 +554,13 @@ class UserController extends BaseController {
             const allUsers = await this.model.findAll();
             const usersList = this._firstFilterUsers(user, allUsers[0]);
             const newUserList = await this._secondFilterUsers(user, usersList);
+            for (var i = 0; i < newUserList.length; i++) {
+                const hasLiked = await LikesModel.check([req.user.userId, newUserList[i].id]);
+                if (hasLiked) {
+                    newUserList.splice(i, 1);
+                    i--;
+                }
+            }
             // const usersListSimplified = this._usersListSimplified(newUserList);
             // const userListSimplifiedSuffled = this._shuffleArray(usersListSimplified);
             res.status(200).json({ users: newUserList });
@@ -645,7 +652,7 @@ class UserController extends BaseController {
             var citiesReturn = [];
             for (var i = 0; i < allUsers.length; i++) {
                 const city = allUsers[i].city;
-                if (citiesReturn.find((it) => it == city) == undefined || !citiesReturn.find((it) => it == city)) {
+                if (city && (citiesReturn.find((it) => it == city) == undefined || !citiesReturn.find((it) => it == city))) {
                     citiesReturn.push(city);
                 }
             }
@@ -665,12 +672,12 @@ class UserController extends BaseController {
             const location = req.params.location;
             const tags = req.params.tags;
             const all = await this.model.findAll();
-            var allUsers = all[0];
+            var allUsers = all[0].filter(it => it.complete_register == true);
             allUsers = this._ageFilter(allUsers, age);
             allUsers = this._fameRatingFilter(allUsers, fameRating);
             allUsers = this._locationFilter(allUsers, location);
             allUsers = await this._tagFilter(allUsers, tags);
-            const simplifiedUsers = await this._usersListSimplified(allUsers, userId)
+            const simplifiedUsers = await this._usersListSimplified(allUsers, userId);
             res.status(200).json({ users: simplifiedUsers });
         } catch (error) {
             console.log(error);
@@ -829,6 +836,7 @@ class UserController extends BaseController {
                 tags = await TagsModel.getAllUserTags(usersList[i].id);
             }
             if (usersList[i].id != userId) {
+                console.log("usersList[i].id = " + usersList[i]);
                 list.push({
                     id: usersList[i].id,
                     username: usersList[i].username,
@@ -865,7 +873,6 @@ class UserController extends BaseController {
         const earthRadiusInKm = 6371;
         const differenceLatitude = this._toRadians(newLatitude - originalLatitude);
         const differenceLongitude = this._toRadians(newLongitude - originalLongitude);
-        //haversine formula
         const a =
             Math.sin(differenceLatitude / 2) * Math.sin(differenceLatitude / 2) +
             Math.cos(this._toRadians(originalLatitude)) * Math.cos(this._toRadians(newLatitude)) *

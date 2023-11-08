@@ -93,6 +93,7 @@ export class SearchComponent implements OnInit {
       (response) => {
         console.log('getCities successful:', response);
         const cities = response.cities;
+        console.log('cities:', cities);
         cities.forEach(city => this.locationValue.push(city));
       },
       (error) => {

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../../services/auth.service';
 import { SocketioService } from 'src/services/socketio.service';
+import { DialogService } from 'src/services/dialog.service';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +18,7 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private socketService: SocketioService
+    private dialogService: DialogService
   ) {
 
   }
@@ -31,20 +32,30 @@ export class RegisterComponent implements OnInit {
       }
     }
     this.registerForm = this.fb.group({
-      username: ['cgangaro', Validators.required],
-      first_name: ['Camille', Validators.required],
-      last_name: ['Gangarossa', Validators.required],
-      age: [24, Validators.required],
-      email: ['cgangaro42@protonmail.com', [Validators.required, Validators.email]],
-      password: ['qqqqqqqq', [Validators.required, Validators.minLength(8)]],
-      repeat_password: ['qqqqqqqq', [Validators.required, Validators.minLength(8)]],
+      username: ['', Validators.required],
+      first_name: ['', [Validators.required, Validators.pattern("^[A-Z][a-zA-Z]*$")]],
+      last_name: ['', [Validators.required, Validators.pattern("^[A-Z][a-zA-Z]*$")]],
+      age: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      repeat_password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
   onSubmit(): void {
     if (this.registerForm.valid) {
       const { username, first_name, last_name, age, email, password, repeat_password } = this.registerForm.value;
-      console.log(username, first_name, last_name, age, email, password, repeat_password);
+      if (password !== repeat_password) {
+        const data = {
+          title: 'Error',
+          text: 'Passwords do not match.',
+          text_yes_button: 'Ok',
+          yes_callback: () => { },
+          reload: false,
+        };
+        this.dialogService.openDialog(data);
+        return;
+      }
       this.authService.register(username, first_name, last_name, age, email, password);
     }
   }
