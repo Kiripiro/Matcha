@@ -104,14 +104,14 @@ class BaseModel {
     }
 
     async update(id, data) {
-        const sql = `UPDATE ${this.tableName} SET ? WHERE id = ${id}`;
-        const result = await this._query(sql, data);
+        const sql = `UPDATE ${this.tableName} SET ? WHERE id = ?`;
+        const result = await this._query(sql, [data, id]);
         return result.insertId;
     }
 
     async delete(id) {
-        const sql = `DELETE FROM ${this.tableName} WHERE id = ${id}`;
-        const result = await this._query(sql);
+        const sql = `DELETE FROM ${this.tableName} WHERE id = ?`;
+        const result = await this._query(sql, [id]);
         return result[0].affectedRows;
     }
 

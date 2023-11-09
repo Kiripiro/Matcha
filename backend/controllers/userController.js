@@ -106,7 +106,7 @@ class UserController extends BaseController {
             };
             mailOptions.to = userData.email;
             mailOptions.subject = "Email verification";
-            mailOptions.text = "Hi " + userData.username + "\nClick on the following link to activate your account:\n" + "http://localhost:4200/verification/email/" + emailVerificationToken;
+            mailOptions.text = "Hi " + userData.username + "\nClick on the following link to activate your account:\n" + process.env.FRONTEND_URL + "/verification/email/" + emailVerificationToken;
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
                     console.log('error = ' + error);

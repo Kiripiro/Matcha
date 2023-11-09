@@ -14,10 +14,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompleteRegisterComponent } from './completeRegister/completeRegister.component';
-import { SingleFileUploadComponent } from '../utils/single-file-upload/single-file-upload.component';
 
 @NgModule({
-  declarations: [RegisterComponent, LoginComponent, CompleteRegisterComponent, SingleFileUploadComponent],
+  declarations: [RegisterComponent, LoginComponent, CompleteRegisterComponent],
   imports: [
     CommonModule,
     FormsModule,

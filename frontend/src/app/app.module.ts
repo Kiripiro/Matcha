@@ -35,7 +35,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { DialogComponent } from './utils/dialog/dialog.component';
 import { DialogService } from 'src/app/services/dialog.service';
-import { initializeApp } from 'src/app/services/app-initializer';
 import { CarouselComponent } from './utils/carousel/carousel.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ChatComponent } from './chat/chat.component';
@@ -103,11 +102,6 @@ import { NotificationsService } from 'src/app/services/notifications.service';
       useClass: HttpRequestInterceptor,
       multi: true,
       deps: [AuthService]
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => initializeApp,
-      multi: true,
     },
     AuthService,
     DialogService,
