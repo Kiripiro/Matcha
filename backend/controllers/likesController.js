@@ -106,7 +106,6 @@ class LikesController extends BaseController {
         try {
             const userId = req.user.userId;
             const likes = await this.model.findMultiple(["author_id"], [userId]);
-
             if (!likes) {
                 res.status(404).json({ error: 'Likes not found' });
                 return;

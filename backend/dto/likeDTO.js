@@ -52,6 +52,13 @@ class LikeDTO extends baseValidator {
 
         return this.isValid();
     }
+
+    getMatches(id) {
+        super.fieldIsRequired('id', id);
+        super.validatePositiveInteger('id', id);
+
+        return this.isValid();
+    }
 }
 
 module.exports = LikeDTO;

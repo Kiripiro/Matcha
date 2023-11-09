@@ -79,10 +79,26 @@ getAllByRecipientId = (req, res, next) => {
     }
 };
 
+getMatches = (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const likeDTO = new LikeDTO();
+        const isValid = likeDTO.getMatches(id);
+        if (!isValid) {
+            return res.status(400).json(likeDTO.getValidationErrors());
+        }
+        next();
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Invalid parameters");
+    }
+};
+
 module.exports = {
     getCheckLike,
     getCheckMatch,
     createLike,
     deleteLike,
-    getAllByRecipientId
+    getAllByRecipientId,
+    getMatches
 };

@@ -1,34 +1,12 @@
 const express = require('express');
 const TagsController = require('../controllers/tagsController');
 const router = express.Router();
+const auth = require('../middleware/auth');
+const tags = require('../middleware/tags');
 
-router.get('/user/:id', async (req, res) => {
+router.get('/user/:id', auth, tags.getAllByOwnerId, async (req, res) => {
     try {
         await TagsController.getAllByOwnerId(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        await TagsController.getTagById(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-router.post('/create', async (req, res) => {
-    try {
-        await TagsController.createTag(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-router.post('/delete', async (req, res) => {
-    try {
-        await TagsController.deleteTag(req, res);
     } catch (error) {
         console.error(error);
     }

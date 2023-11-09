@@ -109,7 +109,7 @@ class UserController extends BaseController {
             mailOptions.text = "Hi " + userData.username + "\nClick on the following link to activate your account:\n" + "http://localhost:4200/verification/email/" + emailVerificationToken;
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
-                    console.log(error);
+                    console.log('error = ' + error);
                 } else {
                     console.log('Email sent: ' + info.response);
                 }
@@ -562,7 +562,7 @@ class UserController extends BaseController {
             // const userListSimplifiedSuffled = this._shuffleArray(usersListSimplified);
             res.status(200).json({ users: newUserList });
         } catch (error) {
-            console.log(error);
+            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -634,7 +634,7 @@ class UserController extends BaseController {
             const fameRating = user.fame_rating;
             res.status(200).json({ fame_rating: fameRating });
         } catch (error) {
-            console.log(error);
+            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -652,7 +652,7 @@ class UserController extends BaseController {
             }
             res.status(200).json({ cities: citiesReturn });
         } catch (error) {
-            console.log(error);
+            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -673,7 +673,7 @@ class UserController extends BaseController {
             const simplifiedUsers = await this._usersListSimplified(allUsers, userId);
             res.status(200).json({ users: simplifiedUsers });
         } catch (error) {
-            console.log(error);
+            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

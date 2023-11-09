@@ -4,25 +4,9 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const like = require('../middleware/like');
 
-router.get('/author/:id', async (req, res) => {
-    try {
-        await LikesController.getAllByAuthorId(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
 router.get('/recipient/:id', auth, like.getAllByRecipientId, async (req, res) => {
     try {
         await LikesController.getAllByRecipientId(req, res);
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        await LikesController.getLikeById(req, res);
     } catch (error) {
         console.error(error);
     }
@@ -44,7 +28,7 @@ router.post('/delete', auth, like.deleteLike, async (req, res) => {
     }
 });
 
-router.get('/matches/:id', auth, async (req, res) => {
+router.get('/matches/:id', auth, like.getMatches, async (req, res) => {
     try {
         await LikesController.getMatches(req, res);
     } catch (error) {

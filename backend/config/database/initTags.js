@@ -3,7 +3,6 @@ const tagsForInit = require('./tagsForInit');
 
 const insertInitialTags = async () => {
     const tags = tagsForInit.tagsInit();
-    console.log(tags)
     for (var i = 0; i < tags.length; i++) {
         const sql = `
             INSERT INTO tags (name, owner_id)

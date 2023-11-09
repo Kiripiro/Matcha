@@ -174,7 +174,6 @@ settingsUpdateInfos = (req, res, next) => {
         const { username, first_name, last_name, gender, sexual_preferences, biography, tags, latitude, longitude, city, location_permission } = req.body;
         const files = req.files;
         const userDTO = new UserDTO();
-        console.log(location_permission);
         const isValid = userDTO.settingsUpdateInfos(userId, username, first_name, last_name, gender, sexual_preferences, biography, latitude, longitude, city, location_permission, files, tags);
         if (!isValid) {
             return res.status(400).json(userDTO.getValidationErrors());

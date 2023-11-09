@@ -149,12 +149,4 @@ router.get('/search/:age/:fameRating/:location/:tags', auth, user.getSearchResul
     }
 });
 
-// app.get('/users', async (req, res) => {
-//     try {
-//         await UserController.getAllUsers(req, res);
-//     } catch (error) {
-//         console.error(error);
-//     }
-// });
-
 module.exports = router;

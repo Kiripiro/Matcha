@@ -9,15 +9,11 @@ class TagsController extends BaseController {
 
     async getAllByOwnerId(req, res) {
         try {
-            const ownerId = this._checkPositiveInteger(req.params.id || '');
-            if (ownerId < 0) {
-                res.status(400).json({ error: "Tag owner id is incorrect" });
-                return ;
-            }
+            const ownerId = req.params.id;
             const tags = await this.model.findMultiple(["owner_id"], [ownerId])
             if (!tags) {
                 res.status(404).json({ error: 'Tag not found' })
-                return ;
+                return;
             } else {
                 var tagsReturn = [];
                 tags.find((row) => row).forEach(element => {
@@ -35,16 +31,16 @@ class TagsController extends BaseController {
             const tagId = this._checkPositiveInteger(req.params.id || '');
             if (tagId < 0) {
                 res.status(400).json({ error: 'Tag id is incorrect' });
-                return ;
+                return;
             }
             const tag = await this.model.findById(tagId);
             if (!tag) {
                 res.status(404).json({ error: 'Tag not found' })
-                return ;
+                return;
             } else {
                 res.json(tag);
             }
-            return ;
+            return;
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }
@@ -56,20 +52,20 @@ class TagsController extends BaseController {
             const checkReturn = this._checkString(tagData.name || '', 'Tag name', 25, /^[a-zA-Z0-9_-]+$/);
             if (checkReturn != true) {
                 res.status(400).json({ error: checkReturn });
-                return ;
+                return;
             }
             const ownerId = this._checkPositiveInteger(tagData.owner_id || '');
             if (ownerId < 0) {
                 res.status(400).json({ error: "Tag owner id is incorrect" });
-                return ;
+                return;
             }
             if (!await UserController.checkById(ownerId)) {
                 res.status(400).json({ error: "User id doesn't exists" });
-                return ;
+                return;
             }
             if (await this.model.check([tagData.name, ownerId])) {
                 res.status(400).json({ error: "Tag already exists" });
-                return ;
+                return;
             }
             const data = {
                 "name": tagData.name,
@@ -89,11 +85,11 @@ class TagsController extends BaseController {
             const tagId = this._checkPositiveInteger(tagData.id || '');
             if (tagId < 0) {
                 res.status(400).json({ error: "Tag id is incorrect" });
-                return ;
+                return;
             }
             if (!await this.checkById(tagId)) {
                 res.status(400).json({ error: "Tag doesn't exists" });
-                return ;
+                return;
             }
             const tagIdReturn = await this.model.delete(tagId);
             res.status(201).json({ message: 'Tag deleted', tagIdReturn });
