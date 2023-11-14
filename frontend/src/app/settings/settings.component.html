@@ -68,6 +68,7 @@
 						<mat-radio-group formControlName="gender">
 							<mat-radio-button value="Male">Male</mat-radio-button>
 							<mat-radio-button value="Female">Female</mat-radio-button>
+							<mat-radio-button value="Non-binary">Non-binary</mat-radio-button>
 							<mat-radio-button value="Other">Other</mat-radio-button>
 						</mat-radio-group>
 					</div>
@@ -81,6 +82,8 @@
 							(change)="sexualPreferenceChange()">Male</mat-checkbox>
 						<mat-checkbox formControlName="femaleSexualPreference"
 							(change)="sexualPreferenceChange()">Female</mat-checkbox>
+						<mat-checkbox formControlName="nonBinarySexualPreference"
+							(change)="sexualPreferenceChange()">Non-binary</mat-checkbox>
 						<mat-checkbox formControlName="otherSexualPreference"
 							(change)="sexualPreferenceChange()">Other</mat-checkbox>
 					</div>

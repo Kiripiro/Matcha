@@ -28,7 +28,7 @@ const createTableIfNotExists = async (tableName, sql) => {
 };
 
 
-const createUsersTable = () => {
+const createUsersTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY, 
         username VARCHAR(255) NOT NULL, 
@@ -62,11 +62,11 @@ const createUsersTable = () => {
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`;
 
-    createTableIfNotExists('users', sql);
+    await createTableIfNotExists('users', sql);
 }// VARCHAR(512) max length 4096 char
 //TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP to see if it works
 
-const createTagsTable = () => {
+const createTagsTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS tags (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
@@ -74,10 +74,10 @@ const createTagsTable = () => {
         FOREIGN KEY (owner_id) REFERENCES users(id)
     )`;
 
-    createTableIfNotExists('tags', sql);
+    await createTableIfNotExists('tags', sql);
 }
 
-const createViewsTable = () => {
+const createViewsTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS views (
         id INT AUTO_INCREMENT PRIMARY KEY, 
         author_id INT NOT NULL, 
@@ -86,10 +86,10 @@ const createViewsTable = () => {
         FOREIGN KEY (recipient_id) REFERENCES users(id)
     )`;
 
-    createTableIfNotExists('views', sql);
+    await createTableIfNotExists('views', sql);
 }
 
-const createLikesTable = () => {
+const createLikesTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS likes (
         id INT AUTO_INCREMENT PRIMARY KEY, 
         author_id INT NOT NULL, 
@@ -98,10 +98,10 @@ const createLikesTable = () => {
         FOREIGN KEY (recipient_id) REFERENCES users(id)
     )`;
 
-    createTableIfNotExists('likes', sql);
+    await createTableIfNotExists('likes', sql);
 }
 
-const createReportsTable = () => {
+const createReportsTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS reports (
         id INT AUTO_INCREMENT PRIMARY KEY, 
         author_id INT NOT NULL, 
@@ -110,10 +110,10 @@ const createReportsTable = () => {
         FOREIGN KEY (recipient_id) REFERENCES users(id)
     )`;
 
-    createTableIfNotExists('reports', sql);
+    await createTableIfNotExists('reports', sql);
 }
 
-const createBlocksTable = () => {
+const createBlocksTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS blocks (
         id INT AUTO_INCREMENT PRIMARY KEY, 
         author_id INT NOT NULL, 
@@ -122,10 +122,10 @@ const createBlocksTable = () => {
         FOREIGN KEY (recipient_id) REFERENCES users(id)
     )`;
 
-    createTableIfNotExists('blocks', sql);
+    await createTableIfNotExists('blocks', sql);
 }
 
-const createMessagesTable = () => {
+const createMessagesTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS messages (
         id INT AUTO_INCREMENT PRIMARY KEY, 
         author_id INT NOT NULL, 
@@ -136,33 +136,33 @@ const createMessagesTable = () => {
         FOREIGN KEY (recipient_id) REFERENCES users(id)
     )`;
 
-    createTableIfNotExists('messages', sql);
+    await createTableIfNotExists('messages', sql);
 }
 
-const createInvalidTokenTable = () => {
+const createInvalidTokenTable = async () => {
     const sql = `CREATE TABLE IF NOT EXISTS invalidTokens (
         id INT AUTO_INCREMENT PRIMARY KEY, 
         token VARCHAR(255),
         refresh_token VARCHAR(255)
     )`;
 
-    createTableIfNotExists('invalidTokens', sql);
+    await createTableIfNotExists('invalidTokens', sql);
 }
 
-const runMigrations = () => {
+const runMigrations = async () => {
     const migrationsLockFile = './config/database/migrations.lock';
     if (!fs.existsSync(migrationsLockFile)) {
         try {
             fs.writeFileSync(migrationsLockFile, '');
 
-            createUsersTable();
-            createTagsTable();
-            createViewsTable();
-            createLikesTable();
-            createReportsTable();
-            createBlocksTable();
-            createMessagesTable();
-            createInvalidTokenTable();
+            await createUsersTable();
+            await createTagsTable();
+            await createViewsTable();
+            await createLikesTable();
+            await createReportsTable();
+            await createBlocksTable();
+            await createMessagesTable();
+            await createInvalidTokenTable();
 
             fs.appendFileSync(migrationsLockFile, 'createUsersTable\n');
             fs.appendFileSync(migrationsLockFile, 'createTagsTable\n');

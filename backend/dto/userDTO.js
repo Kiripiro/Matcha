@@ -56,7 +56,7 @@ class UserDTO extends baseValidator {
 
         if (this.isValid()) {
             if (gender !== undefined) {
-                super.validateString('gender', gender, 1, 10, /^[0-9a-zA-Z+ ]+$/);
+                super.validateString('gender', gender, 1, 10, /^[0-9a-zA-Z+ -]+$/);
             }
 
             if (sexual_preferences !== undefined) {

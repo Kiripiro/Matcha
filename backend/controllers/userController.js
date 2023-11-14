@@ -553,6 +553,7 @@ class UserController extends BaseController {
             const allUsers = await this.model.findAll();
             const usersList = this._firstFilterUsers(user, allUsers[0]);
             const newUserList = await this._secondFilterUsers(user, usersList);
+            console.log('newUserList = ' + JSON.stringify(newUserList));
             for (var i = 0; i < newUserList.length; i++) {
                 const hasLiked = await LikesModel.check([req.user.userId, newUserList[i].id]);
                 if (hasLiked) {
@@ -785,12 +786,16 @@ class UserController extends BaseController {
     }
 
     _firstFilterUsers(user, allUsers) {
+        console.log('user = ' + JSON.stringify(user.sexual_preferences));
         const genderFilter = allUsers.filter(it => user.sexual_preferences.includes(it.gender));
+        console.log('genderFilter = ' + genderFilter.length);
         const sexualPreferencesFilter = genderFilter.filter(it => it.sexual_preferences.includes(user.gender));
+        console.log('sexualPreferencesFilter = ' + sexualPreferencesFilter.length);
         const locationFilter = sexualPreferencesFilter.filter(it => {
             const isClose = this._isInsideRadius(user.latitude, user.longitude, it.latitude, it.longitude, MAX_RADIUS_LOCATION_FILTER);
             return isClose;
         });
+        console.log('locationFilter = ' + locationFilter.length);
         return locationFilter;
     }
 

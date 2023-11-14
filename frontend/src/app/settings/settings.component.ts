@@ -58,6 +58,7 @@ export class SettingsComponent implements OnInit {
       biography: '',
       maleSexualPreference: false,
       femaleSexualPreference: false,
+      nonBinarySexualPreference: false,
       otherSexualPreference: false,
       sexual_preferences: [[], (control: AbstractControl<Array<string>>) => {
         if (control.value === null) {
@@ -83,12 +84,14 @@ export class SettingsComponent implements OnInit {
         const sexualPreferences = this.user.sexual_preferences || [];
         const maleSexualPreference = sexualPreferences.includes('Male');
         const femaleSexualPreference = sexualPreferences.includes('Female');
+        const nonBinarySexualPreference = sexualPreferences.includes('Non-binary');
         const otherSexualPreference = sexualPreferences.includes('Other');
 
         this.updateForm.patchValue({
           gender: this.user.gender,
           maleSexualPreference,
           femaleSexualPreference,
+          nonBinarySexualPreference,
           otherSexualPreference,
         });
         if (this.user.picture_1) {
@@ -128,6 +131,7 @@ export class SettingsComponent implements OnInit {
     const {
       maleSexualPreference,
       femaleSexualPreference,
+      nonBinarySexualPreference,
       otherSexualPreference,
     } = this.updateForm.value;
 
@@ -138,6 +142,9 @@ export class SettingsComponent implements OnInit {
     }
     if (femaleSexualPreference) {
       this.sexualPreferences.push('Female');
+    }
+    if (nonBinarySexualPreference) {
+      this.sexualPreferences.push('Non-binary');
     }
     if (otherSexualPreference) {
       this.sexualPreferences.push('Other');

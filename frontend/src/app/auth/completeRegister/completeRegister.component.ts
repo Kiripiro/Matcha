@@ -10,7 +10,7 @@ import { DialogService } from 'src/app/services/dialog.service';
 })
 export class CompleteRegisterComponent implements OnInit {
   completeRegisterForm!: FormGroup;
-  genders: string[] = ['Male', 'Female', 'Other'];
+  genders: string[] = ['Male', 'Female', 'Non-binary', 'Other'];
   allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
   files: string[] = [];
   tags: FormControl | undefined;
@@ -139,8 +139,9 @@ export class CompleteRegisterComponent implements OnInit {
       biography: ['', Validators.required],
       maleSexualPreference: false,
       femaleSexualPreference: false,
+      nonBinarySexualPreference: false,
       otherSexualPreference: false,
-      sexualPreference: [[], [Validators.required, (control: AbstractControl<Array<string>>) => {
+      sexual_preferences: [[], [Validators.required, (control: AbstractControl<Array<string>>) => {
         if (control.value === null) {
           return { empty: true };
         }
@@ -159,6 +160,7 @@ export class CompleteRegisterComponent implements OnInit {
     const {
       maleSexualPreference,
       femaleSexualPreference,
+      nonBinarySexualPreference,
       otherSexualPreference,
     } = this.completeRegisterForm.value;
 
@@ -169,6 +171,9 @@ export class CompleteRegisterComponent implements OnInit {
     }
     if (femaleSexualPreference) {
       this.sexualPreferences.push('Female');
+    }
+    if (nonBinarySexualPreference) {
+      this.sexualPreferences.push('Non-binary');
     }
     if (otherSexualPreference) {
       this.sexualPreferences.push('Other');
