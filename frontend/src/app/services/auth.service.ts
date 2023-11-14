@@ -180,7 +180,7 @@ export class AuthService {
       });
   }
 
-  completeRegister(gender: string, sexual_preferences: string, biography: string, files: string[], tags: string[]): any {
+  completeRegister(gender: string, sexual_preferences: string[], biography: string, files: string[], tags: string[]): any {
     this.http.post<CompleteRegisterResponseData>(this.url + '/users/updateInfos', { gender, sexual_preferences, biography, files, tags }, { withCredentials: true })
       .subscribe({
         next: (response) => {

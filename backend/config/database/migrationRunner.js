@@ -3,24 +3,30 @@ const fs = require('fs');
 const initUsers = require('./initUsers');
 const initTags = require('./initTags');
 
-const createTableIfNotExists = (tableName, sql) => {
-    connection.query(`SHOW TABLES LIKE "${tableName}"`, (err, result) => {
-        if (err) throw err;
-        if (result.length === 1) {
+const createTableIfNotExists = async (tableName, sql) => {
+    try {
+        const [rows] = await connection.execute(`SHOW TABLES LIKE "${tableName}"`);
+
+        if (rows.length === 1) {
             console.log(`Table "${tableName}" already exists`);
             return;
         }
-        connection.query(sql, (err, result) => {
-            if (err) throw err;
-            console.log(`Table "${tableName}" has been created`);
-            if (tableName == 'users') {
-                initUsers.insertInitialUsers();
-            } else if (tableName == 'tags') {
-                initTags.insertInitialTags();
-            }
-        });
-    });
-}
+
+        await connection.execute(sql);
+
+        console.log(`Table "${tableName}" has been created`);
+
+        if (tableName === 'users') {
+            await initUsers.insertInitialUsers();
+        } else if (tableName === 'tags') {
+            await initTags.insertInitialTags();
+        }
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
+
 
 const createUsersTable = () => {
     const sql = `CREATE TABLE IF NOT EXISTS users (
@@ -40,7 +46,7 @@ const createUsersTable = () => {
         email_verification_token VARCHAR(255),
         complete_register BOOLEAN DEFAULT FALSE,
         gender VARCHAR(255), 
-        sexual_preferences VARCHAR(255), 
+        sexual_preferences JSON, 
         biography VARCHAR(512), 
         picture_1 VARCHAR(255), 
         picture_2 VARCHAR(255), 

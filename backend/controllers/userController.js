@@ -58,6 +58,7 @@ class UserController extends BaseController {
     async createUser(req, res) {
         try {
             const userData = req.body;
+            console.log('userData = ' + JSON.stringify(userData));
             if (await this.model.findByUsername(userData.username) != null) {
                 res.status(400).json({ error: 'Username already in use' });
                 return;
@@ -255,6 +256,7 @@ class UserController extends BaseController {
         try {
             const userId = req.user.userId;
             const userData = req.body;
+            console.log('userData = ' + JSON.stringify(userData.sexual_preferences));
             var pictures = await this._savePictures(userData.files, userId);
             if (pictures == null) {
                 res.status(400).json({ error: 'Invalid pictures files' });
@@ -267,7 +269,7 @@ class UserController extends BaseController {
             const data = {
                 "complete_register": true,
                 "gender": userData.gender,
-                "sexual_preferences": userData.sexual_preferences,
+                "sexual_preferences": JSON.stringify(userData.sexual_preferences),
                 "biography": userData.biography,
                 "picture_1": pictures[0],
                 "picture_2": pictures[1],
@@ -282,7 +284,7 @@ class UserController extends BaseController {
                 const dataReturn = {
                     "complete_register": true,
                     "gender": userData.gender,
-                    "sexual_preferences": userData.sexual_preferences,
+                    "sexual_preferences": JSON.stringify(userData.sexual_preferences),
                     "biography": userData.biography,
                     "picture_1": pictures[0],
                     "picture_2": pictures[1],
@@ -586,6 +588,10 @@ class UserController extends BaseController {
                 return;
             }
 
+            if (userData.sexual_preferences) {
+                userData.sexual_preferences = JSON.stringify(userData.sexual_preferences);
+            }
+
             var pictures = [];
             if (files.length > 0) {
                 pictures = await this._savePictures(files, userId);
@@ -779,8 +785,8 @@ class UserController extends BaseController {
     }
 
     _firstFilterUsers(user, allUsers) {
-        const genderFilter = allUsers.filter(it => it.gender == user.sexual_preferences);
-        const sexualPreferencesFilter = genderFilter.filter(it => it.sexual_preferences == user.gender);
+        const genderFilter = allUsers.filter(it => user.sexual_preferences.includes(it.gender));
+        const sexualPreferencesFilter = genderFilter.filter(it => it.sexual_preferences.includes(user.gender));
         const locationFilter = sexualPreferencesFilter.filter(it => {
             const isClose = this._isInsideRadius(user.latitude, user.longitude, it.latitude, it.longitude, MAX_RADIUS_LOCATION_FILTER);
             return isClose;

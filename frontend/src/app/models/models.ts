@@ -80,7 +80,7 @@ export interface GetUserResponseData {
 		email_checked: boolean,
 		complete_register: boolean,
 		gender: string,
-		sexual_preferences: string,
+		sexual_preferences: string[],
 		biography: string,
 		picture_1: string,
 		picture_2: string,
@@ -105,7 +105,7 @@ export interface HomeUserData {
 	age: number,
 	complete_register: boolean,
 	gender: string,
-	sexual_preferences: string,
+	sexual_preferences: string[],
 	biography: string,
 	picture_1: string,
 	picture_2: string,
@@ -333,7 +333,7 @@ export interface UserSettings {
 	password: string;
 	confirm_password: string;
 	gender: string;
-	sexual_preferences: string;
+	sexual_preferences: string[];
 	biography: string;
 	picture_1: string;
 	picture_2: string;

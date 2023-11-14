@@ -60,7 +60,7 @@ class UserDTO extends baseValidator {
             }
 
             if (sexual_preferences !== undefined) {
-                super.validateString('sexual_preferences', sexual_preferences, 1, 10, /^[0-9a-zA-Z+ ]+$/);
+                super.validateJson('sexual_preferences', sexual_preferences);
             }
 
             if (biography !== undefined) {
@@ -169,7 +169,10 @@ class UserDTO extends baseValidator {
         }
 
         if (sexual_preferences !== undefined && sexual_preferences !== null) {
-            super.validateString('sexual_preferences', sexual_preferences, 1, 10, /^[0-9a-zA-Z+ ]+$/);
+            console.log(sexual_preferences);
+
+            super.validateNotEmptyArray('sexual_preferences', sexual_preferences);
+            super.validateJson('sexual_preferences', sexual_preferences);
         }
 
         if (biography !== undefined && biography !== null) {

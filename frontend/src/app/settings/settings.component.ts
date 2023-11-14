@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, concatMap, of } from 'rxjs';
 import { UserSettings } from 'src/app/models/models';
@@ -21,6 +21,7 @@ export class SettingsComponent implements OnInit {
   allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
   files: string[] = [];
   actualImg: string[] = [];
+  sexualPreferences: string[] = [];
   newImg: string[] = [];
   id!: number;
 
@@ -58,7 +59,12 @@ export class SettingsComponent implements OnInit {
       maleSexualPreference: false,
       femaleSexualPreference: false,
       otherSexualPreference: false,
-      sexual_preferences: '',
+      sexual_preferences: [[], (control: AbstractControl<Array<string>>) => {
+        if (control.value === null) {
+          return { empty: true };
+        }
+        return null;
+      }],
       tags: false,
       fileStatus: false,
       latitude: null,
@@ -74,11 +80,16 @@ export class SettingsComponent implements OnInit {
     this.authService.getUserInfosById(this.id).subscribe((userJson: any) => {
       this.user = userJson.user;
       if (this.user) {
+        const sexualPreferences = this.user.sexual_preferences || [];
+        const maleSexualPreference = sexualPreferences.includes('Male');
+        const femaleSexualPreference = sexualPreferences.includes('Female');
+        const otherSexualPreference = sexualPreferences.includes('Other');
+
         this.updateForm.patchValue({
-          maleSexualPreference: this.user.sexual_preferences.includes('Male'),
-          femaleSexualPreference: this.user.sexual_preferences.includes('Female'),
-          otherSexualPreference: this.user.sexual_preferences.includes('Other'),
           gender: this.user.gender,
+          maleSexualPreference,
+          femaleSexualPreference,
+          otherSexualPreference,
         });
         if (this.user.picture_1) {
           this.actualImg.push("data:image/jpeg;base64," + this.user.picture_1);
@@ -109,14 +120,37 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  sexualPreferenceChange(selectedPreference: string) {
-    const preferences = ["Male", "Female", "Other"];
-    preferences.forEach((preference) => {
-      this.updateForm.get(preference.toLowerCase() + "SexualPreference")?.setValue(false);
-    });
-    this.updateForm.get(selectedPreference.toLowerCase() + "SexualPreference")?.setValue(true);
-    this.updateForm.get('sexual_preferences')?.setValue(selectedPreference);
+  sexualPreferenceChange() {
+    this.updateSexualPreferences();
   }
+
+  updateSexualPreferences() {
+    const {
+      maleSexualPreference,
+      femaleSexualPreference,
+      otherSexualPreference,
+    } = this.updateForm.value;
+
+    this.sexualPreferences = [];
+
+    if (maleSexualPreference) {
+      this.sexualPreferences.push('Male');
+    }
+    if (femaleSexualPreference) {
+      this.sexualPreferences.push('Female');
+    }
+    if (otherSexualPreference) {
+      this.sexualPreferences.push('Other');
+    }
+
+    if (this.sexualPreferences.length === 0) {
+      this.updateForm.get('sexual_preferences')?.setValue(null);
+    } else {
+      this.updateForm.get('sexual_preferences')?.setValue(this.sexualPreferences);
+    }
+    console.log(this.updateForm.get('sexual_preferences')?.value);
+  }
+
 
   tagsChange() {
     this.updateForm.get('tags')?.setValue(this.userTags.length > 0);
@@ -281,6 +315,11 @@ export class SettingsComponent implements OnInit {
 
     const updatedFields: Partial<UserSettings> = {};
 
+    if (this.sexualPreferences.length === 0) {
+      delete formValues.sexual_preferences;
+      fieldsToCheck.splice(fieldsToCheck.indexOf("sexual_preferences"), 1);
+    }
+
     fieldsToCheck.forEach((field) => {
       if (formValues[field] !== this.user?.[field as keyof UserSettings] && formValues[field] !== "" && formValues[field] !== null) {
         updatedFields[field as keyof UserSettings] = formValues[field];
@@ -338,7 +377,7 @@ export class SettingsComponent implements OnInit {
         this.dialogService.openDialog(data);
         return;
       }
-
+      console.log(updatedFieldsAfterLocationUpdate);
       this.settingsService.updateUser(updatedFieldsAfterLocationUpdate, this.files).subscribe({
         next: (response) => {
           if (response.message === "User updated") {
@@ -358,5 +397,4 @@ export class SettingsComponent implements OnInit {
       });
     });
   }
-
 }

@@ -56,6 +56,18 @@ class BaseValidator {
         }
     }
 
+    validateJson(propName, value) {
+        if (typeof value !== 'object') {
+            this.errors.push(`${propName} must be a valid JSON.`);
+        }
+    }
+
+    validateNotEmptyArray(propName, value) {
+        if (!Array.isArray(value) || value.length === 0) {
+            this.errors.push(`${propName} must be a non-empty array.`);
+        }
+    }
+
     validateImageFile(file) {
         if (file.substring(0, 23) != 'data:image\/jpeg;base64,' && file.substring(0, 22) != 'data:image\/jpg;base64,' && file.substring(0, 22) != 'data:image\/png;base64,') {
             this.errors.push(`Invalid image`);

@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise'); // Use mysql2/promise for consistent promise-based approach
 
 require('dotenv').config();
 
@@ -9,14 +9,6 @@ const dbConfig = {
     database: process.env.DATABASE,
 };
 
-const connection = mysql.createConnection(dbConfig);
+const pool = mysql.createPool(dbConfig);
 
-connection.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err.stack);
-        return;
-    }
-    console.log('Connected to the database');
-});
-
-module.exports = connection;
+module.exports = pool;

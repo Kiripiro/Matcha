@@ -7,17 +7,20 @@
             <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
         </div>
         <div class="mainDivProfil" id="mainDivPublic" *ngIf="!personalProfil">
-            <button mat-fab [disabled]="you_blocked_he || he_blocked_you" color="primary" aria-label="Like" (click)="like()" ng-disabled="likeWaiting">
+            <button mat-fab [disabled]="you_blocked_he || he_blocked_you" color="primary" aria-label="Like"
+                (click)="like()" ng-disabled="likeWaiting">
                 <mat-icon>{{likeIcon}}</mat-icon>
             </button>
             <p id="nameAge">{{userInfos.first_name}} {{userInfos.last_name}} - {{userInfos.age}} years</p>
-            <button mat-fab [disabled]="!match || you_blocked_he || he_blocked_you" color="primary" aria-label="Chat" [routerLink]="['../../chat']">
+            <button mat-fab [disabled]="!match || you_blocked_he || he_blocked_you" color="primary" aria-label="Chat"
+                [routerLink]="['../../chat']">
                 <mat-icon>chat</mat-icon>
             </button>
         </div>
         <div id="detailsDiv">
             <p>Gender: {{userInfos.gender}}</p>
-            <p>Sexual preference: {{userInfos.sexual_preferences}}</p>
+            <p>{{userInfos.sexual_preferences.length > 1 ? 'Sexual preferences:' : 'Sexual preference:'}}
+                {{userInfos.sexual_preferences.join(', ')}}</p>
             <p>Location: {{userInfos.city}}</p>
         </div>
         <p id="biography">{{userInfos.biography}}</p>
@@ -57,8 +60,8 @@
         <div class="listCardList">
             <mat-list *ngFor="let element of list">
                 <mat-list-item>
-                  <span matListItemTitle>{{element.authorUsername}}</span>
-                  <span matListItemLine>{{element.authorFirstName}} {{element.authorLastName}}</span>
+                    <span matListItemTitle>{{element.authorUsername}}</span>
+                    <span matListItemLine>{{element.authorFirstName}} {{element.authorLastName}}</span>
                 </mat-list-item>
             </mat-list>
         </div>

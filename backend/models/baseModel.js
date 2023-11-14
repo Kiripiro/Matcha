@@ -1,10 +1,9 @@
-const mysql = require('mysql2/promise');
-const connection = require('../config/database/database');
+const pool = require('../config/database/database');
 
 // Base model for all models
 class BaseModel {
     constructor() {
-        this.pool = mysql.createPool(connection.config);
+        this.pool = pool;
     }
 
     async _query(sql, values) {

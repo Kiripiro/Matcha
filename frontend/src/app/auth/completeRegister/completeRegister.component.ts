@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { DialogService } from 'src/app/services/dialog.service';
 
@@ -14,6 +14,7 @@ export class CompleteRegisterComponent implements OnInit {
   allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
   files: string[] = [];
   tags: FormControl | undefined;
+  sexualPreferences: string[] = [];
   availableTags: string[] = [
     'Sport',
     'Music',
@@ -139,19 +140,46 @@ export class CompleteRegisterComponent implements OnInit {
       maleSexualPreference: false,
       femaleSexualPreference: false,
       otherSexualPreference: false,
-      sexualPreference: [false, [Validators.requiredTrue]],
+      sexualPreference: [[], [Validators.required, (control: AbstractControl<Array<string>>) => {
+        if (control.value === null) {
+          return { empty: true };
+        }
+        return null;
+      }]],
       tags: [false, [Validators.requiredTrue]],
       fileStatus: [false, [Validators.requiredTrue]]
     });
   }
 
   sexualPreferenceChange() {
-    const { maleSexualPreference, femaleSexualPreference, otherSexualPreference } = this.completeRegisterForm.value;
-    if (maleSexualPreference || femaleSexualPreference || otherSexualPreference) {
-      this.completeRegisterForm.get('sexualPreference')?.setValue(true);
-    } else {
-      this.completeRegisterForm.get('sexualPreference')?.setValue(false);
+    this.updateSexualPreferences();
+  }
+
+  updateSexualPreferences() {
+    const {
+      maleSexualPreference,
+      femaleSexualPreference,
+      otherSexualPreference,
+    } = this.completeRegisterForm.value;
+
+    this.sexualPreferences = [];
+
+    if (maleSexualPreference) {
+      this.sexualPreferences.push('Male');
     }
+    if (femaleSexualPreference) {
+      this.sexualPreferences.push('Female');
+    }
+    if (otherSexualPreference) {
+      this.sexualPreferences.push('Other');
+    }
+
+    if (this.sexualPreferences.length === 0) {
+      this.completeRegisterForm.get('sexual_preferences')?.setValue(null);
+    } else {
+      this.completeRegisterForm.get('sexual_preferences')?.setValue(this.sexualPreferences);
+    }
+    console.log(this.completeRegisterForm.get('sexual_preferences')?.value);
   }
 
   tagsChange() {
@@ -178,16 +206,11 @@ export class CompleteRegisterComponent implements OnInit {
 
   onSubmit(): void {
     if (this.completeRegisterForm.valid) {
-      const { gender, biography, maleSexualPreference, femaleSexualPreference, otherSexualPreference } = this.completeRegisterForm.value;
-      var sexualPreference = "";
-      if (maleSexualPreference)
-        sexualPreference = "Male";
-      else if (femaleSexualPreference)
-        sexualPreference = "Female";
-      else
-        sexualPreference = "Other";
+      const { gender, biography } = this.completeRegisterForm.value;
+
+      this.updateSexualPreferences();
       const genderUp = gender.charAt(0).toUpperCase() + gender.slice(1);
-      this.authService.completeRegister(genderUp, sexualPreference, biography, this.files, this.selectedTags);
+      this.authService.completeRegister(genderUp, this.sexualPreferences, biography, this.files, this.selectedTags);
     }
   }
 
