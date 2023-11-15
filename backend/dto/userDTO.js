@@ -186,11 +186,11 @@ class UserDTO extends baseValidator {
             super.validateString('password', password, 8, 25);
         }
 
-        if (latitude !== undefined && latitude !== null) {
+        if (latitude !== undefined && latitude !== null && latitude > 0) {
             super.validateFloatLatitude('latitude', latitude);
         }
 
-        if (longitude !== undefined && longitude !== null) {
+        if (longitude !== undefined && longitude !== null && longitude > 0) {
             super.validateFloatLongitude('longitude', longitude);
         }
 

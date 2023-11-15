@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, concatMap, of } from 'rxjs';
+import { Observable, catchError, concatMap, of, throwError } from 'rxjs';
 import { UserSettings } from 'src/app/models/models';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -49,8 +49,8 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.updateForm = this.fb.group({
       username: ['', [Validators.pattern("^[a-zA-Z0-9]*$")]],
-      first_name: ['', [Validators.pattern("^[A-Z][a-zA-Z]*$")]],
-      last_name: ['', [Validators.pattern("^[A-Z][a-zA-Z]*$")]],
+      first_name: ['', [Validators.pattern("^[A-Z][a-zA-Z- ]*$")]],
+      last_name: ['', [Validators.pattern("^[A-Z][a-zA-Z- ]*$")]],
       email: ['', [Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]],
       password: ['', Validators.minLength(8)],
       confirm_password: ['', Validators.minLength(8)],
@@ -334,11 +334,48 @@ export class SettingsComponent implements OnInit {
     });
 
     let locationUpdate$: Observable<Partial<UserSettings> | undefined> = of(updatedFields);
+    console.log(updatedFields.latitude, updatedFields.longitude);
+    if ((updatedFields.latitude !== undefined && updatedFields.longitude === undefined) || (updatedFields.latitude === undefined && updatedFields.longitude !== undefined)) {
+      const dialogData = {
+        title: 'Error',
+        text: 'Both latitude and longitude must be set in order to update your location.',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false
+      };
+      this.dialogService.openDialog(dialogData);
+      delete updatedFields.latitude;
+      delete updatedFields.longitude;
+      return;
+    } else if (updatedFields.latitude !== undefined && updatedFields.latitude <= 0) {
+      const dialogData = {
+        title: 'Error',
+        text: 'Latitude must be greater than 0.',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false
+      };
+      this.dialogService.openDialog(dialogData);
+      delete updatedFields.latitude;
+      return;
+    } else if (updatedFields.longitude !== undefined && updatedFields.longitude <= 0) {
+      const dialogData = {
+        title: 'Error',
+        text: 'Longitude must be greater than 0.',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false
+      };
+      this.dialogService.openDialog(dialogData);
+      delete updatedFields.longitude;
+      return;
+    }
 
     if (formValues.latitude && formValues.longitude) {
       locationUpdate$ = this.settingsService.updateUserLocation(formValues.latitude, formValues.longitude).pipe(
         concatMap((response) => {
           if (response) {
+            console.log(response);
             this.updateForm.get('city')?.setValue(response);
             updatedFields.city = response;
             updatedFields.location_permission = true;
@@ -350,58 +387,72 @@ export class SettingsComponent implements OnInit {
       );
     }
 
-    locationUpdate$.subscribe((updatedFieldsAfterLocationUpdate) => {
-      if (updatedFieldsAfterLocationUpdate === undefined) {
-        return;
-      }
-
-      if (this.updateForm.get('tags')?.value) {
-        updatedFieldsAfterLocationUpdate.tags = this.userTags;
-      }
-
-      if (Object.keys(updatedFieldsAfterLocationUpdate).length === 0 && this.files.length === 0) {
-        const data = {
-          title: 'Error',
-          text: 'You must change at least one field.',
-          text_yes_button: "Ok",
-          yes_callback: () => { },
-          reload: false
-        };
-        this.dialogService.openDialog(data);
-        return;
-      }
-
-      if (updatedFieldsAfterLocationUpdate.password === updatedFieldsAfterLocationUpdate.confirm_password) {
-        delete updatedFieldsAfterLocationUpdate.confirm_password;
-      } else {
-        const data = {
-          title: 'Error',
-          text: 'Passwords do not match.',
-          text_yes_button: "Ok",
-          yes_callback: () => { },
-          reload: false
-        };
-        this.dialogService.openDialog(data);
-        return;
-      }
-      console.log(updatedFieldsAfterLocationUpdate);
-      this.settingsService.updateUser(updatedFieldsAfterLocationUpdate, this.files).subscribe({
-        next: (response) => {
-          if (response.message === "User updated") {
-            const data = {
-              title: 'Success',
-              text: 'Your profile has been updated successfully.',
-              text_yes_button: "Ok",
-              yes_callback: () => { },
-              reload: true
-            };
-            this.dialogService.openDialog(data);
-          }
-        },
-        error: (error) => {
-          console.error('post updateUser failed:', error);
+    locationUpdate$.subscribe({
+      next: (updatedFieldsAfterLocationUpdate) => {
+        console.log(updatedFieldsAfterLocationUpdate);
+        if (updatedFieldsAfterLocationUpdate === undefined) {
+          return;
         }
-      });
+
+        if (this.updateForm.get('tags')?.value) {
+          updatedFieldsAfterLocationUpdate.tags = this.userTags;
+        }
+
+        if (Object.keys(updatedFieldsAfterLocationUpdate).length === 0 && this.files.length === 0) {
+          const data = {
+            title: 'Error',
+            text: 'You must change at least one field.',
+            text_yes_button: "Ok",
+            yes_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(data);
+          return;
+        }
+
+        if (updatedFieldsAfterLocationUpdate.password === updatedFieldsAfterLocationUpdate.confirm_password) {
+          delete updatedFieldsAfterLocationUpdate.confirm_password;
+        } else {
+          const data = {
+            title: 'Error',
+            text: 'Passwords do not match.',
+            text_yes_button: "Ok",
+            yes_callback: () => { },
+            reload: false
+          };
+          this.dialogService.openDialog(data);
+          return;
+        }
+        console.log(updatedFieldsAfterLocationUpdate);
+        this.settingsService.updateUser(updatedFieldsAfterLocationUpdate, this.files).subscribe({
+          next: (response) => {
+            if (response.message === "User updated") {
+              const data = {
+                title: 'Success',
+                text: 'Your profile has been updated successfully.',
+                text_yes_button: "Ok",
+                yes_callback: () => { },
+                reload: true
+              };
+              this.dialogService.openDialog(data);
+            }
+          },
+          error: (error) => {
+            console.error('post updateUser failed:', error);
+          }
+        });
+      },
+      error: (error) => {
+        const dialogData = {
+          title: 'Error',
+          text: error.error || 'An error occured while updating your profile.',
+          text_yes_button: "Ok",
+          yes_callback: () => { },
+          reload: false
+        };
+        this.dialogService.openDialog(dialogData);
+        return;
+      }
     });
   }
 }

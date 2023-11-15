@@ -46,6 +46,7 @@ export class SettingsService {
 					{ key: localStorageName.city, value: city || "" },
 					{ key: localStorageName.locationPermission, value: true }
 				);
+				console.log(data);
 				return city;
 			})
 		);
