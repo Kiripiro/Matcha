@@ -81,6 +81,7 @@ export class SettingsComponent implements OnInit {
     this.authService.getUserInfosById(this.id).subscribe((userJson: any) => {
       this.user = userJson.user;
       if (this.user) {
+        console.log(this.user);
         const sexualPreferences = this.user.sexual_preferences || [];
         const maleSexualPreference = sexualPreferences.includes('Male');
         const femaleSexualPreference = sexualPreferences.includes('Female');
@@ -109,8 +110,8 @@ export class SettingsComponent implements OnInit {
         if (this.user.picture_5) {
           this.actualImg.push("data:image/jpeg;base64," + this.user.picture_5);
         }
-        this.user.latitude = this.localStorageService.getItem('latitude');
-        this.user.longitude = this.localStorageService.getItem('longitude');
+        this.user.latitude = this.user.latitude;
+        this.user.longitude = this.user.longitude;
         this.localStorageService.setItem('location_permission', this.user.location_permission);
       }
     });

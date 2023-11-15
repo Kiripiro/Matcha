@@ -92,6 +92,8 @@ export interface GetUserResponseData {
 		you_blocked_he: boolean,
 		he_blocked_you: boolean,
 		you_reported_he: boolean,
+		latitude: number,
+		longitude: number,
 		city: string,
 		location_permission: boolean
 	};

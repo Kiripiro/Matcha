@@ -501,6 +501,8 @@ class UserController extends BaseController {
                     "he_blocked_you": await BlocksModel.check([user.id, req.user.userId]),
                     "you_reported_he": await ReportsModel.check([req.user.userId, user.id]),
                     "location_permission": user.location_permission,
+                    "latitude": user.latitude,
+                    "longitude": user.longitude,
                     "city": user.city
                 }
                 res.status(200).json({ user: userReturn });
