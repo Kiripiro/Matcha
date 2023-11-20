@@ -18,7 +18,7 @@ module.exports = (io) => {
                 io.emit('user-disconnected', userId); //voir si utile
 
                 const status = 'Offline';
-                io.emit('all-users-status-events', { userId: userId, status: status }, {
+                io.emit('all-users-status-events', { userId: Number(userId), status: status }, {
                     broadcast: true,
                 });
             }

@@ -58,7 +58,6 @@ class UserController extends BaseController {
     async createUser(req, res) {
         try {
             const userData = req.body;
-            console.log('userData = ' + JSON.stringify(userData));
             if (await this.model.findByUsername(userData.username) != null) {
                 res.status(400).json({ error: 'Username already in use' });
                 return;
@@ -256,7 +255,6 @@ class UserController extends BaseController {
         try {
             const userId = req.user.userId;
             const userData = req.body;
-            console.log('userData = ' + JSON.stringify(userData.sexual_preferences));
             var pictures = await this._savePictures(userData.files, userId);
             if (pictures == null) {
                 res.status(400).json({ error: 'Invalid pictures files' });
@@ -386,23 +384,26 @@ class UserController extends BaseController {
             const resetPasswordData = req.body;
             const user = await this.model.findByEmail(resetPasswordData.email);
             if (user) {
-                const resetPasswordToken = uuidv4();
-                mailOptions.to = user.email;
-                mailOptions.subject = "Reset Password";
-                mailOptions.text = "Hi " + user.username + "\nClick on the following link to reset your password:\n" + "http://localhost:4200/verification/resetpassword/" + resetPasswordToken;
-                const sendMailReturn = await transporter.sendMail(mailOptions, async function (error, info) {
-                    if (error) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                });
-                const data = {
-                    "password_reset": 1,
-                    "password_verification_token": resetPasswordToken,
-                };
-                const userIdReturn = await this.model.update(user.id, data);
-                res.status(200).json({ message: 'Reset password request sent' });
+                if (user.email_checked) {
+                    const resetPasswordToken = uuidv4();
+                    mailOptions.to = user.email;
+                    mailOptions.subject = "Reset Password";
+                    mailOptions.text = "Hi " + user.username + "\nClick on the following link to reset your password:\n" + "http://localhost:4200/verification/resetpassword/" + resetPasswordToken;
+                    const sendMailReturn = await transporter.sendMail(mailOptions, async function (error, info) {
+                        if (error) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    });
+                    const data = {
+                        "password_reset": 1,
+                        "password_verification_token": resetPasswordToken,
+                    };
+                    const userIdReturn = await this.model.update(user.id, data);
+                    res.status(200).json({ message: 'Reset password request sent' });
+                }
+                res.status(400).json({ error: 'Email was not checked' });
             } else {
                 res.status(400).json({ error: 'User not found with this email' });
             }
@@ -555,7 +556,6 @@ class UserController extends BaseController {
             const allUsers = await this.model.findAll();
             const usersList = this._firstFilterUsers(user, allUsers[0]);
             const newUserList = await this._secondFilterUsers(user, usersList);
-            console.log('newUserList = ' + JSON.stringify(newUserList));
             for (var i = 0; i < newUserList.length; i++) {
                 const hasLiked = await LikesModel.check([req.user.userId, newUserList[i].id]);
                 if (hasLiked) {
@@ -788,16 +788,12 @@ class UserController extends BaseController {
     }
 
     _firstFilterUsers(user, allUsers) {
-        console.log('user = ' + JSON.stringify(user.sexual_preferences));
         const genderFilter = allUsers.filter(it => user.sexual_preferences.includes(it.gender));
-        console.log('genderFilter = ' + genderFilter.length);
         const sexualPreferencesFilter = genderFilter.filter(it => it.sexual_preferences.includes(user.gender));
-        console.log('sexualPreferencesFilter = ' + sexualPreferencesFilter.length);
         const locationFilter = sexualPreferencesFilter.filter(it => {
             const isClose = this._isInsideRadius(user.latitude, user.longitude, it.latitude, it.longitude, MAX_RADIUS_LOCATION_FILTER);
             return isClose;
         });
-        console.log('locationFilter = ' + locationFilter.length);
         return locationFilter;
     }
 
@@ -953,7 +949,6 @@ class UserController extends BaseController {
                     if (type != "png") {
                         fs.unlink(path + ".png", (error) => {
                             if (error) {
-                                console.error('Unlink error :', error);
                                 return null;
                             } else {
                                 console.log(path + ".png" + ' removed');
@@ -964,7 +959,6 @@ class UserController extends BaseController {
                     if (type != "jpeg") {
                         fs.unlink(path + ".jpeg", (error) => {
                             if (error) {
-                                console.error('Unlink error :', error);
                                 return null;
                             } else {
                                 console.log(path + ".jpeg" + ' removed');
@@ -975,7 +969,6 @@ class UserController extends BaseController {
                     if (type != "jpg") {
                         fs.unlink(path + ".jpg", (error) => {
                             if (error) {
-                                console.error('Unlink error :', error);
                                 return null;
                             } else {
                                 console.log(path + ".jpg" + ' removed');
@@ -984,7 +977,6 @@ class UserController extends BaseController {
                         });
                     }
                 } catch (error) {
-                    console.error('Decode error :', error);
                     return null;
                 }
                 picturesPath.push((path + "." + type));
@@ -998,7 +990,6 @@ class UserController extends BaseController {
     async _removePicture(filename) {
         fs.readdir("/app/imagesSaved/", (error, files) => {
             if (error) {
-                console.error('Readdir error :', error);
                 return null;
             }
             const fileToRemove = files.find((file) =>
@@ -1008,7 +999,6 @@ class UserController extends BaseController {
                 const pathToRemove = "/app/imagesSaved/" + fileToRemove;
                 fs.unlink(pathToRemove, (error) => {
                     if (error) {
-                        console.error('Unlink error :', error);
                         return null;
                     } else {
                         console.log(pathToRemove + ' removed');
@@ -1026,7 +1016,6 @@ class UserController extends BaseController {
         return new Promise((resolve, reject) => {
             fs.readFile(path, (error, data) => {
                 if (error) {
-                    console.error(error);
                     reject(error);
                 } else {
                     const imageString = data.toString('base64');

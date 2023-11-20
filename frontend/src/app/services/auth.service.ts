@@ -46,7 +46,6 @@ export class AuthService {
     return true;
   }
 
-
   checkCompleteRegister() {
     if (!this.localStorageService.getItem(localStorageName.completeRegister)) {
       return false;
@@ -105,9 +104,10 @@ export class AuthService {
           this.dialogService.openDialog(dialogData);
         },
         error: (error) => {
+          const errorToDisplay = this._checkRegexError(error.error)
           const dialogData = {
             title: 'Registration failed',
-            text: error.error,
+            text: errorToDisplay,
             text_yes_button: "",
             text_no_button: "Close",
             yes_callback: () => { },
@@ -151,9 +151,10 @@ export class AuthService {
           this.logEmitChange(true);
         },
         error: (error) => {
+          const errorToDisplay = this._checkRegexError(error.error)
           const dialogData = {
             title: 'Login failed',
-            text: error.error,
+            text: errorToDisplay,
             text_yes_button: "",
             text_no_button: "Close",
             yes_callback: () => { },
@@ -318,5 +319,18 @@ export class AuthService {
 
   _toRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
+  }
+
+  _checkRegexError(error: String) {
+    if (error.includes("must match")) {
+      const split1 = error.split("/^");
+      if (split1 && split1.length > 1) {
+        const split2 = split1[1].split("+$/");
+        if (split2 && split2.length > 0 && split2[0] && split1[0]) {
+          return split1[0] + split2[0];
+        }
+      }
+    }
+    return error;
   }
 }
