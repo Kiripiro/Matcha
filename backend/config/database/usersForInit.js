@@ -98,7 +98,6 @@ function generateRandomUsersForInit() {
             last_connection: faker.date.recent()
         };
         randomUsersForInit.push(user);
-        console.log(user);
     }
     return randomUsersForInit;
 }
