@@ -98,11 +98,11 @@ export class ChatService {
     }
 
     public emitBlock(blockId: number, recipient: User) {
-        this.socketService.blockUser(blockId, recipient);
+        this.socketService.blockUser(blockId, recipient.id);
     }
 
     public emitUnblock(blockId: number, recipient: User) {
-        this.socketService.unblockUser(blockId, recipient);
+        this.socketService.unblockUser(blockId, recipient.id);
     }
 
     public unblockUser(user: User): Observable<any> {

@@ -88,12 +88,12 @@ export class SocketioService {
         });
     }
 
-    public blockUser(blockId: number, user: User) {
-        this.socket.emit('block-user', { blockId: blockId, author_id: this.id, recipient_id: user.id });
+    public blockUser(blockId: number, user: number) {
+        this.socket.emit('block-user', { blockId: blockId, author_id: this.id, recipient_id: user});
     }
 
-    public unblockUser(blockId: number, user: User) {
-        this.socket.emit('unblock-user', { blockId: blockId, author_id: this.id, recipient_id: user.id });
+    public unblockUser(blockId: number, user: number) {
+        this.socket.emit('unblock-user', { blockId: blockId, author_id: this.id, recipient_id: user });
     }
 
     public handleBlock(): Observable<any> {

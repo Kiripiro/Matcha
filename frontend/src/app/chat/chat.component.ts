@@ -51,6 +51,7 @@ export class ChatComponent {
     this.subscribeToStatusUpdates();
     this.subscribeToMessages();
     this.subscribeToBlockEvents();
+    this.subscribeToUnblockEvents();
     this.notificationSubscription = this.notificationsService.subscribeToNotifications().subscribe((notifications) => {
       this.handleNotifications(notifications);
     });
@@ -102,7 +103,9 @@ export class ChatComponent {
         this.handleBlock();
       }
     });
+  }
 
+  subscribeToUnblockEvents() {
     this.chatService.handleUnblock().subscribe((users) => {
       if (this.selectedConversation && this.selectedConversation.id === users.author_id) {
         this.handleUnblock();
@@ -111,13 +114,27 @@ export class ChatComponent {
   }
 
   handleBlock() {
-    this.updateBlockStatus(true);
-    this.updateInputState(true);
+    if (this.selectedConversation)
+      this.chatService.getCheckBlock(this.selectedConversation).subscribe({
+        next: (response) => {
+          console.log(response.exist);
+          if (response.exist)
+            this.updateInputState(true);
+            this.updateBlockStatus(true);
+        }
+    })
   }
 
   handleUnblock() {
-    this.updateBlockStatus(false);
-    this.updateInputState(false);
+    if (this.selectedConversation)
+      this.chatService.getCheckBlock(this.selectedConversation).subscribe({
+        next: (response) => {
+          console.log(response);
+          if (!response.exist)
+            this.updateInputState(false);
+            this.updateBlockStatus(false);
+        }
+    })
   }
 
   updateBlockStatus(isBlocked: boolean) {
@@ -225,7 +242,7 @@ export class ChatComponent {
           this.updateInputState(true);
           const data = {
             title: 'User blocked',
-            text: 'You have been blocked.',
+            text: user.block.author_id === user.id ? 'You have been blocked.' : "You have blocked this user.",
             text_yes_button: "",
             text_no_button: "Close",
             yes_callback: () => { },

@@ -211,6 +211,11 @@ export interface CreateBlockResponseData {
 
 export interface DeleteBlockResponseData {
 	message: string;
+	blockId: number;
+	data: {
+		author_id: number,
+		recipient_id: number
+	};
 }
 
 export interface CreateReportResponseData {

@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 const port = process.env.NODE_PORT;
 
 var corsOptions = {
-    origin: 'http://localhost:4200',
+    origin: process.env.FRONTEND_URL,
     credentials: true,
     optionsSuccessStatus: 200
 };

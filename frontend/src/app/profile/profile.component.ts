@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { RelationService } from 'src/app/services/relation.service';
-import { ElementListData, User } from 'src/app/models/models';
+import { ElementListData, GetUserResponseData, User } from 'src/app/models/models';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SocketioService } from 'src/app/services/socketio.service';
 
@@ -153,6 +153,22 @@ export class ProfileComponent implements OnInit {
     if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
       this.router.navigate(['auth/completeRegister']);
     }
+    this.subscribeToBlockEvents();
+    this.subscribeToUnblockEvents();
+  }
+
+  subscribeToBlockEvents() {
+    this.socketService.handleBlock().subscribe({
+      next: (response) =>{
+      }
+    })
+  }
+
+  subscribeToUnblockEvents() {
+    this.socketService.handleUnblock().subscribe({
+      next: (response) => {
+      }
+    })
   }
 
   like() {
@@ -209,21 +225,56 @@ export class ProfileComponent implements OnInit {
   }
 
   blockCallback() {
-    this.relationService.createBlock(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
-      (response) => {
+    this.relationService.createBlock(
+      this.localStorageService.getItem(localStorageName.id),
+      this.userInfos.id
+    ).subscribe({
+      next: (response) => {
+        (response);
+
+        const blockId = response.blockId;
+
+        this.authService.getUserInfosById(response.data.recipient_id).subscribe({
+          next: (userResponse) => {
+            let user = userResponse.user;
+
+            this.socketService.blockUser(blockId, user.id);
+            this.you_blocked_he = true;
+            this.blockButtonMessage = 'Unblock';
+          },
+          error: (userError) => {
+          }
+        });
       },
-      (error) => {
+      error: (blockError) => {
       }
-    )
+    });
   }
 
   unblockCallback(): void {
-    this.relationService.deleteBlock(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
-      (response) => {
+    this.relationService.deleteBlock(
+      this.localStorageService.getItem(localStorageName.id),
+      this.userInfos.id
+    ).subscribe({
+      next: (response) => {
+        const blockId = response.blockId;
+
+        this.authService.getUserInfosById(response.data.recipient_id).subscribe({
+          next: (userResponse) => {
+            let user = userResponse.user;
+
+            this.socketService.unblockUser(blockId, user.id);
+            this.you_blocked_he = false;
+            this.blockButtonMessage = 'Block';
+
+          },
+          error: (userError) => {
+          }
+        });
       },
-      (error) => {
+      error: (blockError) => {
       }
-    )
+    });
   }
 
   block() {
@@ -235,7 +286,7 @@ export class ProfileComponent implements OnInit {
         text_no_button: "No",
         yes_callback: () => this.unblockCallback(),
         no_callback: function () { },
-        reload: true
+        reload: false
       };
       this.dialogService.openDialog(dialogData);
     }
@@ -247,7 +298,7 @@ export class ProfileComponent implements OnInit {
         text_no_button: "No",
         yes_callback: () => this.blockCallback(),
         no_callback: function () { },
-        reload: true
+        reload: false
       };
       this.dialogService.openDialog(dialogData);
     }

@@ -93,14 +93,6 @@ export class AuthService {
       .subscribe({
         next: (response) => {
           this.localStorageService.removeAllUserItem()
-          this.localStorageService.setMultipleItems(
-            { key: localStorageName.id, value: response.user.id || -1 },
-            { key: localStorageName.username, value: response.user.username || "" },
-            { key: localStorageName.firstName, value: response.user.first_name || "" },
-            { key: localStorageName.lastName, value: response.user.last_name || "" },
-            { key: localStorageName.age, value: response.user.age || -1 },
-            { key: localStorageName.locationPermission, value: response.user.location_permission || false }
-          );
           const dialogData = {
             title: 'Check yours emails',
             text: "An email has been sent to you for check your email address",

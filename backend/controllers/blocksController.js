@@ -138,8 +138,12 @@ class BlocksController extends BaseController {
                 res.status(400).json({ error: "Block doesn't exists" });
                 return;
             }
+            const data = {
+                "author_id": authorId,
+                "recipient_id": recipientId
+            };
             if (await this.model.delete(blockId))
-                res.status(201).json({ message: 'Block deleted' });
+                res.status(201).json({ message: 'Block deleted', blockId: blockId, data: data});
             else
                 res.status(500).json({ error: 'Internal Server Error' });
         } catch (error) {

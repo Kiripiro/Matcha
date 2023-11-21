@@ -60,18 +60,6 @@
                             <mat-icon>more_horiz</mat-icon>
                         </button>
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item
-                                *ngIf="selectedConversation.block.author_id !== selectedConversation.id && !selectedConversation.block.isBlocked"
-                                (click)="blockUser(selectedConversation)">
-                                <mat-icon>block</mat-icon>
-                                <span>Block user</span>
-                            </button>
-                            <button mat-menu-item
-                                *ngIf="selectedConversation.block.author_id !== selectedConversation.id && selectedConversation.block.isBlocked"
-                                (click)="unblockUser(selectedConversation)">
-                                <mat-icon>panorama_fish_eye</mat-icon>
-                                <span>Unblock user</span>
-                            </button>
                             <button mat-menu-item (click)="reportUser(selectedConversation)">
                                 <mat-icon>shield</mat-icon>
                                 <span>Report user</span>
