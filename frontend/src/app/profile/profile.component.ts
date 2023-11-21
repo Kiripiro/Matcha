@@ -5,9 +5,10 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { RelationService } from 'src/app/services/relation.service';
-import { ElementListData, GetUserResponseData, User } from 'src/app/models/models';
+import { ElementListData, StatusData, GetUserResponseData, User } from 'src/app/models/models';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SocketioService } from 'src/app/services/socketio.service';
+import { ChatService } from '../services/chat.service';
 
 @Component({
   selector: 'app-profile',
@@ -35,6 +36,8 @@ export class ProfileComponent implements OnInit {
   list: ElementListData[] = [];
   fameRating = 0;
   private id: number;
+  status = "Offline";
+  lastConnection = 0;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -43,7 +46,8 @@ export class ProfileComponent implements OnInit {
     private dialogService: DialogService,
     private socketService: SocketioService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private chatService: ChatService,
   ) {
     this.id = this.localStorageService.getItem(localStorageName.id);
     if (!this.authService.checkLog()) {
@@ -71,6 +75,18 @@ export class ProfileComponent implements OnInit {
           if (this.username == this.localStorageService.getItem(localStorageName.username)) {
             this.personalProfil = true;
           }
+          const user: User = this.userInfos
+          this.subscribeToStatusUpdates();
+          this.chatService.getStatus(user).subscribe({
+            next: (statusData: StatusData) => {
+              if (this.userInfos.id === statusData.userId) {
+                this.status = statusData.status;
+                this.lastConnection = statusData.lastConnection;
+              }
+            },
+            error: (err: any) => {
+            }
+          });
           this.you_blocked_he = this.userInfos.you_blocked_he;
           this.he_blocked_you = this.userInfos.he_blocked_you;
           if (this.you_blocked_he) {
@@ -93,7 +109,6 @@ export class ProfileComponent implements OnInit {
               this.loading = false;
             },
             (error) => {
-              console.error('get checkLike failed:', error);
               this.loading = false;
               this.error = true;
             }
@@ -153,6 +168,7 @@ export class ProfileComponent implements OnInit {
     if (this.authService.checkLog() && !this.authService.checkCompleteRegister()) {
       this.router.navigate(['auth/completeRegister']);
     }
+    this.chatService.initSocket();
     this.subscribeToBlockEvents();
     this.subscribeToUnblockEvents();
   }
@@ -185,7 +201,6 @@ export class ProfileComponent implements OnInit {
           this.fameRating = this.fameRating - 10;
         },
         (error) => {
-          console.error('get deleteLike failed:', error);
           this.likeWaiting = false;
         }
       )
@@ -377,6 +392,15 @@ export class ProfileComponent implements OnInit {
 
   backArrow() {
     this.displayList = false;
+  }
+
+  subscribeToStatusUpdates() {
+    this.chatService.getAllUserStatusEvents().subscribe((statusData: StatusData) => {
+      if (this.userInfos.id === statusData.userId) {
+        this.status = statusData.status;
+        this.lastConnection = statusData.lastConnection;
+      }
+    });
   }
 
 }

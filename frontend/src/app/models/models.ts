@@ -28,6 +28,7 @@ export interface Message {
 export interface StatusData {
 	userId: number;
 	status: string;
+	lastConnection: number;
 }
 
 /* Auth */
@@ -179,6 +180,7 @@ export interface PasswordResetValidationResponseData {
 export interface StatusData {
 	userId: number;
 	status: string;
+	lastConnection: number;
 }
 
 /* Relations */

@@ -37,6 +37,27 @@
             <button mat-button (click)="block()">
                 {{blockButtonMessage}}
             </button>
+            <div class="profilStatus" *ngIf="status=='Offline'">
+                <div class="firstDivStatus">
+                    <div class="offlineStatus">
+                    </div>
+                    <p>
+                        {{status}} since &nbsp;
+                    </p>
+                </div>
+                <p>
+                    {{ lastConnection | date: 'dd/MM/yyyy - HH:mm' }}
+                </p>
+            </div>
+            <div class="profilStatus" *ngIf="status=='Online'">
+                <div class="firstDivStatus">
+                    <div class="onlineStatus">
+                    </div>
+                    <p>
+                        {{status}}
+                    </p>
+                </div>
+            </div>
             <button mat-button (click)="report()">
                 {{reportButtonMessage}}
             </button>

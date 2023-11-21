@@ -6,7 +6,9 @@ module.exports = (io) => {
         socket.on('userConnected', (userId) => {
             users[userId] = { socketId: socket.id, status: 'Online' };
             const status = 'Online';
-            io.emit('all-users-status-events', { userId: userId, status: status }, {
+            const currentDate = new Date();
+            const last_connection = currentDate.getTime();
+            io.emit('all-users-status-events', { userId: userId, status: status, lastConnection: last_connection }, {
                 broadcast: true,
             });
         });
@@ -15,23 +17,28 @@ module.exports = (io) => {
             const userId = Object.keys(users).find(key => users[key].socketId === socket.id);
             if (userId) {
                 users[userId].status = 'Offline';
-                io.emit('user-disconnected', userId); //voir si utile
+                const currentDate = new Date();
+                users[userId].lastConnection = currentDate.getTime();
+                const last_connection = users[userId].lastConnection;
+                io.emit('user-disconnected', userId);
 
                 const status = 'Offline';
-                io.emit('all-users-status-events', { userId: Number(userId), status: status }, {
+                io.emit('all-users-status-events', { userId: Number(userId), status: status, lastConnection: last_connection }, {
                     broadcast: true,
                 });
             }
         });
 
         socket.on('init', (userId) => {
-            users[userId] = { socketId: socket.id, status: 'Online' };
+            const currentDate = new Date();
+            const last_connection = currentDate.getTime();
+            users[userId] = { socketId: socket.id, status: 'Online', lastConnection: last_connection };
             const status = 'Online';
-            io.emit('all-users-status-events', { userId, status }, {
+            io.emit('all-users-status-events', { userId, status, lastConnection: last_connection }, {
                 broadcast: true,
             });
 
-            io.emit('user-connected', userId); //voir si utile
+            io.emit('user-connected', userId);
         });
 
         socket.on('new-message', (msg) => {
@@ -55,7 +62,8 @@ module.exports = (io) => {
             const senderSocketId = users[usersIds.senderId]?.socketId;
             if (recipientSocketId && userId) {
                 const status = users[recipientId].status;
-                io.to(senderSocketId).emit('status', { userId: recipientId, status: status });
+                const lastConnection = users[recipientId].lastConnection;
+                io.to(senderSocketId).emit('status', { userId: recipientId, status: status, lastConnection: lastConnection});
             }
         });
 
@@ -64,7 +72,6 @@ module.exports = (io) => {
                 return;
             }
             users[userId].status = status;
-            io.emit('status', { userId, status });
         });
 
         socket.on('block-user', (data) => {

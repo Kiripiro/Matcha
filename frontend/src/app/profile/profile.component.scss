@@ -172,6 +172,53 @@ p {
             padding: 0.5rem 1rem;
         }
     }
+
+    .profilStatus {
+        background-color: $surface;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5rem 1rem;
+
+        @media only screen and (max-width: 1250px) and (min-width: 1000px){
+            flex-direction: column;
+        }
+
+        @media only screen and (max-width: 450px) {
+            flex-direction: column;
+        }
+
+        p {
+            color: $onSurface;
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+
+        .firstDivStatus {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            .onlineStatus {
+                background-color: #4caf50;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+        
+            .offlineStatus {
+                background-color: #de2020;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 5px;
+            }
+        }
+    } 
 }
 
 .listCard {
