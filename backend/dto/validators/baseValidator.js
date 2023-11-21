@@ -23,7 +23,8 @@ class BaseValidator {
 
     validatePositiveInteger(propName, value) {
         if (typeof value === 'string' && /^\d+$/.test(value) || typeof value === 'number') {
-            value = parseInt(value);
+            if (typeof value === 'string')
+                value = parseInt(value);
             if (!Number.isInteger(value)) {
                 this.errors.push(`${propName} must be a valid positive integer.`);
             } else if (value < 0 || value > Number.MAX_SAFE_INTEGER) {
