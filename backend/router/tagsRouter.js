@@ -8,7 +8,7 @@ router.get('/user/:id', auth, tags.getAllByOwnerId, async (req, res) => {
     try {
         await TagsController.getAllByOwnerId(req, res);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 });
 

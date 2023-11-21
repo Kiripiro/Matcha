@@ -49,7 +49,6 @@ export class ResetComponent implements OnInit {
           this.textButton = "Log in";
         },
         error: (error) => {
-          console.error('sendPasswordResetRequest failed:', error);
           const dialogData = {
             title: 'Error',
             text: error.error,

@@ -7,7 +7,7 @@ export class LocalStorageService {
 
   constructor() {
     if (typeof localStorage === 'undefined') {
-      console.error('LocalStorage is not supported in this browser.');
+      console.log('LocalStorage is not supported in this browser.');
       return;
     }
   }
@@ -17,7 +17,7 @@ export class LocalStorageService {
       try {
         localStorage.setItem(key, JSON.stringify(value));
       } catch (error) {
-        console.error(`Error setting key "${key}" in localStorage :`, error);
+        console.log(`Error setting key "${key}" in localStorage :`, error);
       }
     });
   }

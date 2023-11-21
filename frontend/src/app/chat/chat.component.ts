@@ -117,7 +117,6 @@ export class ChatComponent {
     if (this.selectedConversation)
       this.chatService.getCheckBlock(this.selectedConversation).subscribe({
         next: (response) => {
-          console.log(response.exist);
           if (response.exist)
             this.updateInputState(true);
             this.updateBlockStatus(true);
@@ -129,7 +128,6 @@ export class ChatComponent {
     if (this.selectedConversation)
       this.chatService.getCheckBlock(this.selectedConversation).subscribe({
         next: (response) => {
-          console.log(response);
           if (!response.exist)
             this.updateInputState(false);
             this.updateBlockStatus(false);

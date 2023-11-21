@@ -78,7 +78,6 @@ export class AuthService {
         this.logEmitChange(true);
       },
       error: (error) => {
-        console.error('User not log:', error);
         if (error == 'User not found') {
           this._frontLogOut('');
         } else {
@@ -175,7 +174,6 @@ export class AuthService {
         next: (response) => {
         },
         error: (error) => {
-          console.error('Registration failed:', error);
         },
         complete: () => {
           this._frontLogOut('');
@@ -202,7 +200,6 @@ export class AuthService {
           this.router.navigate(['']);
         },
         error: (error) => {
-          console.error('CompleteRegister failed:', error);
         }
       });
   }
@@ -256,7 +253,6 @@ export class AuthService {
         }
       },
         (error) => {
-          console.error('getLocation error : ', error);
           this.getLocationWithIp();
         });
     } else {
@@ -298,7 +294,6 @@ export class AuthService {
             );
           },
           error: (error) => {
-            console.error('updateLocation failed:', error);
           }
         });
     });

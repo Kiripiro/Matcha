@@ -8,7 +8,7 @@ router.get('/:authorId/:recipientId', auth, messages.getConversation, async (req
     try {
         await MessagesController.getConversation(req, res);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 });
 
@@ -16,7 +16,7 @@ router.post('/create', auth, messages.createMessage, async (req, res) => {
     try {
         await MessagesController.createMessage(req, res);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 });
 

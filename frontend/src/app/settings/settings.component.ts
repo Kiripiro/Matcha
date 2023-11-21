@@ -188,7 +188,6 @@ export class SettingsComponent implements OnInit {
             }
           },
           error: (error) => {
-            console.error('post deleteUser failed:', error);
           }
         });
       },
@@ -433,7 +432,6 @@ export class SettingsComponent implements OnInit {
             }
           },
           error: (error) => {
-            console.error('post updateUser failed:', error);
           }
         });
       },

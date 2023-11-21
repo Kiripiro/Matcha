@@ -75,7 +75,6 @@ export class HomeComponent implements OnInit {
               this.personalFameRating = response.fame_rating;
             },
             (error) => {
-              console.error('getPersonnalFameRating failed:', error);
               const dialogData = {
                 title: 'Error',
                 text: error.error,
@@ -136,7 +135,6 @@ export class HomeComponent implements OnInit {
           this.userIndex++;
       },
       (error) => {
-        console.error('get getUserInfosById failed:', error);
         this.loading = false;
         this.error = true;
         if (this.userIndex + 1 >= this.interestingUsers.length)

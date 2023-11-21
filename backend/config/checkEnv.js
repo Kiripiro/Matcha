@@ -7,7 +7,7 @@ const requiredEnvVars = ['HOST', 'USER', 'PASSWORD', 'DATABASE', 'FRONTEND_URL',
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
 if (missingEnvVars.length > 0) {
-    console.error(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
+    console.log(`Missing required environment variables: ${missingEnvVars.join(', ')}`);
     process.exit(1);
 } else {
     console.log('All required environment variables are set.');

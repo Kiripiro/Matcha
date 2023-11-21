@@ -97,7 +97,6 @@ export class WaitComponent implements OnInit {
           this.resetPassword = false;
         },
         (error) => {
-          console.error('emailValidation failed:', error);
           this.text = "Error";
           const dialogData = {
             title: 'Password reset',

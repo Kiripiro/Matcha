@@ -152,7 +152,6 @@ export class SearchComponent implements OnInit {
         }
       },
       (error) => {
-        console.error('getSearchResult failed:', error);
         this.error = true;
       }
     );

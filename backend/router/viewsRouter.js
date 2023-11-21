@@ -8,7 +8,7 @@ router.get('/recipient/:id', auth, view.getAllByRecipientId, async (req, res) =>
     try {
         await ViewsController.getAllByRecipientId(req, res);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 });
 
@@ -17,7 +17,7 @@ router.post('/create', auth, view.createView, async (req, res) => {
     try {
         await ViewsController.createView(req, res);
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 });
 
