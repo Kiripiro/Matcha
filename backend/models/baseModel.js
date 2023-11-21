@@ -12,7 +12,7 @@ class BaseModel {
             const rows = await conn.query(sql, values);
             return rows;
         } catch (error) {
-            console.log('error = ' + error);
+            throw error;
         } finally {
             conn.release();
         }

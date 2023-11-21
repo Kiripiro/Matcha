@@ -91,22 +91,17 @@ export class SearchComponent implements OnInit {
     }
     this.searchService.getCities().subscribe(
       (response) => {
-        console.log('getCities successful:', response);
         const cities = response.cities;
-        console.log('cities:', cities);
         cities.forEach(city => this.locationValue.push(city));
       },
       (error) => {
-        console.error('getCities failed:', error);
       }
     );
     this.homeService.getPersonnalFameRating().subscribe(
       (response) => {
-        console.log('getPersonnalFameRating successful:', response);
         this.personalFameRating = response.fame_rating;
       },
       (error) => {
-        console.error('getPersonnalFameRating failed:', error);
         this.error = true;
       }
     );
@@ -146,7 +141,6 @@ export class SearchComponent implements OnInit {
 
     this.searchService.getSearchResult(age, fameRating, location, tags).subscribe(
       (response) => {
-        console.log('getSearchResult successful:', response);
         this.loading = false;
         if (response.users.length <= 0) {
           this.textError = "No users found";

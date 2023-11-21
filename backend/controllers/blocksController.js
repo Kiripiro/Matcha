@@ -97,7 +97,6 @@ class BlocksController extends BaseController {
             const blockId = await this.model.create(data);
             res.status(201).json({ message: 'Block created', blockId: blockId, data: data });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -114,7 +113,6 @@ class BlocksController extends BaseController {
             else
                 res.status(500).json({ error: 'Internal Server Error' });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -145,7 +143,6 @@ class BlocksController extends BaseController {
             else
                 res.status(500).json({ error: 'Internal Server Error' });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

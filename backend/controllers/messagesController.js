@@ -155,7 +155,6 @@ class MessagesController extends BaseController {
                 res.status(400).json({ error: "Relationship is blocked" });
                 return;
             } else if (checkBlock != false) {
-                console.log('error = ' + checkBlock);
                 res.status(500).json({ error: 'Internal Server Error' });
                 return;
             }
@@ -164,7 +163,6 @@ class MessagesController extends BaseController {
                 res.status(400).json({ error: "Match doesn't exist" });
                 return;
             } else if (checkLike != true) {
-                console.log('error = ' + checkLike);
                 res.status(500).json({ error: 'Internal Server Error' });
                 return;
             }
@@ -182,7 +180,6 @@ class MessagesController extends BaseController {
             const messageId = await this.model.create(data);
             res.status(201).json({ message: 'Message created', messageId, data });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -202,7 +199,6 @@ class MessagesController extends BaseController {
             const messageIdReturn = await this.model.delete(messageId);
             res.status(201).json({ message: 'message deleted', messageIdReturn });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

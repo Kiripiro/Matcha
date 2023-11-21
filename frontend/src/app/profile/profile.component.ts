@@ -63,7 +63,6 @@ export class ProfileComponent implements OnInit {
       }
       this.authService.getUserInfos(this.username).subscribe(
         (response) => {
-          console.log('get userInfos successful:', response);
           this.userInfos = response;
           if (!this.userInfos.complete_register) {
             this.error = true;
@@ -84,7 +83,6 @@ export class ProfileComponent implements OnInit {
           this.fameRating = this.userInfos.fame_rating;
           this.relationService.getCheckLike(this.id, this.userInfos.id).subscribe(
             (response) => {
-              console.log('get getCheckLike successful:', response);
               if (response != null) {
                 if (response.exist) {
                   this.likeIcon = "favorite";
@@ -102,7 +100,6 @@ export class ProfileComponent implements OnInit {
           );
           this.relationService.getCheckMatch(this.id, this.userInfos.id).subscribe(
             (response) => {
-              console.log('get getCheckMatch successful:', response);
               if (response != null) {
                 if (response.exist) {
                   this.match = true;
@@ -112,7 +109,6 @@ export class ProfileComponent implements OnInit {
               }
             },
             (error) => {
-              console.error('get checkLike failed:', error);
               this.loading = false;
               this.error = true;
             }
@@ -120,14 +116,12 @@ export class ProfileComponent implements OnInit {
           if (!this.personalProfil && !this.he_blocked_you && !this.you_blocked_he) {
             this.relationService.createView(this.id, this.userInfos.id).subscribe(
               (response) => {
-                console.log('post createView successful:', response);
                 if (response.message == "View created") {
                   this.socketService.emitView(this.id, this.userInfos.id);
                   this.fameRating++;
                 }
               },
               (error) => {
-                console.error('post createView failed:', error);
               })
           }
           this.img.splice(0, this.img.length)
@@ -148,7 +142,6 @@ export class ProfileComponent implements OnInit {
           }
         },
         (error) => {
-          console.error('get userInfos failed:', error);
           this.loading = false;
           this.error = true;
         }
@@ -170,7 +163,6 @@ export class ProfileComponent implements OnInit {
           if (response.message == "Like deleted") {
             this.socketService.emitUnlike(this.id, this.userInfos.id);
           }
-          console.log('get deleteLike successful:', response);
           this.likeIcon = "favorite_outlined";
           this.match = false;
           this.likeWaiting = false;
@@ -188,13 +180,11 @@ export class ProfileComponent implements OnInit {
           if (response.message == "Like created") {
             this.socketService.emitLike(this.id, this.userInfos.id);
           }
-          console.log('get createLike successful:', response);
           this.likeIcon = "favorite";
           this.likeWaiting = false;
           this.fameRating = this.fameRating + 10;
           this.relationService.getCheckMatch(this.id, this.userInfos.id).subscribe(
             (response) => {
-              console.log('get getCheckMatch successful:', response);
               if (response != null) {
                 if (response.exist) {
                   this.socketService.emitMatch(this.id, this.userInfos.id);
@@ -206,14 +196,12 @@ export class ProfileComponent implements OnInit {
               }
             },
             (error) => {
-              console.error('get checkLike failed:', error);
               this.loading = false;
               this.error = true;
             }
           )
         },
         (error) => {
-          console.error('get createLike failed:', error);
           this.likeWaiting = false;
         }
       )
@@ -223,10 +211,8 @@ export class ProfileComponent implements OnInit {
   blockCallback() {
     this.relationService.createBlock(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
       (response) => {
-        console.log('createBlock successful:', response);
       },
       (error) => {
-        console.error('createBlock failed:', error);
       }
     )
   }
@@ -234,10 +220,8 @@ export class ProfileComponent implements OnInit {
   unblockCallback(): void {
     this.relationService.deleteBlock(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
       (response) => {
-        console.log('deleteBlock successful:', response);
       },
       (error) => {
-        console.error('createBlock failed:', error);
       }
     )
   }
@@ -273,10 +257,8 @@ export class ProfileComponent implements OnInit {
   reportCallback() {
     this.relationService.createReport(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
       (response) => {
-        console.log('createReport successful:', response);
       },
       (error) => {
-        console.error('createReport failed:', error);
       }
     )
   }
@@ -284,10 +266,8 @@ export class ProfileComponent implements OnInit {
   unreportCallback(): void {
     this.relationService.deleteReport(this.localStorageService.getItem(localStorageName.id), this.userInfos.id).subscribe(
       (response) => {
-        console.log('deleteReport successful:', response);
       },
       (error) => {
-        console.error('deleteReport failed:', error);
       }
     )
   }
@@ -327,22 +307,18 @@ export class ProfileComponent implements OnInit {
       this.displayListTitle = "Views";
       this.relationService.getAllProfileViews(this.localStorageService.getItem(localStorageName.id)).subscribe(
         (response) => {
-          console.log('getAllProfileViews successful:', response);
           this.list = response.data;
         },
         (error) => {
-          console.error('getAllProfileViews failed:', error);
         }
       )
     } else if (list == 2) {
       this.displayListTitle = "Likes";
       this.relationService.getAllProfileLikes(this.localStorageService.getItem(localStorageName.id)).subscribe(
         (response) => {
-          console.log('getAllProfileLikes successful:', response);
           this.list = response.data;
         },
         (error) => {
-          console.error('getAllProfileLikes failed:', error);
         }
       )
     }

@@ -169,7 +169,6 @@ class UserDTO extends baseValidator {
         }
 
         if (sexual_preferences !== undefined && sexual_preferences !== null) {
-            console.log(sexual_preferences);
 
             super.validateNotEmptyArray('sexual_preferences', sexual_preferences);
             super.validateJson('sexual_preferences', sexual_preferences);

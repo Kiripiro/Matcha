@@ -157,7 +157,6 @@ class ViewsController extends BaseController {
             await UserController._updateFameRating(VIEW_FAME_RATING_VALUE, recipientId);
             res.status(201).json({ message: 'View created' });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -177,7 +176,6 @@ class ViewsController extends BaseController {
             const viewIdReturn = await this.model.delete(viewId);
             res.status(201).json({ message: 'view deleted', viewIdReturn });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

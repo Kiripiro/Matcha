@@ -81,7 +81,6 @@ export class SettingsComponent implements OnInit {
     this.authService.getUserInfosById(this.id).subscribe((userJson: any) => {
       this.user = userJson.user;
       if (this.user) {
-        console.log(this.user);
         const sexualPreferences = this.user.sexual_preferences || [];
         const maleSexualPreference = sexualPreferences.includes('Male');
         const femaleSexualPreference = sexualPreferences.includes('Female');
@@ -156,7 +155,6 @@ export class SettingsComponent implements OnInit {
     } else {
       this.updateForm.get('sexual_preferences')?.setValue(this.sexualPreferences);
     }
-    console.log(this.updateForm.get('sexual_preferences')?.value);
   }
 
 
@@ -335,7 +333,6 @@ export class SettingsComponent implements OnInit {
     });
 
     let locationUpdate$: Observable<Partial<UserSettings> | undefined> = of(updatedFields);
-    console.log(updatedFields.latitude, updatedFields.longitude);
     if ((updatedFields.latitude !== undefined && updatedFields.longitude === undefined) || (updatedFields.latitude === undefined && updatedFields.longitude !== undefined)) {
       const dialogData = {
         title: 'Error',
@@ -376,7 +373,6 @@ export class SettingsComponent implements OnInit {
       locationUpdate$ = this.settingsService.updateUserLocation(formValues.latitude, formValues.longitude).pipe(
         concatMap((response) => {
           if (response) {
-            console.log(response);
             this.updateForm.get('city')?.setValue(response);
             updatedFields.city = response;
             updatedFields.location_permission = true;
@@ -390,7 +386,6 @@ export class SettingsComponent implements OnInit {
 
     locationUpdate$.subscribe({
       next: (updatedFieldsAfterLocationUpdate) => {
-        console.log(updatedFieldsAfterLocationUpdate);
         if (updatedFieldsAfterLocationUpdate === undefined) {
           return;
         }
@@ -424,7 +419,6 @@ export class SettingsComponent implements OnInit {
           this.dialogService.openDialog(data);
           return;
         }
-        console.log(updatedFieldsAfterLocationUpdate);
         this.settingsService.updateUser(updatedFieldsAfterLocationUpdate, this.files).subscribe({
           next: (response) => {
             if (response.message === "User updated") {

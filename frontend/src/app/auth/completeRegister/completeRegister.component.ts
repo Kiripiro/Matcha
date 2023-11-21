@@ -184,7 +184,6 @@ export class CompleteRegisterComponent implements OnInit {
     } else {
       this.completeRegisterForm.get('sexual_preferences')?.setValue(this.sexualPreferences);
     }
-    console.log(this.completeRegisterForm.get('sexual_preferences')?.value);
   }
 
   tagsChange() {

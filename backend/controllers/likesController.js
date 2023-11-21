@@ -123,7 +123,6 @@ class LikesController extends BaseController {
             }
             return res.status(200).json(matches);
         } catch (error) {
-            console.log("error = " + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -167,7 +166,6 @@ class LikesController extends BaseController {
                 res.status(400).json({ error: "Relationship is blocked" });
                 return;
             } else if (checkBlock != false) {
-                console.log('error = ' + checkBlock);
                 res.status(500).json({ error: 'Internal Server Error' });
                 return;
             }
@@ -183,7 +181,6 @@ class LikesController extends BaseController {
             await UserController._updateFameRating(LIKE_FAME_RATING_VALUE, recipientId);
             res.status(201).json({ message: 'Like created', likeId });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -203,7 +200,6 @@ class LikesController extends BaseController {
             const likeIdReturn = await this.model.delete(likeId);
             res.status(201).json({ message: 'like deleted', likeIdReturn });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -218,7 +214,6 @@ class LikesController extends BaseController {
             await UserController._updateFameRating(-LIKE_FAME_RATING_VALUE, recipientId);
             res.status(201).json({ message: 'Like deleted', deleted: deleted });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

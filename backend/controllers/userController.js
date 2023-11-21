@@ -109,14 +109,11 @@ class UserController extends BaseController {
             mailOptions.text = "Hi " + userData.username + "\nClick on the following link to activate your account:\n" + process.env.FRONTEND_URL + "/verification/email/" + emailVerificationToken;
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {
-                    console.log('error = ' + error);
                 } else {
-                    console.log('Email sent: ' + info.response);
                 }
             });
             res.status(201).json({ message: 'User created', user: returnData });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -187,7 +184,6 @@ class UserController extends BaseController {
             res.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 86400000 });
             res.status(200).json({ message: 'Login successful', user: data });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -210,11 +206,9 @@ class UserController extends BaseController {
                 res.clearCookie('refreshToken');
                 res.status(200).json({ message: 'Logout successful' });
             } else {
-                console.log('error = ' + error);
                 res.status(500).json({ error: 'Internal Server Error' });
             }
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -246,7 +240,6 @@ class UserController extends BaseController {
             res.cookie('accessToken', accessToken, { httpOnly: true, maxAge: 900000 });
             res.status(200).json({ message: 'Access token refreshed' });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -296,7 +289,6 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'User id is incorrect' });
             }
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -321,7 +313,6 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'User id is incorrect' });
             }
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -354,7 +345,6 @@ class UserController extends BaseController {
             return;
 
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -374,7 +364,6 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'Incorrect token' });
             }
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -408,7 +397,6 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'User not found with this email' });
             }
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -430,7 +418,6 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'Incorrect token' });
             }
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -443,7 +430,6 @@ class UserController extends BaseController {
             };
             const userIdReturn = await this.model.update(user.id, data);
         } catch (error) {
-            console.log('error = ' + error);
         }
     }
 
@@ -567,7 +553,6 @@ class UserController extends BaseController {
             // const userListSimplifiedSuffled = this._shuffleArray(usersListSimplified);
             res.status(200).json({ users: newUserList });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -631,7 +616,6 @@ class UserController extends BaseController {
             } else
                 return res.status(400).json({ error: 'Missing data' });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -643,7 +627,6 @@ class UserController extends BaseController {
             const fameRating = user.fame_rating;
             res.status(200).json({ fame_rating: fameRating });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -661,7 +644,6 @@ class UserController extends BaseController {
             }
             res.status(200).json({ cities: citiesReturn });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -682,7 +664,6 @@ class UserController extends BaseController {
             const simplifiedUsers = await this._usersListSimplified(allUsers, userId);
             res.status(200).json({ users: simplifiedUsers });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -951,7 +932,6 @@ class UserController extends BaseController {
                             if (error) {
                                 return null;
                             } else {
-                                console.log(path + ".png" + ' removed');
                                 return true;
                             }
                         });
@@ -961,7 +941,6 @@ class UserController extends BaseController {
                             if (error) {
                                 return null;
                             } else {
-                                console.log(path + ".jpeg" + ' removed');
                                 return true;
                             }
                         });
@@ -971,7 +950,6 @@ class UserController extends BaseController {
                             if (error) {
                                 return null;
                             } else {
-                                console.log(path + ".jpg" + ' removed');
                                 return true;
                             }
                         });
@@ -1001,7 +979,6 @@ class UserController extends BaseController {
                     if (error) {
                         return null;
                     } else {
-                        console.log(pathToRemove + ' removed');
                         return true;
                     }
                 });

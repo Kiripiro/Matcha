@@ -74,7 +74,6 @@ class TagsController extends BaseController {
             const tagId = await this.model.create(data);
             res.status(201).json({ message: 'Tag created', tagId });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -94,7 +93,6 @@ class TagsController extends BaseController {
             const tagIdReturn = await this.model.delete(tagId);
             res.status(201).json({ message: 'Tag deleted', tagIdReturn });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

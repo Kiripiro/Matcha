@@ -171,7 +171,6 @@ export class ChatComponent {
             user.notificationCount = count;
           },
           error: (err: any) => {
-            console.log(err);
           }
         });
       });
@@ -208,8 +207,6 @@ export class ChatComponent {
           this.dialogService.openDialog(dialogData);
           this.selectedConversation = null;
         }
-        else
-          console.log(err);
       }
     });
     this.message = '';
@@ -239,7 +236,6 @@ export class ChatComponent {
         }
       },
       error: (err: any) => {
-        console.log(err);
       }
     });
     this.selectedConversationMessages = [];
@@ -260,7 +256,6 @@ export class ChatComponent {
         }
       },
       error: (err: any) => {
-        console.log(err);
       }
     });
     this.chatService.getStatus(user).subscribe({
@@ -269,7 +264,6 @@ export class ChatComponent {
         this.handleStatusUpdate(statusData);
       },
       error: (err: any) => {
-        console.log(err);
       }
     });
     this.chatService.getMessagesFromUser(user).subscribe({
@@ -292,7 +286,6 @@ export class ChatComponent {
           this.selectedConversationMessages = [];
           this.message = '';
         } else {
-          console.log(err);
         }
       }
     });
@@ -319,7 +312,6 @@ export class ChatComponent {
         }
       },
       error: (err: any) => {
-        console.log(err);
       }
     });
   }
@@ -343,7 +335,6 @@ export class ChatComponent {
         }
       },
       error: (err: any) => {
-        console.log(err);
       }
     });
   }
@@ -366,7 +357,6 @@ export class ChatComponent {
         }
       },
       error: (err: any) => {
-        console.log(err);
         if (err.error === "Report already exists") {
           const dialogData = {
             title: 'User already reported',
@@ -380,8 +370,6 @@ export class ChatComponent {
           this.dialogService.openDialog(dialogData);
           this.menuTrigger.closeMenu();
         }
-        else
-          console.log(err);
       }
     });
   }

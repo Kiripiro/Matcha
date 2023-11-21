@@ -124,7 +124,6 @@ class ReportsController extends BaseController {
             const reportId = await this.model.create(data);
             res.status(201).json({ message: 'Report created', reportId });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -155,7 +154,6 @@ class ReportsController extends BaseController {
             else
                 res.status(500).json({ error: 'Internal Server Error' });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -175,7 +173,6 @@ class ReportsController extends BaseController {
             const reportIdReturn = await this.model.delete(reportId);
             res.status(201).json({ message: 'report deleted', reportIdReturn });
         } catch (error) {
-            console.log('error = ' + error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
