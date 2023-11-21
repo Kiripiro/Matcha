@@ -15,6 +15,7 @@ const decode = require('node-base64-image').decode;
 
 const MAX_RADIUS_LOCATION_FILTER = 35;
 const COMMON_TAGS_MINIMUM_FILTER = 1;
+const FAME_RATING_RANGE_FILTER = 50;
 
 var nodemailer = require('nodemailer');
 const { update } = require('../models/invalidTokensModel');
@@ -547,6 +548,12 @@ class UserController extends BaseController {
                 if (hasLiked) {
                     newUserList.splice(i, 1);
                     i--;
+                } else {
+                    const hasBlocked = await BlocksModel.checkRelation([req.user.userId, newUserList[i].id]);
+                    if (hasBlocked) {
+                        newUserList.splice(i, 1);
+                        i--;
+                    }
                 }
             }
             // const usersListSimplified = this._usersListSimplified(newUserList);
@@ -775,7 +782,10 @@ class UserController extends BaseController {
             const isClose = this._isInsideRadius(user.latitude, user.longitude, it.latitude, it.longitude, MAX_RADIUS_LOCATION_FILTER);
             return isClose;
         });
-        return locationFilter;
+        const fameRatingFilter = locationFilter.filter(it => {
+            return it.fame_rating <= (user.fame_rating + FAME_RATING_RANGE_FILTER) && it.fame_rating >= (user.fame_rating - FAME_RATING_RANGE_FILTER)
+        });
+        return fameRatingFilter;
     }
 
     async _secondFilterUsers(user, allUsers) {

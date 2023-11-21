@@ -274,6 +274,9 @@ export class AuthService {
   }
 
   updateLocation(latitude: number, longitude: number) {
+    if (!this.localStorageService.getItem(localStorageName.username)) {
+      return;
+    }
     const apiKey = environment.location_iq_key || 'default';
     const url = "https://us1.locationiq.com/v1/reverse?key=" + apiKey + "&lat=" + latitude + "&lon=" + longitude + "&format=json";
     this.http.get<LocationIQApiResponseData>(url).subscribe(data => {
