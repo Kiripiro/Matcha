@@ -779,8 +779,12 @@ class UserController extends BaseController {
         const genderFilter = allUsers.filter(it => user.sexual_preferences.includes(it.gender));
         const sexualPreferencesFilter = genderFilter.filter(it => it.sexual_preferences.includes(user.gender));
         const locationFilter = sexualPreferencesFilter.filter(it => {
-            const isClose = this._isInsideRadius(user.latitude, user.longitude, it.latitude, it.longitude, MAX_RADIUS_LOCATION_FILTER);
-            return isClose;
+            if (user.latitude > 0 && user.longitude > 0) {
+                const isClose = this._isInsideRadius(user.latitude, user.longitude, it.latitude, it.longitude, MAX_RADIUS_LOCATION_FILTER);
+                return isClose;
+            } else {
+                return true;
+            }
         });
         const fameRatingFilter = locationFilter.filter(it => {
             return it.fame_rating <= (user.fame_rating + FAME_RATING_RANGE_FILTER) && it.fame_rating >= (user.fame_rating - FAME_RATING_RANGE_FILTER)

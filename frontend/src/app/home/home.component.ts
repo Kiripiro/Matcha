@@ -75,16 +75,16 @@ export class HomeComponent implements OnInit {
               this.personalFameRating = response.fame_rating;
             },
             (error) => {
-              const dialogData = {
-                title: 'Error',
-                text: error.error,
-                text_yes_button: "",
-                text_no_button: "Close",
-                yes_callback: () => { },
-                no_callback: () => { },
-                reload: false
-              };
-              this.dialogService.openDialog(dialogData);
+              // const dialogData = {
+              //   title: 'Error',
+              //   text: error.error,
+              //   text_yes_button: "",
+              //   text_no_button: "Close",
+              //   yes_callback: () => { },
+              //   no_callback: () => { },
+              //   reload: false
+              // };
+              // this.dialogService.openDialog(dialogData);
               this.error = true;
             }
           );
@@ -92,16 +92,16 @@ export class HomeComponent implements OnInit {
         }
       },
       (error) => {
-        const dialogData = {
-          title: 'Error',
-          text: error.error,
-          text_yes_button: "",
-          text_no_button: "Close",
-          yes_callback: () => { },
-          no_callback: () => { },
-          reload: false
-        };
-        this.dialogService.openDialog(dialogData);
+        // const dialogData = {
+        //   title: 'Error',
+        //   text: error.error,
+        //   text_yes_button: "",
+        //   text_no_button: "Close",
+        //   yes_callback: () => { },
+        //   no_callback: () => { },
+        //   reload: false
+        // };
+        // this.dialogService.openDialog(dialogData);
         this.error = true;
       }
     );
