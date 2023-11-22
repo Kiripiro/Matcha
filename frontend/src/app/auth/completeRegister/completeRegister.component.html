@@ -34,12 +34,20 @@
                     accept=".png, .jpeg, .jpg" />
             </div>
             <div class="tagsDiv">
-                <mat-label>Tags</mat-label>
+                <mat-label>Available tags</mat-label>
                 <div class="tagsAvailable">
                     <span *ngFor="let tag of availableTags" (click)="addTag(tag)">{{tag}}</span>
-                    <p class="tagsInfos" *ngIf="availableTags.length <= 0">All tags are selected !</p>
+                    <p class="tagsInfos" *ngIf="availableTags.length <= 0">All tags are selected!</p>
                 </div>
-                <mat-label>Yours tags</mat-label>
+                <div class="tagsInput">
+                    <mat-form-field class="form-field" hideRequiredMarker>
+                        <input matInput formControlName="newTag" placeholder="Add your own tag">
+                    </mat-form-field>
+                    <button class="tagsInputButton" mat-button matSuffix (click)="addCustomTag($event)">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+                <mat-label>Your Tags</mat-label>
                 <div class="tagsSelected">
                     <div class="tagSelected" *ngFor="let tag of selectedTags">
                         <button mat-fab (click)="removeTag(tag)">
@@ -47,7 +55,7 @@
                         </button>
                         <p>{{tag}}</p>
                     </div>
-                    <p class="tagsInfos" *ngIf="selectedTags.length <= 0">Select tags above !</p>
+                    <p class="tagsInfos" *ngIf="selectedTags.length <= 0">Select tags above!</p>
                 </div>
             </div>
             <div id="imageGalleryRegister">

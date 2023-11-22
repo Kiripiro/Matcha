@@ -23,6 +23,9 @@ export class SettingsComponent implements OnInit {
   actualImg: string[] = [];
   sexualPreferences: string[] = [];
   newImg: string[] = [];
+  availableTags: string[] = [];
+  selectedTags: string[] = [];
+
   id!: number;
 
   constructor(
@@ -67,6 +70,7 @@ export class SettingsComponent implements OnInit {
         return null;
       }],
       tags: false,
+      newTag: ['', [Validators.maxLength(20), Validators.pattern('^#[A-Z][a-zA-Z]+$')]],
       fileStatus: false,
       latitude: null,
       longitude: null,
@@ -74,7 +78,13 @@ export class SettingsComponent implements OnInit {
       city: ''
     });
     this.getUser();
-    this.getSelectedTags();
+    this.tagsService.getSelectedTags();
+    this.tagsService.getTags().subscribe((tags) => {
+      this.availableTags = tags;
+    });
+    this.tagsService.selectedTags$.subscribe((tags) => {
+      this.selectedTags = tags;
+    });
   }
 
   getUser() {
@@ -116,13 +126,6 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  getSelectedTags() {
-    this.tagsService.getSelectedTags().subscribe((tags) => {
-      this.userTags = tags.map((tag) => tag.name);
-      this.tagsService.availableTags = this.tagsService.availableTags.filter((tag) => !this.userTags.includes(tag));
-    });
-  }
-
   sexualPreferenceChange() {
     this.updateSexualPreferences();
   }
@@ -159,18 +162,56 @@ export class SettingsComponent implements OnInit {
 
 
   tagsChange() {
-    this.updateForm.get('tags')?.setValue(this.userTags.length > 0);
+    this.updateForm.get('tags')?.setValue(this.selectedTags.length > 0);
   }
 
   addTag(tag: string) {
     this.tagsService.addTag(tag);
-    this.userTags.push(tag);
     this.tagsChange();
+  }
+  addCustomTag(event: Event) {
+    event.preventDefault();
+    const tag = this.updateForm.get('newTag')?.value;
+    if (tag === '') {
+      this.dialogService.openDialog({
+        title: 'Error',
+        text: 'Tag cannot be empty',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false,
+      });
+      return;
+    }
+    if (!tag.match('^#[A-Z][a-zA-Z]+$')) {
+      this.updateForm.get('newTag')?.setValue('');
+      this.dialogService.openDialog({
+        title: 'Error',
+        text: 'Invalid tag, please follow the format: #Tag',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false,
+      });
+      return;
+    }
+    if (this.selectedTags.includes(tag)) {
+      this.dialogService.openDialog({
+        title: 'Error',
+        text: 'Tag already exists',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false,
+      });
+      this.updateForm.get('newTag')?.setValue('');
+      return;
+    }
+
+    this.tagsService.addTag(tag);
+    this.tagsChange();
+    this.updateForm.get('newTag')?.setValue('');
   }
 
   removeTag(tag: string) {
     this.tagsService.removeTag(tag);
-    this.userTags = this.userTags.filter((t) => t !== tag);
     this.tagsChange();
   }
 
@@ -390,7 +431,7 @@ export class SettingsComponent implements OnInit {
         }
 
         if (this.updateForm.get('tags')?.value) {
-          updatedFieldsAfterLocationUpdate.tags = this.userTags;
+          updatedFieldsAfterLocationUpdate.tags = this.selectedTags;
         }
 
         if (Object.keys(updatedFieldsAfterLocationUpdate).length === 0 && this.files.length === 0) {

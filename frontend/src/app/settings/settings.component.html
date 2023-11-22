@@ -93,18 +93,27 @@
 				<div class="tagsDiv">
 					<mat-label>Available tags</mat-label>
 					<div class="tagsAvailable">
-						<span *ngFor="let tag of tagsService.availableTags" (click)="addTag(tag)">{{tag}}</span>
-						<p class="tagsInfos" *ngIf="tagsService.availableTags.length <= 0">All tags are selected!</p>
+						<span *ngFor="let tag of availableTags" (click)="addTag(tag)">{{tag}}</span>
+						<p class="tagsInfos" *ngIf="availableTags.length <= 0">All tags are selected!</p>
+						<div class="tagsInput">
+							<mat-form-field class="form-field" hideRequiredMarker>
+								<input matInput formControlName="newTag" placeholder="Add your own tag">
+							</mat-form-field>
+							<button class="tagsInputButton" mat-button matSuffix (click)="addCustomTag($event)">
+								<mat-icon>add</mat-icon>
+							</button>
+						</div>
 					</div>
 					<mat-label>Your Tags</mat-label>
 					<div class="tagsSelected">
-						<div class="tagSelected" *ngFor="let tag of userTags">
+						<div class="tagSelected" *ngFor="let tag of selectedTags">
 							<button mat-fab (click)="removeTag(tag)">
 								<mat-icon>remove</mat-icon>
 							</button>
 							<p>{{tag}}</p>
 						</div>
-						<p class="tagsInfos" *ngIf="userTags.length <= 0">Select tags above!</p>
+
+						<p class="tagsInfos" *ngIf="selectedTags.length <= 0">Select tags above!</p>
 					</div>
 				</div>
 

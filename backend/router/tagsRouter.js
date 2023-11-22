@@ -12,4 +12,12 @@ router.get('/user/:id', auth, tags.getAllByOwnerId, async (req, res) => {
     }
 });
 
+router.get('/all', auth, async (req, res) => {
+    try {
+        await TagsController.getAll(req, res);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 module.exports = router;

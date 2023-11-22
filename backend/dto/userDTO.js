@@ -76,7 +76,7 @@ class UserDTO extends baseValidator {
             }
 
             for (var y = 0; y < tags.length; y++) {
-                super.validateString('tag ' + tags[y], tags[y], 1, 20, /^[0-9a-zA-Z+ ]+$/);
+                super.validateString('tag ' + tags[y], tags[y], 1, 20, /^#[0-9a-zA-Z+ ]+$/);
             }
         }
         return this.isValid();

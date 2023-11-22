@@ -290,6 +290,7 @@ class UserController extends BaseController {
                 res.status(400).json({ error: 'User id is incorrect' });
             }
         } catch (error) {
+            console.log(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -560,6 +561,7 @@ class UserController extends BaseController {
             // const userListSimplifiedSuffled = this._shuffleArray(usersListSimplified);
             res.status(200).json({ users: newUserList });
         } catch (error) {
+            console.log(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }

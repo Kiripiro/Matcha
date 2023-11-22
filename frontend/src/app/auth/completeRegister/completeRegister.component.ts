@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { DialogService } from 'src/app/services/dialog.service';
+import { TagsService } from 'src/app/services/tags.service';
 
 @Component({
   selector: 'app-completeRegister',
@@ -15,23 +16,14 @@ export class CompleteRegisterComponent implements OnInit {
   files: string[] = [];
   tags: FormControl | undefined;
   sexualPreferences: string[] = [];
-  availableTags: string[] = [
-    'Sport',
-    'Music',
-    'Cinema',
-    'Travel',
-    'Art',
-    'Politics',
-    'Technology',
-    'Cooking',
-    'Fashion',
-  ];
+  availableTags: string[] = [];
   selectedTags: string[] = [];
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private tagService: TagsService
   ) {
     this.authService.getLocation();
   }
@@ -148,7 +140,14 @@ export class CompleteRegisterComponent implements OnInit {
         return null;
       }]],
       tags: [false, [Validators.requiredTrue]],
+      newTag: ['', [Validators.maxLength(20), Validators.pattern('^#[A-Z][a-zA-Z]+$')]],
       fileStatus: [false, [Validators.requiredTrue]]
+    });
+    this.tagService.getTags().subscribe((tags) => {
+      this.availableTags = tags;
+    });
+    this.tagService.selectedTags$.subscribe((tags) => {
+      this.selectedTags = tags;
     });
   }
 
@@ -194,17 +193,52 @@ export class CompleteRegisterComponent implements OnInit {
     }
   }
 
+  addCustomTag(event: Event) {
+    event.preventDefault();
+    const tag = this.completeRegisterForm.get('newTag')?.value;
+    if (tag === '') {
+      this.dialogService.openDialog({
+        title: 'Error',
+        text: 'Tag cannot be empty',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false,
+      });
+      return;
+    }
+    if (!tag.match('^#[A-Z][a-zA-Z]+$')) {
+      this.completeRegisterForm.get('newTag')?.setValue('');
+      this.dialogService.openDialog({
+        title: 'Error',
+        text: 'Invalid tag, please follow the format: #Tag',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false,
+      });
+      return;
+    }
+    if (this.selectedTags.includes(tag)) {
+      this.dialogService.openDialog({
+        title: 'Error',
+        text: 'Tag already exists',
+        text_yes_button: 'Ok',
+        yes_callback: () => { },
+        reload: false,
+      });
+      this.completeRegisterForm.get('newTag')?.setValue('');
+      return;
+    }
+
+    this.tagService.addTag(tag);
+    this.completeRegisterForm.get('newTag')?.setValue('');
+  }
   addTag(tag: string) {
-    const index = this.availableTags.indexOf(tag);
-    this.availableTags.splice(index, 1);
-    this.selectedTags.push(tag);
+    this.tagService.addTag(tag);
     this.tagsChange();
   }
 
   removeTag(tag: string) {
-    const index = this.selectedTags.indexOf(tag);
-    this.selectedTags.splice(index, 1);
-    this.availableTags.push(tag);
+    this.tagService.removeTag(tag);
     this.tagsChange();
   }
 

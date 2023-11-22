@@ -1,17 +1,17 @@
 function tagsInit() {
     const availableTags = [
-        'Sport',
-        'Music',
-        'Cinema',
-        'Travel',
-        'Art',
-        'Politics',
-        'Technology',
-        'Cooking',
-        'Fashion',
+        '#Sport',
+        '#Music',
+        '#Cinema',
+        '#Travel',
+        '#Art',
+        '#Politics',
+        '#Technology',
+        '#Cooking',
+        '#Fashion',
     ];
     var tagList = [];
-    for (var i = 1; i < 500; i++) {
+    for (var i = 1; i <= 500; i++) {
         var tagTemp = getRandomTags(availableTags);
         for (var y = 0; y < 5; y++) {
             tagList.push({ name: tagTemp[y], owner_id: i })
