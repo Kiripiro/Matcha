@@ -5,7 +5,7 @@ import { Observable, catchError, concatMap, map, of, startWith, throwError } fro
 import { UserSettings } from 'src/app/models/models';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog.service';
-import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { LocalStorageService, localStorageName } from 'src/app/services/local-storage.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { TagsService } from 'src/app/services/tags.service';
 
@@ -85,6 +85,7 @@ export class SettingsComponent implements OnInit {
     });
     this.tagsService.selectedTags$.subscribe((tags) => {
         this.selectedTags = tags;
+        this.localStorageService.setItem(localStorageName.tags, tags);
     });
     this.filteredTags = this.updateForm.get('newTag')?.valueChanges.pipe(
       startWith(''),
@@ -395,10 +396,10 @@ export class SettingsComponent implements OnInit {
       delete updatedFields.latitude;
       delete updatedFields.longitude;
       return;
-    } else if (updatedFields.latitude !== undefined && updatedFields.latitude <= 0) {
+    } else if (updatedFields.latitude !== undefined && updatedFields.latitude < 0 && updatedFields.latitude > 90) {
       const dialogData = {
         title: 'Error',
-        text: 'Latitude must be greater than 0.',
+        text: 'Latitude must be in range: 0 : 90',
         text_yes_button: 'Ok',
         yes_callback: () => { },
         reload: false
@@ -406,10 +407,10 @@ export class SettingsComponent implements OnInit {
       this.dialogService.openDialog(dialogData);
       delete updatedFields.latitude;
       return;
-    } else if (updatedFields.longitude !== undefined && updatedFields.longitude <= 0) {
+    } else if (updatedFields.longitude !== undefined && updatedFields.longitude < -180 && updatedFields.longitude > 180) {
       const dialogData = {
         title: 'Error',
-        text: 'Longitude must be greater than 0.',
+        text: 'Longitude must be in range: -180 : 180.',
         text_yes_button: 'Ok',
         yes_callback: () => { },
         reload: false

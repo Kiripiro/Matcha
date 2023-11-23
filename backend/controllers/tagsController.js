@@ -130,6 +130,34 @@ class TagsController extends BaseController {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     }
+
+    async getAllSearch(req, res) {
+        try {
+            const tags = await this.model.findAll();
+            if (!tags) {
+                res.status(404).json({ error: 'Tag not found' })
+                return;
+            } else {
+                var tagsReturn = [];
+                tags.find((row) => row).forEach(element => {
+                    if (!tagsReturn.find(it => it.name == element.name)) {
+                        tagsReturn.push({name: element.name, count: 1});
+                    } else {
+                        const index = tagsReturn.findIndex(it => it.name == element.name);
+                        tagsReturn[index].count++;
+                    }
+                });
+                tagsReturn.sort((a, b) => b.count - a.count);
+                var tagsReturnNames = [];
+                tagsReturn.forEach(element => {
+                    tagsReturnNames.push(element.name);
+                });
+            }
+            res.json(tagsReturnNames);
+        } catch (error) {
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 }
 
 module.exports = new TagsController();

@@ -16,6 +16,9 @@ export class TagsService {
     private availableTagsSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     availableTags$: Observable<string[]> = this.availableTagsSubject.asObservable();
 
+    private availableTagsSubjectSearch: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+    availableTagsSearch$: Observable<string[]> = this.availableTagsSubject.asObservable();
+
     private selectedTagsSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     selectedTags$: Observable<string[]> = this.selectedTagsSubject.asObservable();
 
@@ -25,6 +28,7 @@ export class TagsService {
     ) {
         this.url = environment.backendUrl || "http://localhost:3000";
         this.loadAvailableTags();
+        this.loadAvailableTagsSearch();
     }
 
     private loadAvailableTags(): void {
@@ -40,8 +44,25 @@ export class TagsService {
             .subscribe();
     }
 
+    private loadAvailableTagsSearch(): void {
+        this.http.get(this.url + "/tags/allsearch", { withCredentials: true })
+            .pipe(
+                tap((tags) => {
+                    this.availableTagsSubjectSearch.next(tags as string[]);
+                }),
+                catchError(error => {
+                    return [];
+                })
+            )
+            .subscribe();
+    }
+
     public getTags(): Observable<string[]> {
         return this.availableTagsSubject.asObservable();
+    }
+
+    public getTagsSearch(): Observable<string[]> {
+        return this.availableTagsSubjectSearch.asObservable();
     }
 
     public getSelectedTags() {

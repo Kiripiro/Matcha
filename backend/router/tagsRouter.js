@@ -20,4 +20,12 @@ router.get('/all', auth, async (req, res) => {
     }
 });
 
+router.get('/allsearch', auth, async (req, res) => {
+    try {
+        await TagsController.getAllSearch(req, res);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 module.exports = router;

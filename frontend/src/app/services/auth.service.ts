@@ -283,10 +283,18 @@ export class AuthService {
     this.http.get<LocationIQApiResponseData>(url).subscribe(data => {
       const locationApiData = data;
       var city = "";
-      if (locationApiData.address.municipality) {
-        city = locationApiData.address.municipality;
-      } else if (locationApiData.address.city) {
-        city = locationApiData.address.city;
+      if (!locationApiData.address || locationApiData.address == undefined) {
+        city = "Null Island";
+      } else {
+        if (locationApiData.address.municipality) {
+          city = locationApiData.address.municipality;
+        } else if (locationApiData.address.city) {
+          city = locationApiData.address.city;
+        } else if (locationApiData.address.district) {
+          city = locationApiData.address.district;
+        } else {
+          city = "Null Island";
+        }
       }
       this.http.post<UpdateLocationResponseData>(this.url + '/users/updateLocation', { latitude, longitude, city }, { withCredentials: true })
         .subscribe({

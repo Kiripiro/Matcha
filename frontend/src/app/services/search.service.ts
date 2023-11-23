@@ -21,7 +21,8 @@ export class SearchService {
   }
 
   getSearchResult(age: string, fameRating: string, location: string, tags: string): Observable<GetSearchResultResponseData> {
-    return this.http.get<GetSearchResultResponseData>(this.url + '/users/search/' + age + "/" + fameRating + "/" + location + "/" + tags, { withCredentials: true });
+    const newTags = tags.toString().replaceAll(/#/gi, '');
+    return this.http.get<GetSearchResultResponseData>(this.url + '/users/search/' + age + "/" + fameRating + "/" + location + "/" + newTags, { withCredentials: true });
   }
 
 }

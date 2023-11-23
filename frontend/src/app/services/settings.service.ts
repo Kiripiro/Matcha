@@ -34,11 +34,19 @@ export class SettingsService {
 		return this.http.get<LocationIQApiResponseData>(url).pipe(
 			map((data) => {
 				const locationApiData = data;
-				let city = "";
-				if (locationApiData.address.municipality) {
-					city = locationApiData.address.municipality;
-				} else if (locationApiData.address.city) {
-					city = locationApiData.address.city;
+				var city = "";
+				if (!locationApiData.address || locationApiData.address == undefined) {
+					city = "Null Island";
+				} else {
+					if (locationApiData.address.municipality) {
+						city = locationApiData.address.municipality;
+					} else if (locationApiData.address.city) {
+						city = locationApiData.address.city;
+					} else if (locationApiData.address.district) {
+						city = locationApiData.address.district;
+					} else {
+						city = "Null Island";
+					}
 				}
 				this.localStorageService.setMultipleItems(
 					{ key: localStorageName.latitude, value: latitude },

@@ -157,6 +157,7 @@ export interface LocationIQApiResponseData {
 	address: {
 		city: string;
 		municipality: string;
+		district: string;
 	};
 }
 

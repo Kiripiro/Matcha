@@ -753,11 +753,15 @@ class UserController extends BaseController {
         const filter = tagFilter.split(',');
         if (!filter || filter.length <= 0 || filter[0] == 'none')
             return users;
+        const newFilter = [];
+        for (var o = 0; o < filter.length; o++) {
+            newFilter.push("#".concat(filter[o]));
+        }
         var usersRet = [];
         for (var i = 0; i < users.length; i++) {
             const tags = await TagsModel.getAllUserTags(users[i].id);
-            for (var y = 0; y < filter.length; y++) {
-                if (tags.includes(filter[y])) {
+            for (var y = 0; y < newFilter.length; y++) {
+                if (tags.includes(newFilter[y])) {
                     usersRet.push({
                         id: users[i].id,
                         username: users[i].username,
