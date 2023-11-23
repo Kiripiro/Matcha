@@ -126,6 +126,7 @@ export class CompleteRegisterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.getLocationWithIp();
     this.completeRegisterForm = this.fb.group({
       gender: ['', Validators.required],
       biography: ['', Validators.required],

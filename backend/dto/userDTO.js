@@ -15,7 +15,7 @@ class UserDTO extends baseValidator {
         super.fieldIsRequired('age', age);
 
         if (this.isValid()) {
-            super.validateString('username', username, 3, 25, /^[a-zA-Z0-9_-]+$/);
+            super.validateString('username', username, 3, 25, /^[a-zA-Z0-9._-]+$/);
             super.validateString('email', email, 5, 50, /^[0-9a-zA-Z@._-]+$/);
             super.validateString('password', password, 8, 25);
             super.validateString('first_name', first_name, 3, 25, /^[a-zA-Z- ]+$/);
@@ -36,7 +36,7 @@ class UserDTO extends baseValidator {
         super.fieldIsRequired('password', password);
 
         if (this.isValid()) {
-            super.validateString('username', username, 3, 25, /^[a-zA-Z0-9_-]+$/);
+            super.validateString('username', username, 3, 25, /^[a-zA-Z0-9._-]+$/);
             super.validateString('password', password, 8, 25);
         }
 
@@ -146,7 +146,7 @@ class UserDTO extends baseValidator {
 
     getUserByUsername(username) {
         super.fieldIsRequired('username', username);
-        super.validateString('username', username, 3, 25, /^[a-zA-Z0-9_-]+$/);
+        super.validateString('username', username, 3, 25, /^[a-zA-Z0-9._-]+$/);
 
         return this.isValid();
     }

@@ -265,9 +265,10 @@ export class AuthService {
     const longitudeSaved = this.localStorageService.getItem(localStorageName.longitude);
     this.http.get<IpApiResponseData>('http://ip-api.com/json/?fields=status,message,lat,lon').subscribe(data => {
       const ipApiData: IpApiResponseData = data;
-      if (ipApiData && ipApiData.lat && ipApiData.lon && ipApiData.lat > -90.0
-        && ipApiData.lat < 90.0 && ipApiData.lon > -180.0 && ipApiData.lon < 180.0
-        && !this._isInsideRadius(latitudeSaved, longitudeSaved, ipApiData.lat, ipApiData.lon, 30)) {
+      if ((ipApiData && ipApiData.lat && ipApiData.lon && ipApiData.lat > -90.0
+        && ipApiData.lat < 90.0 && ipApiData.lon > -180.0 && ipApiData.lon < 180.0)
+        && ((!latitudeSaved || !longitudeSaved) || (latitudeSaved < 0 && longitudeSaved < 0)) ||
+        !this._isInsideRadius(latitudeSaved, longitudeSaved, ipApiData.lat, ipApiData.lon, 30)) {
         this.updateLocation(ipApiData.lat, ipApiData.lon);
       }
     });

@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
   fameRating = 0;
   private id: number;
   status = "Offline";
-  lastConnection = 0;
+  lastConnection = 1700733380902;
 
   constructor(
     private localStorageService: LocalStorageService,
