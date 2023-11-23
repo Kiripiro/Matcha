@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, catchError, concatMap, of, throwError } from 'rxjs';
+import { Observable, catchError, concatMap, map, of, startWith, throwError } from 'rxjs';
 import { UserSettings } from 'src/app/models/models';
 import { AuthService } from 'src/app/services/auth.service';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -25,6 +25,7 @@ export class SettingsComponent implements OnInit {
   newImg: string[] = [];
   availableTags: string[] = [];
   selectedTags: string[] = [];
+  filteredTags: Observable<string[]> | undefined;
 
   id!: number;
 
@@ -83,8 +84,17 @@ export class SettingsComponent implements OnInit {
       this.availableTags = tags;
     });
     this.tagsService.selectedTags$.subscribe((tags) => {
-      this.selectedTags = tags;
+        this.selectedTags = tags;
     });
+    this.filteredTags = this.updateForm.get('newTag')?.valueChanges.pipe(
+      startWith(''),
+      map((value: string) => this._filterTags(value))
+  );
+  }
+
+  private _filterTags(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.availableTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 
   getUser() {

@@ -96,13 +96,16 @@
 						<span *ngFor="let tag of availableTags" (click)="addTag(tag)">{{tag}}</span>
 						<p class="tagsInfos" *ngIf="availableTags.length <= 0">All tags are selected!</p>
 						<div class="tagsInput">
-							<mat-form-field class="form-field" hideRequiredMarker>
-								<input matInput formControlName="newTag" placeholder="Add your own tag">
-							</mat-form-field>
-							<button class="tagsInputButton" mat-button matSuffix (click)="addCustomTag($event)">
-								<mat-icon>add</mat-icon>
-							</button>
-						</div>
+                            <mat-form-field class="form-field" hideRequiredMarker>
+                                <input matInput [matAutocomplete]="auto" formControlName="newTag" maxlength="20" placeholder="Add your own tag" />
+                                <mat-autocomplete #auto="matAutocomplete">
+                                    <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">{{ tag }}</mat-option>
+                                </mat-autocomplete>
+                            </mat-form-field>
+                            <button class="tagsInputButton" mat-button matSuffix (click)="addCustomTag($event)">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </div>
 					</div>
 					<mat-label>Your Tags</mat-label>
 					<div class="tagsSelected">

@@ -14,6 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompleteRegisterComponent } from './completeRegister/completeRegister.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [RegisterComponent, LoginComponent, CompleteRegisterComponent],
@@ -29,6 +30,7 @@ import { CompleteRegisterComponent } from './completeRegister/completeRegister.c
     MatRadioModule,
     MatCheckboxModule,
     HttpClientModule,
+    MatAutocompleteModule,
     RouterModule.forChild([
       { path: 'register', component: RegisterComponent },
       { path: 'login', component: LoginComponent },

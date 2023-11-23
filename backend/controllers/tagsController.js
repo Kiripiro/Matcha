@@ -99,19 +99,33 @@ class TagsController extends BaseController {
 
     async getAll(req, res) {
         try {
+            const userId = req.user.userId;
             const tags = await this.model.findAll();
+            const myTags = await this.model.getAllUserTags(userId);
             if (!tags) {
                 res.status(404).json({ error: 'Tag not found' })
                 return;
             } else {
                 var tagsReturn = [];
                 tags.find((row) => row).forEach(element => {
-                    if (!tagsReturn.includes(element.name)) {
-                        tagsReturn.push(element.name);
+                    if (!tagsReturn.find(it => it.name == element.name)) {
+                        tagsReturn.push({name: element.name, count: 1});
+                    } else {
+                        const index = tagsReturn.findIndex(it => it.name == element.name);
+                        tagsReturn[index].count++;
                     }
                 });
+                tagsReturn.sort((a, b) => b.count - a.count);
+                var tagsReturnNames = [];
+                tagsReturn.forEach(element => {
+                    if (myTags) {
+                        if (!myTags.includes(element.name))
+                            tagsReturnNames.push(element.name);
+                    } else
+                        tagsReturnNames.push(element.name);
+                });
             }
-            res.json(tagsReturn);
+            res.json(tagsReturnNames);
         } catch (error) {
             res.status(500).json({ error: 'Internal Server Error' });
         }

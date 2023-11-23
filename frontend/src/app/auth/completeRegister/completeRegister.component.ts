@@ -3,6 +3,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { AuthService } from '../../services/auth.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { TagsService } from 'src/app/services/tags.service';
+import { Observable, map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-completeRegister',
@@ -18,6 +19,7 @@ export class CompleteRegisterComponent implements OnInit {
   sexualPreferences: string[] = [];
   availableTags: string[] = [];
   selectedTags: string[] = [];
+  filteredTags: Observable<string[]> | undefined;
 
   constructor(
     private fb: FormBuilder,
@@ -26,6 +28,11 @@ export class CompleteRegisterComponent implements OnInit {
     private tagService: TagsService
   ) {
     this.authService.getLocation();
+  }
+
+  private _filterTags(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.availableTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 
   async onChangeFileInput(event: any) {
@@ -150,6 +157,10 @@ export class CompleteRegisterComponent implements OnInit {
     this.tagService.selectedTags$.subscribe((tags) => {
       this.selectedTags = tags;
     });
+    this.filteredTags = this.completeRegisterForm.get('newTag')?.valueChanges.pipe(
+      startWith(''),
+      map((value: string) => this._filterTags(value))
+    );
   }
 
   sexualPreferenceChange() {

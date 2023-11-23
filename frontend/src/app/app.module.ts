@@ -51,6 +51,7 @@ import { SearchComponent } from './search/search.component';
 import { SearchService } from 'src/app/services/search.service';
 import { NotificationsComponent } from './notifications/notifications.component';
 import { NotificationsService } from 'src/app/services/notifications.service';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { NotificationsService } from 'src/app/services/notifications.service';
     MatRadioModule,
     MatCheckboxModule,
     MatBadgeModule,
+    MatAutocompleteModule
   ],
   providers: [
     {
